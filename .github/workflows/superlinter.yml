@@ -26,10 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVA: true
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_JSX: true
-          VALIDATE_TSX: true
-          VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_YAML: true
           FIX_JAVASCRIPT_ES: true
           FIX_JSX: true
