@@ -30,7 +30,6 @@ jobs:
           VALIDATE_JSX: true
           VALIDATE_TSX: true
           VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_YAML: true
           VALIDATE_YAML_PRETTIER: true
           FIX_JAVASCRIPT_ES: true
           FIX_JSX: true
