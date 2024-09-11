@@ -6,36 +6,21 @@ on:
       - test/test-linter
 
 jobs:
-  lint:
-    name: Lint code base
-    runs-on: ubuntu-latest
-
+  fix-lint-issues:
     permissions:
+      # To write linting fixes
       contents: write
+      # To write Super-linter status checks
       statuses: write
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Run Super-linter
-        id: linter
-        uses: super-linter/super-linter@v7.1.0
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.1.0 # x-release-please-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Set your fix mode variables to true
           VALIDATE_JAVASCRIPT_STANDARD: true
           FIX_JAVASCRIPT_STANDARD: true
- 
-      
-      - name: Commit and push linting fixes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        if: steps.linter.outcome == 'failure'
-        with:
-          branch: test/test-linter
-          commit_message: "chore: fix linting issues"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: "actions@github.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
