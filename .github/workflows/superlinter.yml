@@ -25,21 +25,9 @@ jobs:
         uses: super-linter/super-linter@v7.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_TYPESCRIPT_STANDARD: true
-          VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_JAVASCRIPT_STANDARD: true
-          VALIDATE_JSX: true
-          VALIDATE_TSX: true
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_YAML_PRETTIER: true
-
-          FIX_TYPESCRIPT_STANDARD: true
-          FIX_JAVASCRIPT_ES: true
           FIX_JAVASCRIPT_STANDARD: true
-          FIX_JSX: false
-          FIX_TSX: true
-          FIX_TYPESCRIPT_ES: true
-          FIX_YAML_PRETTIER: true
+ 
       
       - name: Commit and push linting fixes
         uses: stefanzweifel/git-auto-commit-action@v5
