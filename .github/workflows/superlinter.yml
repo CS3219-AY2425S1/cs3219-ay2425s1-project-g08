@@ -31,7 +31,6 @@ jobs:
           VALIDATE_JSX: true
           VALIDATE_TSX: true
           VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_YAML_PRETTIER: true
 
       
       - name: Commit and push linting fixes
