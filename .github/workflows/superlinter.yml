@@ -31,13 +31,16 @@ jobs:
           VALIDATE_TSX: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_YAML: true
+          VALIDATE_YAMl_PRETTIER: true
           FIX_JAVASCRIPT_ES: true
           FIX_JSX: true
           FIX_TSX: true
           FIX_TYPESCRIPT_ES: true
+          FIX_YAML_PRETTIER: true
       
       - name: Commit and push linting fixes
         uses: stefanzweifel/git-auto-commit-action@v5
+        if: steps.linter.outcome == 'failure'
         with:
           branch: test/test-linter
           commit_message: "chore: fix linting issues"
