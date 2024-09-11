@@ -37,7 +37,6 @@ jobs:
           FIX_TYPESCRIPT_ES: true
       
       - name: Commit and push linting fixes
-        if: steps.linter.outcome == 'failure'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: test/test-linter
