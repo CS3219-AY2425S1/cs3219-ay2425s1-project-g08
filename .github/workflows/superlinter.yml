@@ -36,7 +36,7 @@ jobs:
           FIX_TYPESCRIPT_STANDARD: true
           FIX_JAVASCRIPT_ES: true
           FIX_JAVASCRIPT_STANDARD: true
-          FIX_JSX: true
+          FIX_JSX: false
           FIX_TSX: true
           FIX_TYPESCRIPT_ES: true
           FIX_YAML_PRETTIER: true
