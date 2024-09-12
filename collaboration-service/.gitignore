@@ -1,0 +1,12 @@
+# compiled output
+/dist
+
+# dotenv environment variables file
+.env
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+node_modules/
