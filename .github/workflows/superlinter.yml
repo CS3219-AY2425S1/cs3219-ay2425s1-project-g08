@@ -3,10 +3,7 @@ name: Lint
 on:
   push:
     branches:
-      - dev
-  pull_request:
-    branches:
-      - dev
+      - test/typescriptlint
 
 jobs:
   lint:
