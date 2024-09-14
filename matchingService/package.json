@@ -4,14 +4,20 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "standard --fix 'src/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/amqplib": "^0.10.5",
     "@types/node": "^22.5.4",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
     "amqplib": "^0.10.4",
+    "standard": "^17.1.2",
     "typescript": "^5.6.2"
+  },
+  "standard": {
+    "parser": "@typescript-eslint/parser"
   }
 }

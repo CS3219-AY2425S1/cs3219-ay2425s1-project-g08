@@ -4,5 +4,5 @@ export type MessageHeader = {
 }
 
 export type ConsumerMessageHeaderReq = MessageHeader & {
-    "x-match": "all";
+    'x-match': 'all';
 }
