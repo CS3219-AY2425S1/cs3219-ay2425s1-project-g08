@@ -31,6 +31,14 @@
 
 -->
 
+<!-- 
+The following modules are disabled due to conflict with Spring framework that we are using in our Question Service:
+HideUtilityClassConstructor
+FinalParameters
+HiddenField
+DesignForExtension
+ -->
+
 <module name="Checker">
   <!--
       If you set the basedir property below, then all reported file
@@ -162,7 +170,7 @@
     <!-- See https://checkstyle.org/checks/coding/index.html -->
     <module name="EmptyStatement"/>
     <module name="EqualsHashCode"/>
-    <module name="HiddenField"/>
+    <!-- <module name="HiddenField"/> -->
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
@@ -173,9 +181,9 @@
 
     <!-- Checks for class design                         -->
     <!-- See https://checkstyle.org/checks/design/index.html -->
-    <module name="DesignForExtension"/>
+    <!-- <module name="DesignForExtension"/> -->
     <module name="FinalClass"/>
-    <module name="HideUtilityClassConstructor"/>
+    <!-- <module name="HideUtilityClassConstructor"/> -->
     <module name="InterfaceIsType"/>
     <module name="VisibilityModifier"/>
 

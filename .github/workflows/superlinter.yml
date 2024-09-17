@@ -24,7 +24,7 @@ jobs:
         id: linter
         uses: super-linter/super-linter@v7.1.0
         env:
-          LINTER_RULES_PATH: config/lint
+          LINTER_RULES_PATH: `config/lint`
           JAVA_FILE_NAME: custom_checks.xml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVASCRIPT_ES: true
