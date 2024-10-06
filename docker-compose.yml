@@ -1,0 +1,12 @@
+services:
+  questionbank:
+    build:
+      context: ./questionbank
+    ports:
+      - "8080:8080"
+
+  user-service:
+    build:
+      context: ./PeerPrep-UserService/user-service
+    ports:
+      - "3001:3001"
