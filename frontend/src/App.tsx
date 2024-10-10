@@ -4,6 +4,7 @@ import QuestionPage from "./pages/QuestionPage";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardPageForUsers from "./pages/DashBoardForUsersPage";
+import MatchingModal from "./components/MatchingModal";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Route path="/question/:title" element={<QuestionPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/dashboardForUsers" element={<DashboardPageForUsers />} />
+        <Route path="/matching" element={<MatchingModal />} />
       </Routes>
     </BrowserRouter>
   );
