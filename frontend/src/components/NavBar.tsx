@@ -1,10 +1,12 @@
-import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import IsConnected from "./IsConnected";
 import ProfileButton from "./ProfileButton";
+import { useUser } from "../context/UserContext";
 
-const NavBar: React.FC = () => {
+
+const NavBar = () => {
   const location = useLocation();
+  const { user } = useUser();
 
   return (
     <nav className="bg-off-white w-full p-4 flex items-center justify-between relative">
@@ -26,19 +28,21 @@ const NavBar: React.FC = () => {
       <div className="flex-none">
         {location.pathname === "/" ? (
           <div className="flex space-x-8 text-2xl">
-            <Link to="/dashboard">
+            <Link to="/register">
               <button className="bg-black text-off-white rounded-[25px] p-4 whitespace-nowrap">
-                Enter as Admin
+                Register
               </button>
             </Link>
-            <Link to="/dashboardForUsers">
+            <Link to="/login">
               <button className="bg-yellow text-black rounded-[25px] p-4 whitespace-nowrap">
-                Enter as User
+                Login
               </button>
             </Link>
           </div>
         ) : (
-          <ProfileButton />
+          <Link to="/profile">
+            <ProfileButton currUser={user}/>
+          </Link>
         )}
       </div>
     </nav>

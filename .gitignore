@@ -2,5 +2,7 @@ super-linter.log
 */node_modules
 
 .vscode/
+profile-picture-service/src/main/resources/gcp-service-account-key.json
 
 .DS_Store
+
