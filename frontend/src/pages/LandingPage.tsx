@@ -20,7 +20,7 @@ const LandingPage: React.FC = () => {
           Ace your tech interview by collaborating with a <br />
           peer matched specifically to you.
         </p>
-        <Link to="/question">
+        <Link to="/register">
           <button className="bg-black rounded-[25px] p-4 mt-4">
             Find your match!
           </button>

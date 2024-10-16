@@ -1,0 +1,13 @@
+package peerprep.profile_picture_service;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ProfilePictureServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProfilePictureServiceApplication.class, args);
+	}
+
+}
