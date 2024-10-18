@@ -1,0 +1,2 @@
+# Ignore the below - required to run dev in docker refer to issue (https://github.com/vitejs/vite/issues/18272)
+./node_modules
