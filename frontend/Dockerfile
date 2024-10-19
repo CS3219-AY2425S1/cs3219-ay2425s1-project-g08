@@ -1,13 +1,11 @@
 # Use an official Node.js runtime as the base image
-FROM node:22-alpine
+FROM node:18
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
-
-RUN touch src/main/resources/gcp-service-account-key.json
 
 # Install dependencies
 RUN npm install
