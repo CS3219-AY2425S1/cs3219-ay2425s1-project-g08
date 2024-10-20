@@ -40,8 +40,8 @@ public class ProfilePictureController {
      */
     @PostMapping("/{userId}/profile-picture")
     public ResponseEntity<?> uploadProfilePicture(
-            @PathVariable String userId, @RequestParam("file") MultipartFile file)
-    {
+            @PathVariable String userId,
+            @RequestParam("file") MultipartFile file) {
         try {
             String url = storageService.uploadFile(file, userId);
             return ResponseEntity.ok().body(new UploadResponse(
