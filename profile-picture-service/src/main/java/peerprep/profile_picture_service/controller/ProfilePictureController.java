@@ -2,7 +2,13 @@ package peerprep.profile_picture_service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import peerprep.profile_picture_service.service.StorageService;
 import peerprep.profile_picture_service.config.ApiConfig;
@@ -29,11 +35,13 @@ public class ProfilePictureController {
      *
      * @param userId Profile picture of user to fetch
      * @param file New profile picture
-     * @return ResponseEntity containing UploadResponse with link to get profile picture from google cloud
+     * @return ResponseEntity containing UploadResponse with link to get profile
+     * picture from google cloud
      */
     @PostMapping("/{userId}/profile-picture")
-    public ResponseEntity<?> uploadProfilePicture(@PathVariable String userId,
-                                                  @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadProfilePicture(
+            @PathVariable String userId, @RequestParam("file") MultipartFile file)
+    {
         try {
             String url = storageService.uploadFile(file, userId);
             return ResponseEntity.ok().body(new UploadResponse(
@@ -48,7 +56,8 @@ public class ProfilePictureController {
      * Retrieves the profile picture URL for a specific user.
      *
      * @param userId User that requests profile picture
-     * @return ResponseEntity containing ProfilePictureResponse with link of profile picture from google cloud
+     * @return ResponseEntity containing ProfilePictureResponse with link of
+     * profile picture from google cloud
      */
     @GetMapping("/{userId}/profile-picture")
     public ResponseEntity<?> getProfilePicture(@PathVariable String userId) {
