@@ -2,7 +2,6 @@ package peerprep.profile_picture_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 /**
  * The main entry point for the Question Bank Spring Boot application.
  * <p>
@@ -21,7 +20,6 @@ public class ProfilePictureServiceApplication {
 	 * @param args command-line arguments passed to the application.
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(ProfilePictureServiceApplication.class,
-				args);
+		SpringApplication.run(ProfilePictureServiceApplication.class, args);
 	}
 }

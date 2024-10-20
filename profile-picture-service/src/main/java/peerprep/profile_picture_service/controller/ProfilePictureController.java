@@ -17,7 +17,7 @@ import java.io.IOException;
 
 /**
  * Controller for Profile Picture Service, handles API and calls necessary
- * service
+ * service.
  */
 @CrossOrigin(origins = ApiConfig.FRONTEND_URL)
 @RestController
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class ProfilePictureController {
 
     /**
-     * Bean instance of StorageService to process logic
+     * Bean instance of StorageService to process logic.
      */
     @Autowired
     private StorageService storageService;
@@ -43,8 +43,8 @@ public class ProfilePictureController {
             return ResponseEntity.ok().body(new UploadResponse(
                     "File uploaded successfully", url));
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Error uploading" +
-                    " file: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Error uploading"
+                    + " file: " + e.getMessage());
         }
     }
 
@@ -63,12 +63,22 @@ public class ProfilePictureController {
     }
 
     /**
-     * An encapsulation of upload response
+     * An encapsulation of upload response.
      */
-    private static class UploadResponse {
+    public static class UploadResponse {
+        /**
+         * Message of response.
+         */
         public String message;
+        /**
+         * Url of uploaded profile picture.
+         */
         public String url;
 
+        /**
+         * @param message Message of response
+         * @param url Url of profile picture
+         */
         public UploadResponse(String message, String url) {
             this.message = message;
             this.url = url;
@@ -76,11 +86,17 @@ public class ProfilePictureController {
     }
 
     /**
-     * An encapsulation of profile picture response
+     * An encapsulation of profile picture response.
      */
-    private static class ProfilePictureResponse {
+    public static class ProfilePictureResponse {
+        /**
+         * Url of profile picture returned from google cloud.
+         */
         public String imageUrl;
 
+        /**
+         * @param imageUrl Url of profile picture from google cloud
+         */
         public ProfilePictureResponse(String imageUrl) {
             this.imageUrl = imageUrl;
         }
