@@ -1,0 +1,26 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.0.0-rc.1-management-alpine
+    ports:
+      - "5672:5672" 
+      - "15672:15672" # Dashboard port
+    environment:
+      RABBITMQ_NODE_PORT: 5672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  matchingservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    container_name: matchingservice
+    command: ["node", "dist/index.js"]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
