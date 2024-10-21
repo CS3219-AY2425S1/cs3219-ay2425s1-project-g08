@@ -8,7 +8,7 @@ const useAuthenticateUser = () => {
     const authenticateUser = async (setSuccess: Dispatch<SetStateAction<boolean>>) => {
         try {
             console.log("user access token sent for verification : ", user);
-            const response = await fetch(`${apiConfig.userServiceAuthUrl}/verify-token`, {
+            const response = await fetch(`${apiConfig.userServiceBaseUrl}/auth/verify-token`, {
                 mode: "cors",
                 headers: {
                     "Access-Control-Allow-Origin": `${apiConfig.userServiceBaseUrl}`,

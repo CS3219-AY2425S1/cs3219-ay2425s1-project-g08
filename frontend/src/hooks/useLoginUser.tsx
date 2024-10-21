@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { UserResponse } from '../types/UserResponse';
 import { useUser } from '../context/UserContext';
+import apiConfig from '../config/config';
 
 const useLoginUser = () => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ const useLoginUser = () => {
     setShowErrorMessage(false);
 
     try {
-      const response = await fetch("http://localhost:3001/auth/login", {
+      const response = await fetch(`${apiConfig.userServiceBaseUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

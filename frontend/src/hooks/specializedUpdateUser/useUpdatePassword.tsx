@@ -11,7 +11,7 @@ const useUpdatePassword = (userId: string) => {
     setError(null); // Reset error before a new request
 
     try {
-      const response = await fetch(`${apiConfig.userServiceUserUrl}/${userId}`, {
+      const response = await fetch(`${apiConfig.userServiceBaseUrl}/users/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
