@@ -9,6 +9,7 @@ import {
 import logger from "./utils/logger";
 import errorHandler from "./middlewares/errorHandler";
 import cors from "cors";
+import apiConfig from "./config/config";
 
 async function main() {
     const app: Application = express();
@@ -16,7 +17,7 @@ async function main() {
 
     app.use(
         cors({
-            origin: "http://localhost:5173",
+            origin: `${apiConfig.frontendURL}`,
             methods: ["POST", "DELETE"],
         })
     );

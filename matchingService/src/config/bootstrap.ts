@@ -6,6 +6,7 @@ import logger from "../utils/logger";
 import { Difficulty, Topic } from "../QueueService/matchingEnums";
 import { Application } from "express";
 import initialiseWebsocket from "../websocket/websocket";
+import apiConfig from "./config";
 
 export interface IQueueService {
     sendMatchRequest(matchRequest: MatchRequest): Promise<string>;
@@ -16,7 +17,8 @@ export interface IQueueService {
  * Initialises the different services, controllers and websocket.
  */
 export async function initialiseServices(app: Application): Promise<MatchController> {
-    const queueService: QueueService = await QueueService.of(process.env.RABBITMQ_URL || "amqp://localhost:5672", "gateway", "responseGateway");
+    const rabbitMQUrl = apiConfig.rabbitMQUrl;
+    const queueService: QueueService = await QueueService.of(rabbitMQUrl, "gateway", "responseGateway");
     const matchService = new MatchService(queueService);
     const matchController = new MatchController(matchService);
     initialiseWebsocket(app, queueService);
