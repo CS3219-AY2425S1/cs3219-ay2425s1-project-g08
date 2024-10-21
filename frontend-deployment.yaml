@@ -14,13 +14,21 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: seanpzk/frontend:1.0.1
+        image: seanpzk/frontend:1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 5173
         env:
-        - name: USER_SERVICE_URL
-          value: "http://user-service"
+        - name: VITE_USER_SERVICE_URL
+          value: "http://user-service:3001"
+        - name: VITE_QB_SERVICE_URL
+          value: "http://questionbank-service:8080"
+        - name: VITE_PP_SERVICE_URL
+          value: "http://profilepicture-service:8081"
+        - name: VITE_MATCH_WEBSOCKET_URL
+          value: "ws://matching-service:8082"
+        - name: VITE_MATCH_EXPRESS_URL
+          value: "http://matching-service:3000"
         resources:
           requests:
             cpu: "500m"
