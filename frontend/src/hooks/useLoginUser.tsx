@@ -23,9 +23,9 @@ const useLoginUser = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "email": emailValue,
-            "password": passwordValue
-        }),
+          "email": emailValue,
+          "password": passwordValue
+        })
       });
 
       if (!response.ok) {

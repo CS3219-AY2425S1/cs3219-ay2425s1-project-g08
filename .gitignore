@@ -6,3 +6,5 @@ profile-picture-service/src/main/resources/gcp-service-account-key.json
 
 .DS_Store
 
+.history/
+.idea/

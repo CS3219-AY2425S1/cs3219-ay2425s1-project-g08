@@ -1,11 +1,7 @@
-class CancelRequest {
-    private matchId: string;
+import { Difficulty, Topic } from "../QueueService/matchingEnums";
 
-    constructor(matchId: string) {
-        this.matchId = matchId;
-    }
-    public getMatchId(): string {
-        return this.matchId;
-    }
+export type CancelRequest = {
+    readonly matchId: string,
+    readonly difficulty: Difficulty,
+    readonly topic: Topic
 }
-export default CancelRequest;

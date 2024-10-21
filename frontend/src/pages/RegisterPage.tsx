@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthNavBar from "../components/AuthNavBar.tsx";
 import WelcomeMessage from "../components/UserAuth/WelcomeMessage.tsx";
 import InputBoxLabel from "../components/UserAuth/InputBoxLabel.tsx";
-import InputTextBox from "../components/UserAuth/InputTextBox.tsx";
+import InputTextBox from "../components/InputTextBox.tsx";
 import useRegisterUser from "../hooks/useRegisterUser.tsx";
 import { User } from "../types/User.tsx";
 import PasswordInputTextBox from "../components/UserAuth/PasswordInputTextBox.tsx";
@@ -15,27 +15,32 @@ const RegisterPage: React.FC = () => {
   const [passwordValue, setPasswordValue] = useState("");
 
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Failed to create new user. Please try again.");
+  const [errorMessage, setErrorMessage] = useState(
+    "Failed to create new user. Please try again."
+  );
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const { registerUser } = useRegisterUser();
 
   /* Component's instance of registered user */
-  const [registeredUser, setRegisteredUser] = useState<User | undefined>(undefined);
+  const [registeredUser, setRegisteredUser] = useState<User | undefined>(
+    undefined
+  );
   /* User context */
   const { updateUser } = useUser();
 
   const isEmailValid = () => {
-    if (!emailValue.endsWith('@gmail.com')) {
+    if (!emailValue.endsWith("@gmail.com")) {
       return false;
     }
     return true;
-  }
+  };
 
   const isPasswordValid = () => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    return(regex.test(passwordValue));
-  }
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    return regex.test(passwordValue);
+  };
 
   const handleSubmit = async () => {
     //alert(isEmailValid());
@@ -44,7 +49,9 @@ const RegisterPage: React.FC = () => {
       setShowErrorMessage(true);
       return;
     } else if (passwordValue.length > 0 && !isPasswordValid()) {
-      setErrorMessage('Password should contain at least 8 characters with a mix of alphanumeric characters and at least 1 special character.');
+      setErrorMessage(
+        "Password should contain at least 8 characters with a mix of alphanumeric characters and at least 1 special character."
+      );
       setShowErrorMessage(true);
       return;
     }
@@ -69,7 +76,7 @@ const RegisterPage: React.FC = () => {
     if (success) {
       updateUser(registeredUser);
       /* All new users are 'User' by default */
-      navigate('/dashboardForUsers', { replace: true}); // Replace: true to clear back history
+      navigate("/dashboardForUsers", { replace: true }); // Replace: true to clear back history
     }
   }, [success]);
 
@@ -78,34 +85,40 @@ const RegisterPage: React.FC = () => {
       <AuthNavBar />
       <div className="flex flex-col items-center justify-start flex-grow">
         <WelcomeMessage />
-        
+
         <div className="mt-10 w-2/5 justify-start">
-            {/* Username */}
-            <div className="flex flex-col">
+          {/* Username */}
+          <div className="flex flex-col">
             <InputBoxLabel labelString="Username" />
             <InputTextBox currInput={""} setInputValue={setUsernameValue} />
-            </div>
+          </div>
 
-            {/* Email */}
-            <div className="flex flex-col mt-5">
+          {/* Email */}
+          <div className="flex flex-col mt-5">
             <InputBoxLabel labelString="Email" />
             <InputTextBox currInput={""} setInputValue={setEmailValue} />
-            </div>
+          </div>
 
-            {/* Password */}
-            <div className="flex flex-col mt-5">
+          {/* Password */}
+          <div className="flex flex-col mt-5">
             <InputBoxLabel labelString="Password" />
-            <PasswordInputTextBox currInput={""} setInputValue={setPasswordValue} />
-            </div>
+            <PasswordInputTextBox
+              currInput={""}
+              setInputValue={setPasswordValue}
+            />
+          </div>
 
-            {showErrorMessage && (
-              <p id="errorMessage" className="flex justify-center text-red-500 mt-2">
-                * {errorMessage} *
-              </p>
-            )}
+          {showErrorMessage && (
+            <p
+              id="errorMessage"
+              className="flex justify-center text-red-500 mt-2"
+            >
+              * {errorMessage} *
+            </p>
+          )}
         </div>
 
-        <button 
+        <button
           className="bg-yellow rounded-[25px] py-1.5 px-10 mt-8 text-off-white hover:opacity-60"
           onClick={handleSubmit}
         >
@@ -113,12 +126,12 @@ const RegisterPage: React.FC = () => {
         </button>
 
         <div className="flex flex-row w-2/5 mt-3">
-            <p className="text-gray-600">Have an existing account?</p>
-            <Link to="/login" replace={true}>
+          <p className="text-gray-600">Have an existing account?</p>
+          <Link to="/login" replace={true}>
             <button className="mx-1 text-blue-600 hover:opacity-60">
-                Login Now
+              Login Now
             </button>
-            </Link>
+          </Link>
         </div>
       </div>
     </div>

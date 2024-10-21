@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import MatchService from "../services/MatchService";
 import RequestValidator from "../validators/RequestValidator";
+import { Difficulty, Topic } from "../QueueService/matchingEnums";
 
 /**
  * MatchController handles the incoming requests related to user matching.
@@ -15,13 +16,13 @@ export default class MatchController {
 
     public async findMatch(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name, matchId, topic, difficulty } = req.body;
-            RequestValidator.validateFindMatchRequest({ name, matchId, topic, difficulty });
+            const { name, topic, difficulty } = req.body;
+            RequestValidator.validateFindMatchRequest({ name, topic, difficulty });
 
-            const result: boolean = await this.matchService.findMatch(name, matchId, topic, difficulty);
+            const matchId: string = await this.matchService.findMatch(name, topic, difficulty);
             
-            if (result) {
-                return res.json({ success: result });
+            if (matchId) {
+                return res.json({ matchId: matchId });
             } else {
                 return res.status(500).json({ error: "Failed to process match request" });
             }
@@ -32,10 +33,12 @@ export default class MatchController {
 
     public async cancelMatch(req: Request, res: Response, next: NextFunction) {
         const matchId: string = req.query.matchId as string;
+        const difficulty: Difficulty = req.query.difficulty as Difficulty;
+        const topic: Topic = req.query.topic as Topic;
 
         try {
-            RequestValidator.validateCancelMatchRequest(matchId);
-            this.matchService.cancelMatch(matchId);
+            RequestValidator.validateCancelMatchRequest(matchId, difficulty, topic);
+            this.matchService.cancelMatch(matchId, difficulty, topic);
             return res.json({ success: true });
         } catch (error) {
             next(error);

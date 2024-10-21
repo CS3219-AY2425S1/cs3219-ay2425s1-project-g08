@@ -1,4 +1,10 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+
   questionbank:
     build:
       context: ./questionbank
@@ -10,3 +16,32 @@ services:
       context: ./PeerPrep-UserService/user-service
     ports:
       - "3001:3001"
+
+  rabbitmq:
+    image: rabbitmq:4.0.0-rc.1-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Dashboard port -dev purpose
+    environment:
+      RABBITMQ_NODE_PORT: 5672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  matchingservice:
+    build:
+      context: ./matchingService
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "8082:8082"
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    container_name: matchingservice
+    command: ["node", "dist/index.js"]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

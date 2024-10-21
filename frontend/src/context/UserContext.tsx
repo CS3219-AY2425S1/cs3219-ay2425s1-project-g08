@@ -29,8 +29,13 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const updateUser = (userData: User | undefined) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData)); // Store user in local storage
+    try {
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData)); // Store user in local storage
+    } catch (error) {
+      setUser(undefined);
+      console.log("Failed to update user", error);
+    }
   };
 
   const logoutUser = () => {

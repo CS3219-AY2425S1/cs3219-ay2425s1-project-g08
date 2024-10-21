@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthNavBar from "../components/AuthNavBar.tsx";
 import WelcomeMessage from "../components/UserAuth/WelcomeMessage.tsx";
 import InputBoxLabel from "../components/UserAuth/InputBoxLabel.tsx";
-import InputTextBox from "../components/UserAuth/InputTextBox.tsx";
+import InputTextBox from "../components/InputTextBox.tsx";
 import PasswordInputTextBox from "../components/UserAuth/PasswordInputTextBox.tsx";
 import useLoginUser from "../hooks/useLoginUser.tsx";
 import { useUser } from "../context/UserContext.tsx";
@@ -14,7 +14,9 @@ const LoginPage: React.FC = () => {
   const [passwordValue, setPasswordValue] = useState("");
 
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Failed to create new user. Please try again.");
+  const [errorMessage, setErrorMessage] = useState(
+    "Failed to create new user. Please try again."
+  );
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const { loginUser } = useLoginUser();
@@ -50,7 +52,7 @@ const LoginPage: React.FC = () => {
       if (user?.isAdmin) {
         navigate('/dashboard', { replace: true}); // Replace: true to clear back history
       } else {
-        navigate('/dashboardForUsers', { replace: true }); // Replace: true to clear back history
+        navigate("/dashboardForUsers", { replace: true }); // Replace: true to clear back history
       }
     }
   }, [success]);
@@ -61,34 +63,40 @@ const LoginPage: React.FC = () => {
       <AuthNavBar />
       <div className="flex flex-col items-center justify-start flex-grow">
         <WelcomeMessage />
-        
+
         <div className="mt-10 w-2/5 justify-start">
-            {/* Email */}
-            <div className="flex flex-col">
+          {/* Email */}
+          <div className="flex flex-col">
             <InputBoxLabel labelString="Email" />
             <InputTextBox currInput={""} setInputValue={setEmailValue} />
-            </div>
+          </div>
 
-            {/* Password */}
-            <div className="flex flex-col mt-5">
+          {/* Password */}
+          <div className="flex flex-col mt-5">
             <InputBoxLabel labelString="Password" />
-            <PasswordInputTextBox currInput={""} setInputValue={setPasswordValue} />
-            </div>
+            <PasswordInputTextBox
+              currInput={""}
+              setInputValue={setPasswordValue}
+            />
+          </div>
 
-            {showErrorMessage && (
-              <p id="errorMessage" className="flex justify-center text-red-500 mt-2">
-                * {errorMessage} *
-              </p>
-            )}
+          {showErrorMessage && (
+            <p
+              id="errorMessage"
+              className="flex justify-center text-red-500 mt-2"
+            >
+              * {errorMessage} *
+            </p>
+          )}
         </div>
-        
+
         <Link to="/dashboardForUsers">
           <button className="mt-2 py-2 text-gray-700 hover:opacity-60">
             Forget Password?
           </button>
         </Link>
 
-        <button 
+        <button
           className="bg-yellow rounded-[25px] py-1.5 px-10 mt-4 text-off-white hover:opacity-60"
           onClick={handleSubmit}
         >
@@ -96,12 +104,12 @@ const LoginPage: React.FC = () => {
         </button>
 
         <div className="flex flex-row w-2/5 mt-3">
-            <p className="text-gray-600">Don't have an account?</p>
-            <Link to="/register" replace={true}>
+          <p className="text-gray-600">Don't have an account?</p>
+          <Link to="/register" replace={true}>
             <button className="mx-1 text-blue-600 hover:opacity-60">
-                Register Instead
+              Register Instead
             </button>
-            </Link>
+          </Link>
         </div>
       </div>
     </div>

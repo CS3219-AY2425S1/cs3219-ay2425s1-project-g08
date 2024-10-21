@@ -1,12 +1,17 @@
 import { useLocation, Link } from "react-router-dom";
-import IsConnected from "./IsConnected";
+import MatchButton from "./matchingModals/MatchButton";
 import ProfileButton from "./ProfileButton";
 import { useUser } from "../context/UserContext";
-
+import { useState } from "react";
+import MatchingModal from "./matchingModals/MatchingModal";
 
 const NavBar = () => {
   const location = useLocation();
   const { user } = useUser();
+  const [isUserMatchingModalOpen, setIsUserMatchingModalOpen] = useState(false);
+
+  const openMatchingModal = () => setIsUserMatchingModalOpen(true);
+  const closeMatchingModal = () => setIsUserMatchingModalOpen(false);
 
   return (
     <nav className="bg-off-white w-full p-4 flex items-center justify-between relative">
@@ -17,11 +22,6 @@ const NavBar = () => {
           alt="PeerPrep logo"
           className="h-16 w-64"
         />
-      </div>
-
-      {/* IsConnected component (Center-aligned, independent of flex) */}
-      <div className="absolute left-1/2 transform -translate-x-1/2">
-        <IsConnected isConnected={false} />
       </div>
 
       {/* ProfileButton or Enter as Admin/User buttons (Right-aligned) */}
@@ -40,9 +40,19 @@ const NavBar = () => {
             </Link>
           </div>
         ) : (
-          <Link to="/profile">
-            <ProfileButton currUser={user}/>
-          </Link>
+          <div>
+            {location.pathname === "/dashboardForUsers" && (
+              <div className="absolute left-1/2 transform -translate-x-1/2">
+                <MatchButton onClick={() => openMatchingModal()} />
+              </div>
+            )}
+            {isUserMatchingModalOpen && (
+              <MatchingModal closeMatchingModal={closeMatchingModal} />
+            )}
+            <Link to="/profile">
+              <ProfileButton currUser={user} />
+            </Link>
+          </div>
         )}
       </div>
     </nav>

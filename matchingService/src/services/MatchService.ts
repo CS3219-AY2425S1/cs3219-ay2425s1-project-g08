@@ -1,5 +1,5 @@
 import { IQueueService } from "../config/bootstrap";
-import MatchRequest from "../models/MatchRequest";
+import { MatchRequest } from "../models/MatchRequest";
 import { Difficulty, Topic } from "../QueueService/matchingEnums";
 
 /**
@@ -12,12 +12,16 @@ export default class MatchService {
         this.queueService = queueService;
     }
 
-    public async findMatch(name: string, matchId: string, topic: Topic, difficulty: Difficulty ): Promise<boolean> {
-        const req = new MatchRequest(name, matchId, topic, difficulty);
+    public async findMatch(name: string, topic: Topic, difficulty: Difficulty ): Promise<string> {
+        const req: MatchRequest = {
+            userId: name,
+            topic: topic,
+            difficulty: difficulty
+        }
         return this.queueService.sendMatchRequest(req);
     }
 
-    public async cancelMatch(matchId: string): Promise<void> {
-       return this.queueService.cancelMatchRequest(matchId);
+    public async cancelMatch(matchId: string, difficulty: Difficulty, topic: Topic): Promise<void> {
+       return this.queueService.cancelMatchRequest(matchId, difficulty, topic);
     }
 }
