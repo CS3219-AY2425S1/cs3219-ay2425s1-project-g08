@@ -2,6 +2,7 @@ package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
 import com.example.questionbank.repository.QuestionRepository;
@@ -53,6 +54,16 @@ public class QuestionService implements QuestionServiceInterface {
     @Override
     public List<Question> getAllQuestionsByComplexity(Complexity complexity) {
         return repository.findQuestionsByComplexity(complexity);
+    }
+
+    /**
+     * Retrieves all questions from the repository with a given category.
+     *
+     * @return a list of all {@link Question} entities with a given category
+     */
+    @Override
+    public List<Question> getAllQuestionsByCategory(Category category) {
+        return repository.findQuestionsByCategoriesIsContaining(category);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.example.questionbank.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.QuestionModelAssembler;
 
 import com.example.questionbank.service.QuestionService;
@@ -122,6 +123,29 @@ public class QuestionController {
 
         return CollectionModel.of(questions, linkTo(
                 methodOn(QuestionController.class).allByComplexity(complexity)
+        ).withSelfRel());
+    }
+
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the repository that have a certain category,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @return a {@link CollectionModel} containing {@link EntityModel}s of
+     * all questions with a certain category
+     */
+    @GetMapping("/questions/category/all/{category}")
+    public CollectionModel<EntityModel<Question>> allByCategory(@PathVariable Category category) {
+        LOGGER.info("Fetching all questions with category: {}", category);
+
+        List<EntityModel<Question>> questions = service.getAllQuestionsByCategory(category)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class).allByCategory(category)
         ).withSelfRel());
     }
 

@@ -1,5 +1,6 @@
 package com.example.questionbank.repository;
 
+import com.example.questionbank.model.Category;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
@@ -44,4 +45,16 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
      */
     List<Question> findQuestionsByComplexity(Complexity complexity);
 
+    /**
+     * Finds all {@link Question} entities by a given category.
+     * <p>
+     * This method is derived from Spring Data's query creation feature.
+     * It generates a query based on the method name to find all questions
+     * with the provided category.
+     * </p>
+     *
+     * @param category the category of the questions
+     * @return a list of {@link Question} entities with the specified category
+     */
+    List<Question> findQuestionsByCategoriesIsContaining(Category category);
 }

@@ -2,6 +2,7 @@ package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionNotFoundException;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
 
@@ -29,6 +30,13 @@ public interface QuestionServiceInterface {
      * @return a list of all {@link Question} entities with a given complexity.
      */
     List<Question> getAllQuestionsByComplexity(Complexity complexity);
+
+    /**
+     * Retrieves all questions with a given category.
+     *
+     * @return a list of all {@link Question} entities with a given category.
+     */
+    List<Question> getAllQuestionsByCategory(Category category);
 
     /**
      * Retrieves a question by its ID.
