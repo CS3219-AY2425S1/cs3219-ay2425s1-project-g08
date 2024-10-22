@@ -57,4 +57,18 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
      * @return a list of {@link Question} entities with the specified category
      */
     List<Question> findQuestionsByCategoriesIsContaining(Category category);
+
+    /**
+     * Finds all {@link Question} entities by a given category and complexity.
+     * <p>
+     * This method is derived from Spring Data's query creation feature.
+     * It generates a query based on the method name to find all questions
+     * with the provided category and complexity.
+     * </p>
+     *
+     * @param category the category of the questions
+     * @param complexity the complexity of the questions
+     * @return a list of {@link Question} entities with the specified category and complexity
+     */
+    List<Question> findQuestionsByCategoriesIsContainingAndComplexity(Category category, Complexity complexity);
 }

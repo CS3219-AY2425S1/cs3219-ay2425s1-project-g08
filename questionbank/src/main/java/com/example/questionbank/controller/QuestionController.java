@@ -149,6 +149,30 @@ public class QuestionController {
         ).withSelfRel());
     }
 
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the repository that have a certain category and complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @return a {@link CollectionModel} containing {@link EntityModel}s of
+     * all questions with a certain category and complexity
+     */
+    @GetMapping("/questions/category-and-complexity/all/{category}/{complexity}")
+    public CollectionModel<EntityModel<Question>> allByCategoryAndComplexity(
+            @PathVariable Category category,
+            @PathVariable Complexity complexity) {
+        LOGGER.info("Fetching all questions with category: {} and complexity: {}", category, complexity);
+
+        List<EntityModel<Question>> questions = service.getAllQuestionsByCategoryAndComplexity(category, complexity)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class).allByCategoryAndComplexity(category, complexity)
+        ).withSelfRel());
+    }
 
     /**
      * Creates a new question.

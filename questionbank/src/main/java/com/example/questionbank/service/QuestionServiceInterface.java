@@ -39,6 +39,13 @@ public interface QuestionServiceInterface {
     List<Question> getAllQuestionsByCategory(Category category);
 
     /**
+     * Retrieves all questions with a given category and complexity.
+     *
+     * @return a list of all {@link Question} entities with a given category and complexity.
+     */
+    List<Question> getAllQuestionsByCategoryAndComplexity(Category category, Complexity complexity);
+
+    /**
      * Retrieves a question by its ID.
      *
      * @param id the ID of the question to retrieve

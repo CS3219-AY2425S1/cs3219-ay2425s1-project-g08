@@ -67,6 +67,16 @@ public class QuestionService implements QuestionServiceInterface {
     }
 
     /**
+     * Retrieves all questions from the repository with a given category and complexity.
+     *
+     * @return a list of all {@link Question} entities with a given category and complexity.
+     */
+    @Override
+    public List<Question> getAllQuestionsByCategoryAndComplexity(Category category, Complexity complexity) {
+        return repository.findQuestionsByCategoriesIsContainingAndComplexity(category, complexity);
+    }
+
+    /**
      * Retrieves a question by its ID.
      *
      * @param id the ID of the question
