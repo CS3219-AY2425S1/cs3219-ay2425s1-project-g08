@@ -1,5 +1,15 @@
 package com.example.questionbank.model;
 
+import lombok.Getter;
+
+/**
+ * Enumeration representing various categories of questions.
+ * <p>
+ * Each category has a corresponding display name that is user-friendly
+ * and can be used for presentation purposes in the application.
+ * </p>
+ */
+@Getter // Lombok will generate the getter for the displayName field
 public enum Category {
     ARRAYS("Arrays"),
     HASHING("Hashing"),
@@ -27,13 +37,15 @@ public enum Category {
     DATABASES("Databases"),
     BRAINTEASERS("Brainteasers");
 
+    /** The display name of the category, which is user-friendly. */
     private final String displayName;
 
+    /**
+     * Constructs a new {@code Category} enum constant with the specified display name.
+     *
+     * @param displayName the display name of the category
+     */
     Category(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 }
