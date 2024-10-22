@@ -7,6 +7,7 @@ import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service interface for managing {@link Question} entities.
@@ -93,4 +94,12 @@ public interface QuestionServiceInterface {
      * specified ID
      */
     void deleteQuestion(String id) throws QuestionNotFoundException;
+
+    /**
+     * Retrieves all unique categories for which there are questions in the
+     * database.
+     *
+     * @return a set of unique categories
+     */
+    Set<Category> getUniqueCategoriesWithQuestions();
 }

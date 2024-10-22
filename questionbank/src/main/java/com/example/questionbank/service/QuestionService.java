@@ -10,6 +10,8 @@ import com.example.questionbank.commons.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link QuestionServiceInterface} interface.
@@ -175,5 +177,19 @@ public class QuestionService implements QuestionServiceInterface {
             throw new QuestionNotFoundException(id);
         }
         repository.deleteById(id);
+    }
+
+    /**
+     * Retrieves all unique categories for which there are questions in the
+     * database.
+     *
+     * @return a set of unique categories
+     */
+    @Override
+    public Set<Category> getUniqueCategoriesWithQuestions() {
+        return repository.findAll()
+                .stream()
+                .flatMap(question -> question.getCategories().stream()) // Flatten the list of categories
+                .collect(Collectors.toSet()); // Collect the unique categories into a Set
     }
 }

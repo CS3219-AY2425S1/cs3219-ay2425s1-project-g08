@@ -78,12 +78,6 @@ public class QuestionController {
         this.assembler = assembler;
     }
 
-    /** Retrieves all categories.
-     * <p>
-     *
-     * </p>
-     */
-
 
     /**
      * Retrieves all questions.
