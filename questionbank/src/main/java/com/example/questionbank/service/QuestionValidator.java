@@ -46,20 +46,58 @@ public class QuestionValidator {
             throw new MissingFieldException("complexity");
         }
 
-        // Validate that the complexity is a valid enum value
-        boolean isValidComplexity = false;
-        for (Complexity complexity : Complexity.values()) {
-            if (complexity == question.getComplexity()) {
-                isValidComplexity = true;
-                break;
-            }
+        // Validate complexity is one of the allowed enum values
+        if (!isValidComplexity(question.getComplexity())) {
+            throw new ComplexityNotMatchException(question.getComplexity().name());
         }
-        if (!isValidComplexity) {
-            throw new ComplexityNotMatchException(question
-                    .getComplexity().name()
-            );
-        }
+
+        // Validate categories are all valid enum values
+        validateCategories(question.getCategories());
 
         return true;
     }
+}
+
+/**
+ * Validates the complexity of a {@link Question}
+ * 
+ * @param complexity the {@link Complexity} to validate. 
+ * @return true if the complexity is valid.
+ */
+private static boolean isValidComplexity(Complexity complexity) {
+    for (Complexity complexity : Complexity.values()) {
+        if (complexity == question.getComplexity()) {
+            isValidComplexity = true;
+            break;
+        }
+    }
+}
+
+/**
+ * Validates that the categories list contains only valid {@link Category} enum values.
+ *
+ * @param categories the list of categories to validate.
+ * @throws IllegalArgumentException if any category is invalid.
+ */
+private static void validateCategories(List<Category> categories) {
+    for (Category category : categories) {
+        if (!isValidCategory(category)) {
+            throw new IllegalArgumentException("Invalid category: " + category.name());
+        }
+    }
+}
+
+ /**
+ * Checks if the given category is a valid {@link Category} enum value.
+ *
+ * @param category the {@link Category} to check.
+ * @return true if the category is valid.
+ */
+private static boolean isValidCategory(Category category) {
+    for (Category validCategory : Category.values()) {
+        if (validCategory == category) {
+            return true;
+        }
+    }
+    return false;
 }
