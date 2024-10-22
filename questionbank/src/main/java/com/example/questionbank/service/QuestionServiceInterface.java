@@ -3,6 +3,8 @@ package com.example.questionbank.service;
 import com.example.questionbank.commons.QuestionNotFoundException;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
+
 import java.util.List;
 
 /**
@@ -20,6 +22,13 @@ public interface QuestionServiceInterface {
      * @return a list of all {@link Question} entities
      */
     List<Question> getAllQuestions();
+
+    /**
+     * Retrieves all questions with a given complexity.
+     *
+     * @return a list of all {@link Question} entities with a given complexity.
+     */
+    List<Question> getAllQuestionsByComplexity(Complexity complexity);
 
     /**
      * Retrieves a question by its ID.
@@ -59,7 +68,7 @@ public interface QuestionServiceInterface {
      * @throws QuestionNotFoundException if no question is found with the
      * specified ID
      */
-    Question updateQuestion(String id, Question updatedQuestion);
+    Question updateQuestion(String id, Question updatedQuestion) throws QuestionNotFoundException;
 
     /**
      * Deletes a question by its ID.
@@ -68,5 +77,5 @@ public interface QuestionServiceInterface {
      * @throws QuestionNotFoundException if no question is found with the
      * specified ID
      */
-    void deleteQuestion(String id);
+    void deleteQuestion(String id) throws QuestionNotFoundException;
 }

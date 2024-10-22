@@ -2,8 +2,10 @@ package com.example.questionbank.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
 
 import java.util.Optional;
+import java.util.List;
 
 /**
  * Repository interface for managing {@link Question} entities
@@ -28,5 +30,18 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
      * @return the {@link Question} entity with the specified title
      */
     Optional<Question> findQuestionByTitle(String title);
+
+    /**
+     * Finds all {@link Question} entities by a given complexity.
+     * <p>
+     * This method is derived from Spring Data's query creation feature.
+     * It generates a query based on the method name to find all questions
+     * with the provided complexity.
+     * </p>
+     *
+     * @param complexity the complexity of the questions
+     * @return a list of {@link Question} entities with the specified complexity
+     */
+    List<Question> findQuestionsByComplexity(Complexity complexity);
 
 }

@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
 
 
 /**
@@ -97,6 +99,29 @@ public class QuestionController {
 
         return CollectionModel.of(questions, linkTo(
                 methodOn(QuestionController.class).all()
+        ).withSelfRel());
+    }
+
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the repository that have a certain complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @return a {@link CollectionModel} containing {@link EntityModel}s of
+     * all questions with a certain complexity 
+     */
+    @GetMapping("/questions/complexity/all/{complexity}")
+    public CollectionModel<EntityModel<Question>> allByComplexity(@PathVariable Complexity complexity) {
+        LOGGER.info("Fetching all questions with complexity: {}", complexity);
+
+        List<EntityModel<Question>> questions = service.getAllQuestionsByComplexity(complexity)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class).allByComplexity(complexity)
         ).withSelfRel());
     }
 

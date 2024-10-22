@@ -3,6 +3,7 @@ package com.example.questionbank.service;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
 import com.example.questionbank.repository.QuestionRepository;
 import com.example.questionbank.commons.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,16 @@ public class QuestionService implements QuestionServiceInterface {
     }
 
     /**
+     * Retrieves all questions from the repository with a given complexity.
+     *
+     * @return a list of all {@link Question} entities with a given complexity
+     */
+    @Override
+    public List<Question> getAllQuestionsByComplexity(Complexity complexity) {
+        return repository.findQuestionsByComplexity(complexity);
+    }
+
+    /**
      * Retrieves a question by its ID.
      *
      * @param id the ID of the question
@@ -62,7 +73,7 @@ public class QuestionService implements QuestionServiceInterface {
      *
      * @param title the title of the question
      * @return the {@link Question} with the specified title
-     * @throws QuestionNotFoundException if the question is not found
+     * @throws QuestionWithTitleNotFoundException if the question is not found
      */
     @Override
     public Question getQuestionByTitle(String title) {

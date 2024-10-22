@@ -1,7 +1,8 @@
 package com.example.questionbank.model;
 
 public enum Category {
-    ARRAYS_AND_HASHING("Arrays and Hashing"),
+    ARRAYS("Arrays"),
+    HASHING("Hashing"),
     TWO_POINTERS("Two Pointers"),
     STACK("Stack"),
     BINARY_SEARCH("Binary Search"),
