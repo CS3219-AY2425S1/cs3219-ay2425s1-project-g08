@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthNavBar from "../components/AuthNavBar.tsx";
-import WelcomeMessage from "../components/UserAuth/WelcomeMessage.tsx";
-import InputBoxLabel from "../components/UserAuth/InputBoxLabel.tsx";
+import AuthNavBar from "../components/navbars/AuthNavBar.tsx";
+import { WelcomeMessage } from "../features/authentication";
+import { InputBoxLabel } from "../features/authentication";
 import InputTextBox from "../components/InputTextBox.tsx";
 import useRegisterUser from "../hooks/useRegisterUser.tsx";
 import { User } from "../types/User.tsx";
-import PasswordInputTextBox from "../components/UserAuth/PasswordInputTextBox.tsx";
+import { PasswordInputTextBox } from "../features/authentication";
 import { useUser } from "../context/UserContext.tsx";
 
 const RegisterPage: React.FC = () => {
@@ -76,12 +76,12 @@ const RegisterPage: React.FC = () => {
     if (success) {
       updateUser(registeredUser);
       /* All new users are 'User' by default */
-      navigate("/dashboardForUsers", { replace: true }); // Replace: true to clear back history
+      navigate("/dashboard", { replace: true }); // Replace: true to clear back history
     }
   }, [success]);
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen flex flex-col overflow-y-auto">
       <AuthNavBar />
       <div className="flex flex-col items-center justify-start flex-grow">
         <WelcomeMessage />
@@ -125,7 +125,7 @@ const RegisterPage: React.FC = () => {
           Register
         </button>
 
-        <div className="flex flex-row w-2/5 mt-3">
+        <div className="flex flex-row w-2/5 mt-3 mb-4">
           <p className="text-gray-600">Have an existing account?</p>
           <Link to="/login" replace={true}>
             <button className="mx-1 text-blue-600 hover:opacity-60">
