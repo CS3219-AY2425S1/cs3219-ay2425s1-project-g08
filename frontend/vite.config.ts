@@ -16,17 +16,17 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/qbsvcapi/, '')
       },
-      'ppsvcapi' : {
+      '/ppsvcapi' : {
         target: 'http://profilepicture-service:8081',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ppsvcapi/, '')
       },
-      'matchwssvcapi' : {
+      '/matchwssvcapi' : {
         target: 'ws://matching-service:8082',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/matchwssvcapi/, '')
       },
-      'matchexpresssvcapi' : {
+      '/matchexpresssvcapi' : {
         target: 'http://matching-service:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/matchexpresssvcapi/, '')

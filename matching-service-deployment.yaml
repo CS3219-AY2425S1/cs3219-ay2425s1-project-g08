@@ -1,23 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user
+  name: rabbitmq
   namespace: peerprep
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: user
+      app: rabbitmq
   template:
     metadata:
       labels:
-        app: user
+        app: rabbitmq
     spec:
       containers:
-      - name: user
-        image: seanpzk/user-service:1.0.1
-        imagePullPolicy: Always
+      - name: rabbitmq
+        image: rabbitmq:4.0.0-rc.1-management-alpine  
         ports:
-        - containerPort: 3001
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: RABBITMQ_NODE_PORT
+          value: "5672"
         resources:
           requests:
             cpu: "500m"
@@ -29,15 +33,72 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: rabbitmq-service
+  namespace: peerprep
+spec:
+  type: ClusterIP  # Internal service
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: management 
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matching
+  namespace: peerprep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matching
+  template:
+    metadata:
+      labels:
+        app: matching
+    spec:
+      containers:
+      - name: matching
+        image: seanpzk/matching-service:1.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        - containerPort: 8082
+        env:
+        - name: FRONTEND_URL
+          value: http://frontend-service:5173
+        - name: RABBITMQ_URL
+          value: amqp://rabbitmq-service:5672  # Use the RabbitMQ service name
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matching-service
   namespace: peerprep
 spec:
   type: LoadBalancer  # To expose externally
   selector:
-    app: user
+    app: matching
   ports:
-    - protocol: TCP
-      port: 3001  # External port
-      targetPort: 3001  # Pod's container port
-
-  
+    - name: http
+      protocol: TCP
+      port: 3000  # External port
+      targetPort: 3000  # Pod's container port
+    - name: websocket
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
