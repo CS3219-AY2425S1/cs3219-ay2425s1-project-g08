@@ -9,7 +9,7 @@ const useUpdateUser = (user : User | undefined, key: string) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiConfig.userServiceUserUrl}/${user?.id}`, {
+      const response = await fetch(`${apiConfig.userServiceBaseUrl}/users/${user?.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -13,11 +13,11 @@ const useUploadProfilePicture = async (user: User, file: File, updateUser: (user
     formData.append('file', file); // Append the file to the form data
 
     try {
-        const response = await fetch(`${apiConfig.profilePictureServiceUserUrl}/${user.id}/profile-picture`, {
+        const response = await fetch(`${apiConfig.profilePictureServiceBaseUrl}/users/${user.id}/profile-picture`, {
             method: 'POST',
             mode: "cors",
             headers: {
-                "Access-Control-Allow-Origin": `${apiConfig.profilePictureServiceUserUrl}`,
+                "Access-Control-Allow-Origin": `${apiConfig.profilePictureServiceBaseUrl}`,
             },
             body: formData,
         });

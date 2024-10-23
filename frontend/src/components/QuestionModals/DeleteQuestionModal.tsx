@@ -2,6 +2,7 @@ import React from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import { Question } from "../../types/Question";
 import DescriptionInput from "./DescriptionInput";
+import apiConfig from "../../config/config";
 
 interface DeleteQuestionModalProps {
   oldQuestion: Question;
@@ -21,12 +22,12 @@ const DeleteQuestionModal: React.FC<
     try {
       //console.log("deleting question");
       const response = await fetch(
-        `http://localhost:8080/questions/${questionID}`,
+        `${apiConfig.questionbankServiceBaseUrl}/questions/${questionID}`,
         {
           mode: "cors",
           method: "DELETE",
           headers: {
-            "Access-Control-Allow-Origin": "http://localhost:8080",
+            "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
             "Content-Type": "application/json",
           },
         }

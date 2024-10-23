@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import DescriptionInput from "./DescriptionInput";
+import apiConfig from "../../config/config";
 
 interface AddQuestionModalProps {
   fetchData: () => Promise<void>;
@@ -35,11 +36,11 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
     descriptionValue: string
   ) => {
     try {
-      const response = await fetch("http://localhost:8080/questions", {
+      const response = await fetch(`${apiConfig.questionbankServiceBaseUrl}/questions`, {
         mode: "cors",
         method: "POST",
         headers: {
-          "Access-Control-Allow-Origin": "http://localhost:8080",
+          "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

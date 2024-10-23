@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { UserResponse } from '../types/UserResponse';
 import { User } from '../types/User';
+import apiConfig from '../config/config';
 
 const useRegisterUser = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ const useRegisterUser = () => {
     setShowErrorMessage(false);
 
     try {
-      const response = await fetch("http://localhost:3001/users", {
+      const response = await fetch(`${apiConfig.userServiceBaseUrl}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
