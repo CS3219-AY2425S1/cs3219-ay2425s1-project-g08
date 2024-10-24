@@ -5,7 +5,7 @@ import EditConfirmationModal from "./EditConfirmationModal";
 import ComplexityDropDown from "./ComplexityDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
-import apiConfig from "../../../config/config";
+import useEditQuestion from "../hooks/useEditQuestion";
 
 interface EditQuestionModalProps {
   oldQuestion: Question;
@@ -18,51 +18,8 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   onClose,
   fetchData,
 }) => {
-  /* PUT request to API to edit question */
-  const editQuestion = async (
-    questionID: string,
-    complexityValue: string,
-    categoryValue: string[],
-    titleValue: string,
-    descriptionValue: string
-  ) => {
-    await fetch(
-      `${apiConfig.questionbankServiceBaseUrl}/questions/${questionID}`,
-      {
-        mode: "cors",
-        method: "PUT",
-        headers: {
-          "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: questionID,
-          title: titleValue,
-          description: descriptionValue,
-          categories: categoryValue,
-          complexity: complexityValue,
-        }),
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          console.log(response);
-          throw new Error("Title already exists");
-        } else {
-          response.json();
-          closeEditConfirmationModal();
-          onClose();
-          fetchData();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(
-          "Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again."
-        );
-        closeEditConfirmationModal();
-      });
-  };
+  
+  const { editQuestion } = useEditQuestion();
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const openDeleteModal = () => setDeleteModalOpen(true);
@@ -106,7 +63,10 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       newComplexityValue,
       newCategoryList,
       newTitleValue,
-      newDescriptionValue
+      newDescriptionValue,
+      closeEditConfirmationModal,
+      onClose,
+      fetchData
     );
   };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import DescriptionInput from "./DescriptionInput";
-import apiConfig from "../../../config/config";
+import useAddQuestion from "../hooks/useAddQuestion";
 
 interface AddQuestionModalProps {
   fetchData: () => Promise<void>;
@@ -17,7 +17,8 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
-  //const [canSubmit, setCanSubmit] = useState(false);
+  
+  const { addQuestion } = useAddQuestion();
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newCategoryValue = event.target.value;
@@ -26,48 +27,6 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
       .map((item) => item.trim())
       .filter((item) => item !== "");
     setCategoryList(categoryList);
-  };
-
-  /* POST request to API to add question */
-  const addQuestion = async (
-    complexityValue: string,
-    categoryList: string[],
-    titleValue: string,
-    descriptionValue: string
-  ) => {
-    try {
-      const response = await fetch(
-        `${apiConfig.questionbankServiceBaseUrl}/questions`,
-        {
-          mode: "cors",
-          method: "POST",
-          headers: {
-            "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: titleValue,
-            description: descriptionValue,
-            categories: categoryList,
-            complexity: complexityValue,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      if (!response.ok) {
-        console.log(data);
-        throw new Error("Title already exists");
-      } else {
-        onClose();
-        fetchData();
-      }
-    } catch (error) {
-      alert(
-        "Error adding question. The question you are adding may be a duplicate (having the same title as an existing question). Please try again."
-      );
-      console.error("Error adding question:", error);
-    }
   };
 
   /* Handle Submit button click */
@@ -88,7 +47,9 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
       complexityValue,
       categoryList,
       titleValue,
-      descriptionValue
+      descriptionValue,
+      onClose,
+      fetchData
     );
   };
 

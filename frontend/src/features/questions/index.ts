@@ -13,6 +13,9 @@ export { default as QuestionDisplay } from "./components/QuestionDisplay";
 // Export hooks
 export { default as useQuestionList } from "./hooks/useQuestionList";
 export { default as useRetrieveQuestion } from "./hooks/useRetrieveQuestion";
+export { default as useAddQuestion } from "./hooks/useAddQuestion";
+export { default as useDeleteQuestion } from "./hooks/useDeleteQuestion";
+export { default as useEditQuestion } from "./hooks/useEditQuestion";
 
 // Export types
 export * from "./types/Question";
