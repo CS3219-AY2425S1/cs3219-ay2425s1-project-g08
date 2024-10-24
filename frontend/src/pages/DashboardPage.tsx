@@ -40,7 +40,7 @@ const DashboardPage: React.FC = () => {
           <DashboardForUsers
             questions={questions}
             fetchData={fetchData}
-            //categories={categories}
+            categories={categories}
           />
         </>
       )}
