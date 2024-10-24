@@ -57,10 +57,11 @@ public class Question {
      * The list of categories associated with the question.
      * <p>
      * This field helps in categorizing the question into different
-     * topics or areas.
+     * topics or areas. The types of categories are fixed to ensure
+     * consistency.
      * </p>
      */
-    private List<String> categories;
+    private List<Category> categories;
 
     /**
      * The complexity level of the question.
@@ -96,7 +97,7 @@ public class Question {
      * @param complexity  the complexity level of the question
      */
     public Question(String title, String description,
-                    List<String> categories, Complexity complexity) {
+                    List<Category> categories, Complexity complexity) {
         this.title = title;
         this.description = description;
         this.categories = categories;

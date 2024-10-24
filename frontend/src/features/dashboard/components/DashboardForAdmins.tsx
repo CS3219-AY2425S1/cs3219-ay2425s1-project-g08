@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useTable, Column, Row } from "react-table"; // Import the 'Column' type
 import { COLUMNS } from "./columns";
-import { EditQuestionModal } from "../../questions";
+import { Category, EditQuestionModal } from "../../questions";
 import { useLocation } from "react-router-dom";
 import { Question, emptyQuestion } from "../../questions";
 import DashboardQuestionTable from "./DashboardQuestionTable";
@@ -10,11 +10,13 @@ import DashboardQuestionTable from "./DashboardQuestionTable";
 interface DashboardForAdminsProps {
   questions: Array<Question>;
   fetchData: () => Promise<void>;
+  categories: Array<Category>;
 }
 
 const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
   questions,
   fetchData,
+  categories,
 }) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const closeEditModal = () => setEditModalIsOpen(false);
@@ -53,6 +55,7 @@ const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
           oldQuestion={questionClicked}
           onClose={closeEditModal}
           fetchData={fetchData}
+          categories={categories}
         />
       )}
       {/* Use the extracted QuestionTable component */}
@@ -60,6 +63,7 @@ const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
         questions={questions}
         columns={columns}
         onClick={onClick}
+        categories={categories}
       />
     </div>
   );

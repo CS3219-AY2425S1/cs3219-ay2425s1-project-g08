@@ -5,8 +5,13 @@ import { useUser } from "../../context/UserContext";
 import { useState } from "react";
 import MatchingModal from "../../features/matching/components/MatchingModal";
 import PeerPrepLogo from "../PeerPrepLogo";
+import { Category } from "../../features/questions";
 
-const UserNavBar = () => {
+interface UserNavBarProps {
+  categoriesWithQuestions: Array<Category>;
+}
+
+const UserNavBar: React.FC<UserNavBarProps> = ({ categoriesWithQuestions }) => {
   const { user } = useUser();
   const [isUserMatchingModalOpen, setIsUserMatchingModalOpen] = useState(false);
 
@@ -25,7 +30,10 @@ const UserNavBar = () => {
         <MatchButton onClick={() => openMatchingModal()} />
       </div>
       {isUserMatchingModalOpen && (
-        <MatchingModal closeMatchingModal={closeMatchingModal} />
+        <MatchingModal
+          closeMatchingModal={closeMatchingModal}
+          categoriesWithQuestions={categoriesWithQuestions}
+        />
       )}
       <div className="flex-none">
         <Link to="/profile">

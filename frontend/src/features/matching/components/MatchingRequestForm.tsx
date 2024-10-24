@@ -1,3 +1,4 @@
+import { Category } from "../../questions";
 import { MatchingRequestFormState } from "../types/MatchingRequestFormState";
 import Select from "react-select";
 
@@ -5,13 +6,14 @@ interface MatchingRequestFormProps {
   handleSubmit: () => Promise<void>;
   formData: MatchingRequestFormState;
   setFormData: React.Dispatch<React.SetStateAction<MatchingRequestFormState>>;
+  categoriesWithQuestions: Array<Category>;
 }
 
-const topics = [
-  { value: "algorithm", label: "Algorithms" },
-  { value: "graph", label: "Graphs" },
-  { value: "dp", label: "Dynamic Programming" },
-];
+// const topics = [
+//   { value: "algorithm", label: "Algorithms" },
+//   { value: "graph", label: "Graphs" },
+//   { value: "dp", label: "Dynamic Programming" },
+// ];
 
 const difficulty = [
   { value: "easy", label: "Easy" },
@@ -24,7 +26,14 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
   handleSubmit,
   formData,
   setFormData,
+  categoriesWithQuestions,
 }) => {
+  // Transform categoriesWithQuestions to the format needed for react-select
+  const topics = categoriesWithQuestions.map((category) => ({
+    value: category.name, // Assuming 'name' is the property you want to use
+    label: category.displayName || category.name, // Use displayName or fallback to name
+  }));
+
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,6 +47,13 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
+
+        // Validate form data
+        if (!formData.topic || !formData.difficulty) {
+          alert("Please select both a topic and a difficulty level.");
+          return; // Stop submission if topic or difficulty is not set
+        }
+
         handleSubmit();
       }}
       className="flex flex-col space-y-6" // Use consistent spacing for form fields

@@ -1,7 +1,7 @@
 // QuestionTable.tsx
 import React, { useMemo } from "react";
 import { useTable, Column, Row } from "react-table"; // Import the 'Column' type
-import { Question } from "../../questions";
+import { Question, Category } from "../../questions";
 import { useLocation } from "react-router-dom";
 
 // Define the props for the table
@@ -9,12 +9,14 @@ interface DashboardQuestionTableProps {
   questions: Array<Question>;
   columns: Column<Question>[];
   onClick: (row: Row<Question>) => void;
+  categories: Array<Category>;
 }
 
 const DashboardQuestionTable: React.FC<DashboardQuestionTableProps> = ({
   questions,
   columns,
   onClick,
+  categories,
 }) => {
   const data = useMemo(() => questions, [questions]);
   const tableInstance = useTable({
@@ -24,6 +26,12 @@ const DashboardQuestionTable: React.FC<DashboardQuestionTableProps> = ({
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
+
+  // Method to find the display name for a given category name
+  const findDisplay = (categoryName: string): string | undefined => {
+    const category = categories.find((cat) => cat.name === categoryName);
+    return category ? category.displayName : categoryName; // Return displayName or the original name if not found
+  };
 
   return (
     <table
@@ -73,7 +81,7 @@ const DashboardQuestionTable: React.FC<DashboardQuestionTableProps> = ({
                   {cell.column.Header === "Categories"
                     ? (cell.value.reduce(
                         (total: string, category: string) =>
-                          total + category + "\n",
+                          total + findDisplay(category) + "\n",
                         ""
                       ) as string)
                     : cell.render("Cell")}

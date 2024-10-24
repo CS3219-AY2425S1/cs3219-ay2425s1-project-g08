@@ -11,5 +11,5 @@ export const emptyQuestion: Question = {
   title: "",
   description: "",
   complexity: "",
-  categories: []
-}
+  categories: [],
+};
