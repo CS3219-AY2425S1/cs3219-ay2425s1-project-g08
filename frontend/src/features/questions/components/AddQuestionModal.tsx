@@ -2,36 +2,39 @@ import React, { useState } from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import DescriptionInput from "./DescriptionInput";
 import apiConfig from "../../../config/config";
+import { Category, CategoryDropDown } from "..";
 
 interface AddQuestionModalProps {
   fetchData: () => Promise<void>;
   onClose: () => void;
+  categories: Category[];
 }
 
 const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   fetchData,
   onClose,
+  categories,
 }) => {
   const [complexityValue, setComplexityValue] = useState("");
-  const [categoryList, setCategoryList] = useState([""]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
   //const [canSubmit, setCanSubmit] = useState(false);
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newCategoryValue = event.target.value;
-    const categoryList = newCategoryValue
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
-    setCategoryList(categoryList);
-  };
+  // const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const newCategoryValue = event.target.value;
+  //   const categoryList = newCategoryValue
+  //     .split(",")
+  //     .map((item) => item.trim())
+  //     .filter((item) => item !== "");
+  //   setCategoryList(categoryList);
+  // };
 
   /* POST request to API to add question */
   const addQuestion = async (
     complexityValue: string,
-    categoryList: string[],
+    selectedCategories: Category[],
     titleValue: string,
     descriptionValue: string
   ) => {
@@ -48,7 +51,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           body: JSON.stringify({
             title: titleValue,
             description: descriptionValue,
-            categories: categoryList,
+            categories: selectedCategories,
             complexity: complexityValue,
           }),
         }
@@ -74,7 +77,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   const onSubmit = async () => {
     if (
       complexityValue == "" ||
-      categoryList.length == 0 ||
+      selectedCategories.length == 0 ||
       titleValue == "" ||
       descriptionValue == ""
     ) {
@@ -86,7 +89,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
     /* API call to add question */
     await addQuestion(
       complexityValue,
-      categoryList,
+      selectedCategories,
       titleValue,
       descriptionValue
     );
@@ -125,7 +128,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           />
 
           {/* Category */}
-          <div className="mt-2">
+          {/* <div className="mt-2">
             <label className="font-semibold">Categories</label>
             <p className="text-xs text-gray-500">
               Separate different categories using commas. E.g., "Arrays,
@@ -139,7 +142,13 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
                 onChange={handleCategoryChange}
               ></input>
             </div>
-          </div>
+          </div> */}
+          <CategoryDropDown
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            isDisabled={false}
+          />
 
           {/* Question Title */}
           <div className="mt-2">

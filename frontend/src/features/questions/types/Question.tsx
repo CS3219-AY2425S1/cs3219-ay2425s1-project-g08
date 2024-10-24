@@ -1,9 +1,12 @@
+import { Category } from "./Category";
+
 export interface Question {
   id: string;
   title: string;
   description: string;
   complexity: string;
-  categories: string[];
+  // categories: string[];
+  categories: Category[];
 }
 
 export const emptyQuestion: Question = {
@@ -11,5 +14,5 @@ export const emptyQuestion: Question = {
   title: "",
   description: "",
   complexity: "",
-  categories: []
-}
+  categories: [],
+};

@@ -9,10 +9,13 @@ export { default as DescriptionInput } from "./components/DescriptionInput";
 export { default as EditConfirmationModal } from "./components/EditConfirmationModal";
 export { default as EditQuestionModal } from "./components/EditQuestionModal";
 export { default as QuestionDisplay } from "./components/QuestionDisplay";
+export { default as CategoryDropDown } from "./components/CategoryDropDown";
 
 // Export hooks
 export { default as useQuestionList } from "./hooks/useQuestionList";
+export { default as useCategoryList } from "./hooks/useCategoryList";
 export { default as useRetrieveQuestion } from "./hooks/useRetrieveQuestion";
 
 // Export types
 export * from "./types/Question";
+export * from "./types/Category";
