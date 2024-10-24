@@ -14,6 +14,7 @@ export { default as CategoryDropDown } from "./components/CategoryDropDown";
 // Export hooks
 export { default as useQuestionList } from "./hooks/useQuestionList";
 export { default as useCategoryList } from "./hooks/useCategoryList";
+export { default as useCategoryWithQuestionsList } from "./hooks/useCategoryWithQuestionsList";
 export { default as useRetrieveQuestion } from "./hooks/useRetrieveQuestion";
 
 // Export types
