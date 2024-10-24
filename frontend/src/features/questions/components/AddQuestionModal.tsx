@@ -64,7 +64,6 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
     }
   };
 
-  //TODO: FILTER OUT ALL DISPLAY NAMES, ONLY RETURN THE NAMES!!!
   /* Handle Submit button click */
   const onSubmit = async () => {
     if (

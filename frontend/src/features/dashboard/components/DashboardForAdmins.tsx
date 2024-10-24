@@ -63,6 +63,7 @@ const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
         questions={questions}
         columns={columns}
         onClick={onClick}
+        categories={categories}
       />
     </div>
   );
