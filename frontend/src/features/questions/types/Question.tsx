@@ -1,12 +1,9 @@
-import { Category } from "./Category";
-
 export interface Question {
   id: string;
   title: string;
   description: string;
   complexity: string;
-  // categories: string[];
-  categories: Category[];
+  categories: string[];
 }
 
 export const emptyQuestion: Question = {
