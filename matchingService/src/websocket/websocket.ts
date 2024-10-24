@@ -22,6 +22,7 @@ export default function initialiseWebsocket(
 
   const handler: WebSocketEventHandler = new WebSocketEventHandler(io);
   handler.setUpListeners();
-  server.listen(WEBSOCKET_PORT);
-  logger.info(`Websocket listening on port ${WEBSOCKET_PORT}`);
+  server.listen(WEBSOCKET_PORT, () => {
+    logger.info(`WebSocket server listening on port ${WEBSOCKET_PORT}`);
+  });
 }

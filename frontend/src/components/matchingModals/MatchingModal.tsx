@@ -28,8 +28,9 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
   const [showTimer, setShowTimer] = useState(false);
   const [showCancelButton, setShowCancelButton] = useState(false);
   const [cancelAlert, setCancelAlert] = useState<boolean>(false);
-  console.log("MATCH_WEBSOCKET_URL: ", MATCH_WEBSOCKET_URL);
-  const socket = io(MATCH_WEBSOCKET_URL, { autoConnect: false });
+  const socket = io(MATCH_WEBSOCKET_URL, { 
+    autoConnect: false,
+   });
 
   async function handleFindMatchRequest(formData: MatchingRequestFormState) {
     try {
@@ -39,6 +40,17 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
       socket.connect();
       socket.on("connect", () => {
         console.log("Connected to server", socket.id);
+      });
+      socket.on("connect_error", (error) => {
+        console.error("Connection error:", error);
+      });
+      
+      socket.on("connect_timeout", (timeout) => {
+        console.error("Connection timeout:", timeout);
+      });
+      
+      socket.on("error", (error) => {
+        console.error("Socket error:", error);
       });
       console.log("Sent match request: ", {
         name: user?.username, // set up with user context later

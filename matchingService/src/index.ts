@@ -14,10 +14,10 @@ import apiConfig from "./config/config";
 async function main() {
     const app: Application = express();
     const matchController: MatchController = await initialiseServices(app);
-    console.log("set origin to : ", apiConfig.frontendURL);
+    console.log("Expressjs from matching service: set origin to : ", apiConfig.frontendURL);
     app.use(
         cors({
-            origin: `${apiConfig.frontendURL}`,
+            origin:`${apiConfig.frontendURL}`,
             methods: ["POST", "DELETE"],
         })
     );
