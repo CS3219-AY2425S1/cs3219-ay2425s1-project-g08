@@ -3,7 +3,7 @@ import { Category } from "../models/Category";
 import { Difficulty } from "../QueueService/matchingEnums";
 
 /**
- * RequestValidator checks if incoming requests contains all the required fields and that the difficulty and topic are of valid values.
+ * RequestValidator checks if incoming requests contains all the required fields and that the difficulty and category are of valid values.
  */
 class RequestValidator {
     private categories: Category[];

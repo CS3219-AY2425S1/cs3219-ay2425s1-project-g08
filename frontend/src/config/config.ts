@@ -1,9 +1,19 @@
 const apiConfig = {
-    userServiceBaseUrl: "http://localhost:3001",
-    userServiceUserUrl: "http://localhost:3001/users",
-    userServiceAuthUrl: "http://localhost:3001/auth",
-    profilePictureServiceUserUrl: "http://localhost:8081/users",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDEwNDZhNWUwZGFhODQzNmEyMjRlNSIsImlhdCI6MTcyOTA0MzMxNSwiZXhwIjoxNzI5MTI5NzE1fQ.1pvSP5rZvjPY_F-E-EADBjO2naa-fu3prh9jfgZiqr8"
+  userServiceBaseUrl: import.meta.env.VITE_USER_SERVICE_URL
+    ? "/usersvcapi"
+    : "http://localhost:3001",
+  questionbankServiceBaseUrl: import.meta.env.VITE_QB_SERVICE_URL
+    ? "/qbsvcapi"
+    : "http://localhost:8080",
+  profilePictureServiceBaseUrl: import.meta.env.VITE_PP_SERVICE_URL
+    ? "/ppsvcapi"
+    : "http://localhost:8081",
+  matchWebsocketUrl: import.meta.env.VITE_MATCH_WEBSOCKET_URL
+    ? "/matchwssvcapi"
+    : "ws://localhost:8082",
+  matchExpressJsUrl: import.meta.env.VITE_MATCH_EXPRESS_URL
+    ? "/matchexpresssvcapi"
+    : "http://localhost:3000",
 };
 
 export default apiConfig;

@@ -3,6 +3,7 @@ import logger from "../utils/logger";
 import QueueMessage from "../models/QueueMessage";
 import { Server } from "socket.io";
 import QueueManager from "./QueueManager";
+import { MatchSuccessResponse } from "../models/MatchSuccessResponse";
 
 export default class ResponseConsumer {
     private channel: Channel;
@@ -29,20 +30,25 @@ export default class ResponseConsumer {
         const maxRetries = 10;
         const initialDelay = 100;
 
-        const response = JSON.parse(msg.content.toString());
-        const room = response.matchId;
+        const response: MatchSuccessResponse = JSON.parse(msg.content.toString());
+
+        if (!response) {
+            logger.warn("Received invalid response to send client!");
+            return;
+        }
+        const roomToRespond = response.matchId;
 
         const sendWithRetry = async (attempt: number = 1): Promise<void> => { // Possible that user disconnected or experiencing delay in listening
             if (attempt > maxRetries) {
-                logger.error(`Failed to deliver message after ${maxRetries} attempts for room: ${room}`);
+                logger.error(`Failed to deliver message after ${maxRetries} attempts for room: ${roomToRespond}`);
                 return;
             }
     
-            logger.debug(`Attempt ${attempt} to send response to room: ${room}`);
+            logger.debug(`Attempt ${attempt} to send response to room: ${roomToRespond}`);
     
-            this.io.to(room).emit("receiveMatchResponse", response, (ackResponse: boolean) => {
+            this.io.to(roomToRespond).emit("receiveMatchResponse", response, (ackResponse: boolean) => {
                 if (ackResponse) {
-                    logger.debug(`Message acknowledged by client on attempt ${attempt} for room: ${room}`);
+                    logger.debug(`Message acknowledged by client on attempt ${attempt} for room: ${roomToRespond}`);
                 } else {
                     const delay = initialDelay * 2 ** (attempt - 1);
                     logger.warn(`Client did not confirm receipt, retrying after ${delay}ms (Attempt ${attempt} of ${maxRetries})`);

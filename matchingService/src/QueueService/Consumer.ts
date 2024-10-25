@@ -4,12 +4,13 @@ import CancelRequestWithQueueInfo from "../models/CancelRequestWithQueueInfo";
 import logger from "../utils/logger";
 import { MatchRequestDTO } from "../models/MatchRequestDTO";
 import QueueManager from "./QueueManager";
+import { v4 as uuidv4 } from "uuid";
 import { Difficulty } from "./matchingEnums";
-import { Category } from "../models/Category";
+import { MatchSuccessResponse } from "../models/MatchSuccessResponse";
 
 /** 
  * Consumer consumes incoming messages from queues that will contain Matchmaking requests
- * MatchMaking requests are partitioned based on (topic, difficulty) 
+ * MatchMaking requests are partitioned based on (category, difficulty) 
  * */
 class Consumer {
     private channel: Channel;
@@ -165,9 +166,25 @@ class Consumer {
 
     private matchAndRespond(req1: MatchRequestDTO, req2: MatchRequestDTO): void {
         logger.debug(`Responding to matched requests: ${req1.matchId} and ${req2.matchId}`);
-        
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(req1)), {});
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(req2)), {});
+        const roomId: string = uuidv4();
+
+        const res1: MatchSuccessResponse = {
+            userId: req1.userId,
+            matchId: req1.matchId,
+            category: req1.category,
+            difficulty: req1.difficulty,
+            roomId: roomId,
+        }
+        const res2: MatchSuccessResponse = {
+            userId: req2.userId,
+            matchId: req2.matchId,
+            category: req2.category,
+            difficulty: req2.difficulty,
+            roomId: roomId,
+        }
+
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res1)), {});
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res2)), {});
 
         logger.debug("Responses sent to matched requests");
         this.pendingReq = null;
