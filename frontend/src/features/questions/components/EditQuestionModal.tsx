@@ -134,7 +134,7 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
         <div className="mt-3"></div>
         {/* Complexity */}
         <ComplexityDropDown
-          currComplexity={oldQuestion.complexity}
+          complexityValue={newComplexityValue}
           setComplexityValue={setNewComplexityValue}
           isDisabled={false}
         />

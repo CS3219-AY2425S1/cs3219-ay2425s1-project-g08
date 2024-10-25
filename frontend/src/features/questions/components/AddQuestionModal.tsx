@@ -89,7 +89,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           <div className="mt-3"></div>
           {/* Complexity */}
           <ComplexityDropDown
-            currComplexity=""
+            complexityValue={complexityValue}
             setComplexityValue={setComplexityValue}
             isDisabled={false}
           />

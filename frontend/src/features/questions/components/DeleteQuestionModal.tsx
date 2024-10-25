@@ -50,7 +50,7 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
           <div className="mt-3"></div>
           {/* Complexity */}
           <ComplexityDropDown
-            currComplexity={oldQuestion.complexity}
+            complexityValue={oldQuestion.complexity}
             setComplexityValue={() => {}}
             isDisabled={true}
           />
