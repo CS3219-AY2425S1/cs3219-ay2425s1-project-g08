@@ -10,7 +10,8 @@ const useEditQuestion = () => {
     descriptionValue: string,
     closeEditConfirmationModal: () => void,
     onClose: () => void,
-    fetchData: () => Promise<void>
+    fetchData: () => Promise<void>,
+    setIsDuplicateWarningVisible: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     await fetch(
       `${apiConfig.questionbankServiceBaseUrl}/questions/${questionID}`,
@@ -43,9 +44,7 @@ const useEditQuestion = () => {
       })
       .catch((error) => {
         console.error(error);
-        alert(
-          "Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again."
-        );
+        setIsDuplicateWarningVisible(true);
         closeEditConfirmationModal();
       });
   };

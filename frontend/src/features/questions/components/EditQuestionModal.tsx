@@ -7,7 +7,7 @@ import CategoryDropDown from "./CategoryDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
 import useEditQuestion from "../hooks/useEditQuestion";
-import { Category } from "..";
+import { Category, WarningMessage } from "..";
 
 interface EditQuestionModalProps {
   oldQuestion: Question;
@@ -43,7 +43,12 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
     oldQuestion.description
   );
   const [newQuestion, setNewQuestion] = useState(oldQuestion);
+
+  const missingWarningMessage = "* Please fill in all the empty fields. *";
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
+
+  const duplicateWarningMessage = "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
+  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] = useState(false);
 
   const onDeleteConfirm = () => {
     closeDeleteModal();
@@ -64,7 +69,8 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       newDescriptionValue,
       closeEditConfirmationModal,
       onClose,
-      fetchData
+      fetchData,
+      setIsDuplicateWarningVisible
     );
   };
 
@@ -76,11 +82,13 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       newTitleValue == "" ||
       newDescriptionValue == ""
     ) {
-      //alert(newComplexityValue + newCategoryList + newTitleValue + newDescriptionValue);
+      /* Show missing field warning message */
+      setIsDuplicateWarningVisible(false);
       setIsMissingWarningVisible(true);
     } else {
       /* All fields are filled -> ask user to confirm the changes */
       setIsMissingWarningVisible(false);
+      setIsDuplicateWarningVisible(false);
 
       // Extract only the names from selectedCategories
       const selectedCategoriesToSubmit = newCategoryList.map(
@@ -166,9 +174,10 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
         {/* Action buttons */}
         <div className="mt-6">
           {isMissingWarningVisible && (
-            <p id="emptyMessage" className="flex justify-center text-red-500">
-              * Please fill in all the empty fields. *
-            </p>
+            <WarningMessage message={missingWarningMessage} />
+          )}
+          {isDuplicateWarningVisible && (
+            <WarningMessage message={duplicateWarningMessage} />
           )}
           <div className="flex justify-evenly mt-2">
             <button
