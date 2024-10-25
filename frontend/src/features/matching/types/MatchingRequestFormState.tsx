@@ -1,4 +1,4 @@
 export interface MatchingRequestFormState {
-  topic: string;
+  category: string;
   difficulty: string;
 }

@@ -8,6 +8,7 @@ import { Application } from "express";
 import initialiseWebsocket from "../websocket/websocket";
 import RequestValidator from "../validators/RequestValidator";
 import { Category } from "../models/Category";
+import { fetchData } from "../utils/http";
 
 export interface IQueueService {
     sendMatchRequest(matchRequest: MatchRequest): Promise<string>;
@@ -18,7 +19,7 @@ export interface IQueueService {
  * Initialises the different services, controllers and websocket.
  */
 export async function initialiseServices(app: Application): Promise<MatchController> {
-    const QUESTION_SERVICE_URL: string = "localhost:..."; // Change as required
+    const QUESTION_SERVICE_URL: string = `http://questionbank:8080`; // Change as required
     const categories: Category[] = await getQuestionCategories(QUESTION_SERVICE_URL);
     const requestValidator: RequestValidator = new RequestValidator(categories);
     const queueService: QueueService = await QueueService.of(process.env.RABBITMQ_URL || "amqp://localhost:5672", "gateway", "responseGateway", categories);
@@ -31,18 +32,12 @@ export async function initialiseServices(app: Application): Promise<MatchControl
 }
 
 async function getQuestionCategories(QUESTION_SERVICE_URL: string): Promise<Category[]> {
-    // var categories: Category[] = [];
-    // const res = await fetch(`${QUESTION_SERVICE_URL}/categories`);
-    // categories = await res.json();
-    // return categories;
-    const mockedCategories: Category[] = [
-        { name: "GRAPH", displayName: "graph" },
-        { name: "DP", displayName: "dynamic programming" },
-        { name: "ALGORITHM", displayName: "algorithm"},
-    ];
-    
-    // Return mocked categories
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(mockedCategories), 500); // Simulate network delay
-    });
+    var categories: Category[] = [];
+    const res = await fetchData(`${QUESTION_SERVICE_URL}/categories`);
+    categories = res._embedded.categoryDtoList.map((item: any): Category => ({
+        name: item.name,
+        displayName: item.displayName
+    }));
+    console.log(categories);
+    return categories;
 }
