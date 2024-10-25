@@ -3,24 +3,46 @@ import MatchService from "../services/MatchService";
 import MatchController from "../controllers/MatchController";
 import { MatchRequest } from "../models/MatchRequest";
 import logger from "../utils/logger";
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { Difficulty } from "../QueueService/matchingEnums";
 import { Application } from "express";
 import initialiseWebsocket from "../websocket/websocket";
+import RequestValidator from "../validators/RequestValidator";
+import { Category } from "../models/Category";
 
 export interface IQueueService {
     sendMatchRequest(matchRequest: MatchRequest): Promise<string>;
-    cancelMatchRequest(matchId: string, difficulty: Difficulty, topic: Topic): Promise<void>;
+    cancelMatchRequest(matchId: string, difficulty: Difficulty, category: string): Promise<void>;
 }
 
 /**
  * Initialises the different services, controllers and websocket.
  */
 export async function initialiseServices(app: Application): Promise<MatchController> {
-    const queueService: QueueService = await QueueService.of(process.env.RABBITMQ_URL || "amqp://localhost:5672", "gateway", "responseGateway");
+    const QUESTION_SERVICE_URL: string = "localhost:..."; // Change as required
+    const categories: Category[] = await getQuestionCategories(QUESTION_SERVICE_URL);
+    const requestValidator: RequestValidator = new RequestValidator(categories);
+    const queueService: QueueService = await QueueService.of(process.env.RABBITMQ_URL || "amqp://localhost:5672", "gateway", "responseGateway", categories);
     const matchService = new MatchService(queueService);
-    const matchController = new MatchController(matchService);
+    const matchController = new MatchController(matchService, requestValidator);
     initialiseWebsocket(app, queueService);
 
     logger.info("Service initilisation completed");
     return matchController;
+}
+
+async function getQuestionCategories(QUESTION_SERVICE_URL: string): Promise<Category[]> {
+    // var categories: Category[] = [];
+    // const res = await fetch(`${QUESTION_SERVICE_URL}/categories`);
+    // categories = await res.json();
+    // return categories;
+    const mockedCategories: Category[] = [
+        { name: "GRAPH", displayName: "graph" },
+        { name: "DP", displayName: "dynamic programming" },
+        { name: "ALGORITHM", displayName: "algorithm"},
+    ];
+    
+    // Return mocked categories
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(mockedCategories), 500); // Simulate network delay
+    });
 }

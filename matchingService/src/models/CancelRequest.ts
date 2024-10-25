@@ -1,7 +1,8 @@
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { Difficulty } from "../QueueService/matchingEnums";
+import { Category } from "./Category";
 
 export type CancelRequest = {
     readonly matchId: string,
     readonly difficulty: Difficulty,
-    readonly topic: Topic
+    readonly category: string
 }

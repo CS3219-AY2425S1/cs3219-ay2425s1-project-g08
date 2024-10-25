@@ -1,16 +1,22 @@
-import { InvalidDifficultyError, InvalidTopicError, MissingFieldError } from "../errors/ValidationError";
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { InvalidCategoryError, InvalidDifficultyError, MissingFieldError } from "../errors/ValidationError";
+import { Category } from "../models/Category";
+import { Difficulty } from "../QueueService/matchingEnums";
 
 /**
  * RequestValidator checks if incoming requests contains all the required fields and that the difficulty and topic are of valid values.
  */
 class RequestValidator {
-    public static validateFindMatchRequest(data: { name: string; topic: string; difficulty: string }): void {
-        const { name, topic, difficulty } = data;
+    private categories: Category[];
+    public constructor(categories: Category[]) {
+        this.categories = categories;
+    }
+    
+    public validateFindMatchRequest(data: { name: string; category: string; difficulty: string }): void {
+        const { name, category, difficulty } = data;
     
         const missingFields: string[] = [];
         if (!name) missingFields.push("name");
-        if (!topic) missingFields.push("topic");
+        if (!category) missingFields.push("category");
         if (!difficulty) missingFields.push("difficulty");
     
         if (missingFields.length > 0) {
@@ -21,18 +27,40 @@ class RequestValidator {
             throw new InvalidDifficultyError(difficulty);
         }
     
-        if (!Object.values(Topic).includes(topic as Topic)) {
-            throw new InvalidTopicError(topic);
+        var isValidCategory: boolean = false;
+        for (const validCategory of this.categories) {
+            if (category == validCategory.name) {
+                isValidCategory = true;
+                break;
+            }
+        }
+        if (!isValidCategory) {
+            throw new InvalidCategoryError(category);
         }
     }
 
-    public static validateCancelMatchRequest(matchId: string, difficulty: Difficulty, topic: Topic): void {
+    public validateCancelMatchRequest(matchId: string, difficulty: Difficulty, category: string): void {
         const missingFields: string[] = [];
         if (!matchId) missingFields.push("matchId");
-        if (!topic) missingFields.push("topic");
+        if (!category) missingFields.push("category");
         if (!difficulty) missingFields.push("difficulty");
         if (missingFields.length > 0) {
             throw new MissingFieldError(missingFields);
+        }
+
+        if (!Object.values(Difficulty).includes(difficulty as Difficulty)) {
+            throw new InvalidDifficultyError(difficulty);
+        }
+    
+        var isValidCategory: boolean = false;
+        for (const validCategory of this.categories) {
+            if (category == validCategory.name) {
+                isValidCategory = true;
+                break;
+            }
+        }
+        if (!isValidCategory) {
+            throw new InvalidCategoryError(category);
         }
     }
 }

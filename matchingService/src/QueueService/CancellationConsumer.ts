@@ -38,7 +38,7 @@ export default class CancellationConsumer {
             var req: CancelRequest = this.parseCancelRequest(msg);
             const reqWithInfo: CancelRequestWithQueueInfo = CancelRequestWithQueueInfo.createFromCancelRequest(req);
 
-            const consumer: Consumer | undefined = this.consumerMap.get(`${reqWithInfo.getTopic()}_${reqWithInfo.getDifficulty()}`);
+            const consumer: Consumer | undefined = this.consumerMap.get(`${reqWithInfo.getCategory()}_${reqWithInfo.getDifficulty()}`);
             if (!consumer) {
                 logger.debug("No consumer found for incoming request");
                 return;
@@ -67,7 +67,7 @@ export default class CancellationConsumer {
         const req: CancelRequest = {
             matchId: jsonObject.matchId,
             difficulty: jsonObject.difficulty,
-            topic: jsonObject.topic
+            category: jsonObject.category
         }
         return req;
     }

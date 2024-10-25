@@ -4,7 +4,8 @@ import CancelRequestWithQueueInfo from "../models/CancelRequestWithQueueInfo";
 import logger from "../utils/logger";
 import { MatchRequestDTO } from "../models/MatchRequestDTO";
 import QueueManager from "./QueueManager";
-import { Difficulty, Topic } from "./matchingEnums";
+import { Difficulty } from "./matchingEnums";
+import { Category } from "../models/Category";
 
 /** 
  * Consumer consumes incoming messages from queues that will contain Matchmaking requests
@@ -17,15 +18,15 @@ class Consumer {
     private cancelledMatches: Map<string, CancelRequestWithQueueInfo> = new Map();
     private cleanupInterval: NodeJS.Timeout;
     private pendingReqTimeout: NodeJS.Timeout | null = null;
-    private topic: Topic;
+    private category: string;
     private difficulty: Difficulty;
 
-    constructor(channel: Channel, directExchange: string, difficulty: Difficulty, topic: Topic) {
+    constructor(channel: Channel, directExchange: string, difficulty: Difficulty, category: string) {
         this.channel = channel;
         this.directExchange = directExchange;
         this.pendingReq = null;
         this.difficulty = difficulty;
-        this.topic = topic;
+        this.category = category;
 
         // Incoming cancellation requests may reference non-existing matches. 
         // If these requests are not deleted from the hashmap, they will accumulate over time.
@@ -34,8 +35,8 @@ class Consumer {
         this.cleanupInterval = setInterval(() => this.cleanupExpiredCancellationRequests(), intervalDuration);
     }
 
-    public async consumeMatchRequest(topic: string, difficulty: string): Promise<void> {
-        const queueName = `${topic}_${difficulty}`;
+    public async consumeMatchRequest(category: string, difficulty: string): Promise<void> {
+        const queueName = `${category}_${difficulty}`;
         logger.info(`Consuming match requests from queue: ${queueName}`);
         
         await this.channel.consume(queueName, (message) => {
@@ -43,8 +44,8 @@ class Consumer {
         }, { noAck: true });
     }
 
-    public async consumeFallbackMatchRequest(topic: string): Promise<void> {
-        await this.channel.consume(topic, (message) => {
+    public async consumeFallbackMatchRequest(category: string): Promise<void> {
+        await this.channel.consume(category, (message) => {
             this.handleFallbackMatchRequest(message);
         }, { noAck: true });
     }
@@ -140,7 +141,7 @@ class Consumer {
         const req: MatchRequestDTO = {
             userId: jsonObject.userId,
             matchId: jsonObject.matchId,
-            topic: jsonObject.topic,
+            category: jsonObject.category,
             difficulty: jsonObject.difficulty,
             timestamp: jsonObject.timestamp,
             retries: jsonObject.retries,
@@ -186,8 +187,8 @@ class Consumer {
             this.pendingReqTimeout = setTimeout(() => {
                 logger.debug(`Pending request expired: ${req.matchId}`);
                 this.pendingReq = null; // Clear the pending request
-                this.channel.publish(this.directExchange, req.topic, Buffer.from(JSON.stringify(req)), {});
-                logger.debug(`Expired request sent to ${req.topic}`);
+                this.channel.publish(this.directExchange, req.category, Buffer.from(JSON.stringify(req)), {});
+                logger.debug(`Expired request sent to ${req.category}`);
             }, delay);
         } else {
             logger.debug(`Pending request already expired: ${req.matchId}`);
