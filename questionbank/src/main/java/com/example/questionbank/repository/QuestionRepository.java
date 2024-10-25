@@ -68,7 +68,9 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
      *
      * @param category the category of the questions
      * @param complexity the complexity of the questions
-     * @return a list of {@link Question} entities with the specified category and complexity
+     * @return a list of {@link Question} entities with the specified category
+     * and complexity
      */
-    List<Question> findQuestionsByCategoriesIsContainingAndComplexity(Category category, Complexity complexity);
+    List<Question> findQuestionsByCategoriesIsContainingAndComplexity(
+            Category category, Complexity complexity);
 }
