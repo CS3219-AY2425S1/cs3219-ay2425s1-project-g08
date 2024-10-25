@@ -30,7 +30,7 @@ public class QuestionValidator {
      *
      * @param question the {@link Question} entity to be validated.
      * @throws IllegalArgumentException if the {@link Question} is invalid.
-     * @return true if no exception thrown in invalid cases
+     * @return true if no exception thrown in invalid cases.
      */
     public static boolean isValidQuestion(Question question) {
         if (question.getTitle() == null
@@ -51,7 +51,9 @@ public class QuestionValidator {
 
         // Validate complexity is one of the allowed enum values
         if (!isValidComplexity(question.getComplexity())) {
-            throw new ComplexityNotMatchException(question.getComplexity().name());
+            throw new ComplexityNotMatchException(
+                    question.getComplexity().name()
+            );
         }
 
         // Validate categories are all valid enum values
@@ -61,9 +63,9 @@ public class QuestionValidator {
     }
 
     /**
-     * Validates the complexity of a {@link Question}
-     * 
-     * @param complexity the {@link Complexity} to validate. 
+     * Validates the complexity of a {@link Question}.
+     *
+     * @param complexity the {@link Complexity} to validate.
      * @return true if the complexity is valid.
      */
     private static boolean isValidComplexity(Complexity complexity) {
@@ -78,7 +80,8 @@ public class QuestionValidator {
     }
 
     /**
-     * Validates that the categories list contains only valid {@link Category} enum values.
+     * Validates that the categories list contains only valid
+     * {@link Category} enum values.
      *
      * @param categories the list of categories to validate.
      * @throws IllegalArgumentException if any category is invalid.
@@ -86,7 +89,9 @@ public class QuestionValidator {
     private static void validateCategories(List<Category> categories) {
         for (Category category : categories) {
             if (!isValidCategory(category)) {
-                throw new IllegalArgumentException("Invalid category: " + category.name());
+                throw new IllegalArgumentException(
+                        "Invalid category: " + category.name()
+                );
             }
         }
     }
