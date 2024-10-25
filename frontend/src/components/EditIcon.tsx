@@ -9,7 +9,7 @@ export const EditIcon: React.FC<EditIconProps> = ({ openModal }) => {
                 onClick={() => openModal()}
                 className="bg-gray-500 rounded-lg p-4 hover:bg-gray-300 h-auto w-auto"
             >
-            <img src={editicon} alt="Edit" className="max-w-5 h-5"/>
+                <img src={editicon} alt="Edit" className="max-w-5 h-5"/>
             </button>
         </div>
         
