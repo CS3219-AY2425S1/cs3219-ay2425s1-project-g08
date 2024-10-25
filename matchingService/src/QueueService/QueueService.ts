@@ -9,13 +9,14 @@ import ChannelNotFoundError from "../errors/ChannelNotFoundError";
 import Consumer from "./Consumer";
 import Producer from "./Producer";
 import QueueManager from "./QueueManager";
-import { Difficulty, Topic } from "./matchingEnums";
+import { Difficulty } from "./matchingEnums";
 import logger from "../utils/logger";
 import CancellationConsumer from "./CancellationConsumer";
 import { v4 as uuidv4 } from "uuid";
 import { MatchRequestDTO } from "../models/MatchRequestDTO";
 import ResponseConsumer from "./ResponseConsumer";
 import { Server } from "socket.io";
+import { Category } from "../models/Category";
 
 /**
  * QueueService manages message queues for RabbitMq.
@@ -42,7 +43,8 @@ class QueueService {
     public static async of(
         connectionUrl: string,
         categoryExchange: string,
-        responseExchange: string
+        responseExchange: string,
+        categories: Category[]
     ): Promise<QueueService> {
         logger.info(
             `Creating QueueService with connection URL: ${connectionUrl}`
@@ -54,7 +56,8 @@ class QueueService {
         const queueManager: QueueManager = new QueueManager(
             channel,
             categoryExchange,
-            responseExchange
+            responseExchange,
+            categories
         );
         const service: QueueService = new QueueService(
             categoryExchange,
@@ -64,7 +67,7 @@ class QueueService {
         );
 
         await service.init();
-        await service.startConsumers();
+        await service.startConsumers(categories);
 
         logger.info("QueueService initialized and consumers started");
         return service;
@@ -82,7 +85,7 @@ class QueueService {
         logger.info("QueueService initialized successfully");
     }
 
-    public async startConsumers(): Promise<void> {
+    public async startConsumers(categories: Category[]): Promise<void> {
         var channel: Channel = this.connectionManager.getChannel();
         if (channel instanceof ChannelNotFoundError) {
             logger.error(channel.message);
@@ -92,20 +95,20 @@ class QueueService {
         const cancellationConsumer: CancellationConsumer =
             new CancellationConsumer(channel, this.directExchange);
         cancellationConsumer.consumeCancelRequest();
-        for (const topic of Object.values(Topic)) {
+        for (const category of categories) {
             for (const difficulty of Object.values(Difficulty)) {
                 const consumer: Consumer = new Consumer(
                     channel,
                     this.directExchange,
                     difficulty,
-                    topic
+                    category.name
                 );
                 cancellationConsumer.registerConsumer(
-                    `${topic}_${difficulty}`,
+                    `${category.name}_${difficulty}`,
                     consumer
                 );
-                await consumer.consumeMatchRequest(topic, difficulty);
-                await consumer.consumeFallbackMatchRequest(topic);
+                await consumer.consumeMatchRequest(category.name, difficulty);
+                await consumer.consumeFallbackMatchRequest(category.name);
             }
         }
         logger.info("Consumer successully initialised and consuming");
@@ -116,7 +119,7 @@ class QueueService {
         const matchReqWithId: MatchRequestDTO = {
             userId: matchRequest.userId,
             matchId: matchId,
-            topic: matchRequest.topic,
+            category: matchRequest.category,
             difficulty: matchRequest.difficulty,
             timestamp: new Date(),
             retries: 0,
@@ -144,7 +147,7 @@ class QueueService {
     public async cancelMatchRequest(
         matchId: string,
         difficulty: Difficulty,
-        topic: Topic
+        category: string
     ): Promise<void> {
         logger.info(`Canceling match request for match ID: ${matchId}`);
         var channel: Channel = this.connectionManager.getChannel();
@@ -156,7 +159,7 @@ class QueueService {
         var req: CancelRequest = {
             matchId: matchId,
             difficulty: difficulty,
-            topic: topic,
+            category: category,
         };
         producer.sendCancelMessage(req, channel, this.directExchange);
         logger.info(`Cancellation request sent for match ID: ${matchId}`);

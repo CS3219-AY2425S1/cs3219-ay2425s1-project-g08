@@ -10,6 +10,12 @@ services:
       context: ./questionbank
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   user-service:
     build:
@@ -44,4 +50,6 @@ services:
     command: ["node", "dist/index.js"]
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      questionbank:
         condition: service_healthy

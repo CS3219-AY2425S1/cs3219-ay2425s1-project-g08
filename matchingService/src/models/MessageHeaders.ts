@@ -1,5 +1,5 @@
 export type MessageHeader = {
-    topic: string,
+    category: string,
     difficulty: string
 }
 

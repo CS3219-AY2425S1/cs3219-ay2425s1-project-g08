@@ -19,9 +19,9 @@ export class InvalidDifficultyError extends ValidationError {
     }
 }
 
-export class InvalidTopicError extends ValidationError {
-    constructor(topic: string) {
-        super(`Invalid topic provided: ${topic}`);
-        this.name = "InvalidTopicError";
+export class InvalidCategoryError extends ValidationError {
+    constructor(category: string) {
+        super(`Invalid category provided: ${category}`);
+        this.name = "InvalidCategoryError";
     }
 }
