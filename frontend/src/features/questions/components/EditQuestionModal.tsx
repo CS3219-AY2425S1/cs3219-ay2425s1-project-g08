@@ -3,20 +3,24 @@ import { useState } from "react";
 import DeleteQuestionModal from "./DeleteQuestionModal";
 import EditConfirmationModal from "./EditConfirmationModal";
 import ComplexityDropDown from "./ComplexityDropDown";
+import CategoryDropDown from "./CategoryDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
 import useEditQuestion from "../hooks/useEditQuestion";
+import { Category } from "..";
 
 interface EditQuestionModalProps {
   oldQuestion: Question;
   onClose: () => void;
   fetchData: () => Promise<void>;
+  categories: Category[];
 }
 
 const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   oldQuestion,
   onClose,
   fetchData,
+  categories,
 }) => {
   
   const { editQuestion } = useEditQuestion();
@@ -33,9 +37,7 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   const [newComplexityValue, setNewComplexityValue] = useState(
     oldQuestion.complexity
   );
-  const [newCategoryList, setNewCategoryList] = useState(
-    oldQuestion.categories
-  );
+  const [newCategoryList, setNewCategoryList] = useState<Category[]>([]); //For intermediate state of categories with displayName
   const [newTitleValue, setNewTitleValue] = useState(oldQuestion.title);
   const [newDescriptionValue, setNewDescriptionValue] = useState(
     oldQuestion.description
@@ -43,25 +45,21 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   const [newQuestion, setNewQuestion] = useState(oldQuestion);
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
 
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newCategoryValue = event.target.value;
-    const categoryList = newCategoryValue
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
-    setNewCategoryList(categoryList);
-  };
-
   const onDeleteConfirm = () => {
     closeDeleteModal();
     onClose();
   };
 
   const onEditConfirm = async () => {
+    // Extract only the names from selectedCategories
+    const selectedCategoriesToSubmit = newCategoryList.map(
+      (category) => category.name
+    );
+
     await editQuestion(
       oldQuestion.id,
       newComplexityValue,
-      newCategoryList,
+      selectedCategoriesToSubmit,
       newTitleValue,
       newDescriptionValue,
       closeEditConfirmationModal,
@@ -84,10 +82,15 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       /* All fields are filled -> ask user to confirm the changes */
       setIsMissingWarningVisible(false);
 
+      // Extract only the names from selectedCategories
+      const selectedCategoriesToSubmit = newCategoryList.map(
+        (category) => category.name
+      );
+
       const newQuestion: Question = {
         id: "",
         complexity: newComplexityValue,
-        categories: newCategoryList,
+        categories: selectedCategoriesToSubmit,
         title: newTitleValue,
         description: newDescriptionValue,
       };
@@ -129,22 +132,13 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
         />
 
         {/* Category */}
-        <div className="mt-2">
-          <label className="font-semibold">Categories</label>
-          <p className="text-xs text-gray-500">
-            Separate different category categories using commas. E.g., Arrays,
-            Databases{" "}
-          </p>
-          <div className="relative mt-1 shadow-md">
-            <input
-              type="text"
-              id="category"
-              defaultValue={oldQuestion.categories}
-              onChange={handleCategoryChange}
-              className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-800 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-opacity-50 focus:ring-black sm:text-sm sm:leading-6"
-            ></input>
-          </div>
-        </div>
+        <CategoryDropDown
+          rawCategories={oldQuestion.categories}
+          categories={categories}
+          selectedCategories={newCategoryList}
+          setSelectedCategories={setNewCategoryList}
+          isDisabled={false}
+        />
 
         {/* Question Title */}
         <div className="mt-2">

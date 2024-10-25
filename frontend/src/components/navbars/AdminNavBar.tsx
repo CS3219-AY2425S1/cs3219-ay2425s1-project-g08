@@ -6,12 +6,14 @@ import AddQuestionModal from "../../features/questions/components/AddQuestionMod
 import { useUser } from "../../context/UserContext.tsx";
 import PeerPrepLogo from "../PeerPrepLogo.tsx";
 import StandardBigButton from "../StandardBigButton.tsx";
+import { Category } from "../../features/questions";
 
 interface AdminNavBarProps {
   fetchData: () => Promise<void>;
+  categories: Category[];
 }
 
-const AdminNavBar: React.FC<AdminNavBarProps> = ({ fetchData }) => {
+const AdminNavBar: React.FC<AdminNavBarProps> = ({ fetchData, categories }) => {
   const location = useLocation();
   const { user } = useUser();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -39,7 +41,11 @@ const AdminNavBar: React.FC<AdminNavBarProps> = ({ fetchData }) => {
               color="green"
             />
             {isAddModalOpen && (
-              <AddQuestionModal fetchData={fetchData} onClose={closeAddModal} />
+              <AddQuestionModal
+                fetchData={fetchData}
+                onClose={closeAddModal}
+                categories={categories}
+              />
             )}
           </div>
         ))}

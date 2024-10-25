@@ -2,38 +2,31 @@ import React, { useState } from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import DescriptionInput from "./DescriptionInput";
 import useAddQuestion from "../hooks/useAddQuestion";
+import { Category, CategoryDropDown } from "..";
 
 interface AddQuestionModalProps {
   fetchData: () => Promise<void>;
   onClose: () => void;
+  categories: Category[];
 }
 
 const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   fetchData,
   onClose,
+  categories,
 }) => {
   const [complexityValue, setComplexityValue] = useState("");
-  const [categoryList, setCategoryList] = useState([""]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
-  
   const { addQuestion } = useAddQuestion();
-
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newCategoryValue = event.target.value;
-    const categoryList = newCategoryValue
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
-    setCategoryList(categoryList);
-  };
 
   /* Handle Submit button click */
   const onSubmit = async () => {
     if (
       complexityValue == "" ||
-      categoryList.length == 0 ||
+      selectedCategories.length == 0 ||
       titleValue == "" ||
       descriptionValue == ""
     ) {
@@ -42,10 +35,15 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
       setIsMissingWarningVisible(true);
       return;
     }
+    // Extract only the names from selectedCategories
+    const selectedCategoriesToSubmit = selectedCategories.map(
+      (category) => category.name
+    );
+
     /* API call to add question */
     await addQuestion(
       complexityValue,
-      categoryList,
+      selectedCategoriesToSubmit,
       titleValue,
       descriptionValue,
       onClose,
@@ -86,21 +84,12 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           />
 
           {/* Category */}
-          <div className="mt-2">
-            <label className="font-semibold">Categories</label>
-            <p className="text-xs text-gray-500">
-              Separate different categories using commas. E.g., "Arrays,
-              Databases"
-            </p>
-            <div className="relative mt-1 shadow-md">
-              <input
-                type="text"
-                id="category"
-                className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-800 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-opacity-50 focus:ring-black sm:text-sm sm:leading-6"
-                onChange={handleCategoryChange}
-              ></input>
-            </div>
-          </div>
+          <CategoryDropDown
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            isDisabled={false}
+          />
 
           {/* Question Title */}
           <div className="mt-2">

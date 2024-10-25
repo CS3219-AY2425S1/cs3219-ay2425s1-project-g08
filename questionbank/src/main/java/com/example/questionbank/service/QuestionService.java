@@ -2,12 +2,16 @@ package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
 import com.example.questionbank.repository.QuestionRepository;
 import com.example.questionbank.commons.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link QuestionServiceInterface} interface.
@@ -45,6 +49,41 @@ public class QuestionService implements QuestionServiceInterface {
     }
 
     /**
+     * Retrieves all questions from the repository with a given complexity.
+     *
+     * @return a list of all {@link Question} entities with a given complexity
+     */
+    @Override
+    public List<Question> getAllQuestionsByComplexity(Complexity complexity) {
+        return repository.findQuestionsByComplexity(complexity);
+    }
+
+    /**
+     * Retrieves all questions from the repository with a given category.
+     *
+     * @return a list of all {@link Question} entities with a given category
+     */
+    @Override
+    public List<Question> getAllQuestionsByCategory(Category category) {
+        return repository.findQuestionsByCategoriesIsContaining(category);
+    }
+
+    /**
+     * Retrieves all questions from the repository with a given category
+     * and complexity.
+     *
+     * @return a list of all {@link Question} entities with a given category
+     * and complexity.
+     */
+    @Override
+    public List<Question> getAllQuestionsByCategoryAndComplexity(
+            Category category, Complexity complexity) {
+        return repository.findQuestionsByCategoriesIsContainingAndComplexity(
+                category, complexity
+        );
+    }
+
+    /**
      * Retrieves a question by its ID.
      *
      * @param id the ID of the question
@@ -62,7 +101,7 @@ public class QuestionService implements QuestionServiceInterface {
      *
      * @param title the title of the question
      * @return the {@link Question} with the specified title
-     * @throws QuestionNotFoundException if the question is not found
+     * @throws QuestionWithTitleNotFoundException if the question is not found
      */
     @Override
     public Question getQuestionByTitle(String title) {
@@ -143,5 +182,21 @@ public class QuestionService implements QuestionServiceInterface {
             throw new QuestionNotFoundException(id);
         }
         repository.deleteById(id);
+    }
+
+    /**
+     * Retrieves all unique categories for which there are questions in the
+     * database.
+     *
+     * @return a set of unique categories
+     */
+    @Override
+    public Set<Category> getUniqueCategoriesWithQuestions() {
+        return repository.findAll()
+                .stream()
+                // Flatten the list of categories
+                .flatMap(question -> question.getCategories().stream())
+                // Collect the unique categories into a Set
+                .collect(Collectors.toSet());
     }
 }

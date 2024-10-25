@@ -2,8 +2,12 @@ package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionNotFoundException;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
+import com.example.questionbank.model.Complexity;
+
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service interface for managing {@link Question} entities.
@@ -20,6 +24,35 @@ public interface QuestionServiceInterface {
      * @return a list of all {@link Question} entities
      */
     List<Question> getAllQuestions();
+
+    /**
+     * Retrieves all questions with a given complexity.
+     *
+     * @param complexity the complexity level of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given complexity.
+     */
+    List<Question> getAllQuestionsByComplexity(Complexity complexity);
+
+    /**
+     * Retrieves all questions with a given category.
+     *
+     * @param category the category of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given category.
+     */
+    List<Question> getAllQuestionsByCategory(Category category);
+
+    /**
+     * Retrieves all questions with a given category and complexity.
+     *
+     * @param category the category of the questions to retrieve
+     * @param complexity the complexity level of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given category
+     * and complexity.
+     */
+    List<Question> getAllQuestionsByCategoryAndComplexity(
+            Category category,
+            Complexity complexity
+    );
 
     /**
      * Retrieves a question by its ID.
@@ -59,7 +92,8 @@ public interface QuestionServiceInterface {
      * @throws QuestionNotFoundException if no question is found with the
      * specified ID
      */
-    Question updateQuestion(String id, Question updatedQuestion);
+    Question updateQuestion(String id, Question updatedQuestion)
+            throws QuestionNotFoundException;
 
     /**
      * Deletes a question by its ID.
@@ -68,5 +102,13 @@ public interface QuestionServiceInterface {
      * @throws QuestionNotFoundException if no question is found with the
      * specified ID
      */
-    void deleteQuestion(String id);
+    void deleteQuestion(String id) throws QuestionNotFoundException;
+
+    /**
+     * Retrieves all unique categories for which there are questions in the
+     * database.
+     *
+     * @return a set of unique categories
+     */
+    Set<Category> getUniqueCategoriesWithQuestions();
 }

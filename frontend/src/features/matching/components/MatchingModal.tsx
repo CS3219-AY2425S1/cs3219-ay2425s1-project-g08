@@ -6,15 +6,18 @@ import Timer from "./Timer.tsx";
 import { useUser } from "../../../context/UserContext.tsx";
 import Alert from "react-bootstrap/Alert";
 import apiConfig from "../../../config/config.ts";
+import { Category } from "../../questions/index.ts";
 
 interface MatchingModalProps {
   closeMatchingModal: () => void;
+  categoriesWithQuestions: Array<Category>;
 }
 
 const MATCH_WEBSOCKET_URL: string = apiConfig.matchWebsocketUrl;
 
 const MatchingModal: React.FC<MatchingModalProps> = ({
   closeMatchingModal,
+  categoriesWithQuestions,
 }) => {
   const [matchId, setMatchId] = useState("");
   const [formData, setFormData] = useState<MatchingRequestFormState>({
@@ -163,6 +166,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
               handleSubmit={() => handleFindMatchRequest(formData)}
               formData={formData}
               setFormData={setFormData}
+              categoriesWithQuestions={categoriesWithQuestions}
             />
           )}
         </div>
