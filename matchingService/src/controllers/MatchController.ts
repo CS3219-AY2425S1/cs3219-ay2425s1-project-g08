@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import MatchService from "../services/MatchService";
 import RequestValidator from "../validators/RequestValidator";
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { Difficulty } from "../QueueService/matchingEnums";
 
 /**
  * MatchController handles the incoming requests related to user matching.
@@ -9,17 +9,19 @@ import { Difficulty, Topic } from "../QueueService/matchingEnums";
  */
 export default class MatchController {
     private matchService: MatchService;
+    private requestValidator: RequestValidator;
 
-    constructor(matchService: MatchService) {
+    constructor(matchService: MatchService, requestValidator: RequestValidator) {
         this.matchService = matchService;
+        this.requestValidator = requestValidator;
     }
 
     public async findMatch(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name, topic, difficulty } = req.body;
-            RequestValidator.validateFindMatchRequest({ name, topic, difficulty });
+            const { name, category, difficulty } = req.body;
+            this.requestValidator.validateFindMatchRequest({ name, category, difficulty });
 
-            const matchId: string = await this.matchService.findMatch(name, topic, difficulty);
+            const matchId: string = await this.matchService.findMatch(name, category, difficulty);
             
             if (matchId) {
                 return res.json({ matchId: matchId });
@@ -34,11 +36,11 @@ export default class MatchController {
     public async cancelMatch(req: Request, res: Response, next: NextFunction) {
         const matchId: string = req.query.matchId as string;
         const difficulty: Difficulty = req.query.difficulty as Difficulty;
-        const topic: Topic = req.query.topic as Topic;
+        const category: string = req.query.category as string;
 
         try {
-            RequestValidator.validateCancelMatchRequest(matchId, difficulty, topic);
-            this.matchService.cancelMatch(matchId, difficulty, topic);
+            this.requestValidator.validateCancelMatchRequest(matchId, difficulty, category);
+            this.matchService.cancelMatch(matchId, difficulty, category);
             return res.json({ success: true });
         } catch (error) {
             next(error);
