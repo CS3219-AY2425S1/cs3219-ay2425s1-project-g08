@@ -32,7 +32,7 @@ metadata:
   name: user-service
   namespace: peerprep
 spec:
-  type: LoadBalancer  # To expose externally
+  type: NodePort  # To expose externally
   selector:
     app: user
   ports:

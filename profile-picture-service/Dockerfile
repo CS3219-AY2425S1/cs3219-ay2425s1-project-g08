@@ -1,5 +1,5 @@
 # Use an official Maven image as the base image
-FROM maven:3.9.9-eclipse-temurin-23 AS build
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,13 +8,11 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN touch src/main/resources/gcp-service-account-key.json
-
 # Build the application
 RUN mvn clean package 
 
 # Use OpenJDK for the runtime image
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:17.0.13_11-jre-ubi9-minimal
 
 # Set the working directory in the container
 WORKDIR /app

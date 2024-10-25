@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profilepicture
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: profilepicture
+  template:
+    metadata:
+      labels:
+        app: profilepicture
+    spec:
+      serviceAccountName: peerprep-sa
+      containers:
+      - name: profilepicture
+        image: seanpzk/profilepicture-service:1.0.5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        env:
+        - name: FRONTEND_URL
+          value: "http://frontend-service:5173"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/etc/secrets/service-account.json"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        volumeMounts:
+          - name: gcs-service-account-key-volume
+            mountPath: "/etc/secrets"
+            readOnly: true
+      volumes:
+        - name: gcs-service-account-key-volume
+          secret:
+            secretName: gcs-service-account-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profilepicture-service
+  namespace: peerprep
+spec:
+  type: NodePort  # To expose externally
+  selector:
+    app: profilepicture
+  ports:
+    - protocol: TCP
+      port: 8081  # External port
+      targetPort: 8081  # Pod's container port
+
+  

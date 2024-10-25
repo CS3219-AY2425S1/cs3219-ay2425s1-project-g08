@@ -10,15 +10,7 @@ const useFetchProfilePicture = async (
     return;
   }
   try {
-    const response = await fetch(
-      `${apiConfig.profilePictureServiceBaseUrl}/users/${user.id}/profile-picture`,
-      {
-        mode: "cors",
-        headers: {
-          "Access-Control-Allow-Origin": `${apiConfig.profilePictureServiceBaseUrl}`,
-        },
-      }
-    );
+    const response = await fetch(`${apiConfig.profilePictureServiceBaseUrl}/users/${user.id}/profile-picture`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch image");
