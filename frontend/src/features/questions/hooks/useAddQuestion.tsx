@@ -9,7 +9,8 @@ const useAddQuestion = () => {
     titleValue: string,
     descriptionValue: string,
     onClose: () => void,
-    fetchData: () => Promise<void>
+    fetchData: () => Promise<void>,
+    setIsDuplicateWarningVisible: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     try {
       const response = await fetch(
@@ -39,9 +40,7 @@ const useAddQuestion = () => {
         fetchData();
       }
     } catch (error) {
-      alert(
-        "Error adding question. The question you are adding may be a duplicate (having the same title as an existing question). Please try again."
-      );
+      setIsDuplicateWarningVisible(true);
       console.error("Error adding question:", error);
     }
   };
