@@ -4,6 +4,7 @@ import { Question } from "../features/questions";
 import HistoryNavBar from "../components/navbars/HistoryNavBar";
 import { useEffect, useState } from "react";
 import apiConfig from "../config/config";
+import ReadonlyEditor from "../features/history/ReadonlyEditor";
 
 interface LabelProps {
   text: string; // Declare the prop type
@@ -48,6 +49,16 @@ const HistoryPage: React.FC = () => {
           setAttempt(data)
         });
     });
+
+    setAttempt({
+      attemptId: "123",
+      title: "Testing title",
+      description: "Testng description",
+      categories: ["Testing categories", "Testing cateofgires 2"],
+      complexity: "Easy",
+      datetimeAttempted: "Date time example",
+      attemptText: "function call() {}"
+    })
   }, []);
 
   return (
@@ -74,9 +85,8 @@ const HistoryPage: React.FC = () => {
               </div>
               {/* Left side */}
               <div className="w-1/2">
-                <div>
-                  <div>Editor</div>
-                </div>
+                  <div className="font-bold text-xl text-center mb-2">Your attempt</div>
+                  <ReadonlyEditor />
               </div>
             </div>
         }
