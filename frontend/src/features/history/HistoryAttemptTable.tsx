@@ -1,13 +1,13 @@
 // QuestionTable.tsx
 import React, { useMemo } from "react";
 import { useTable, Column } from "react-table";
-import { HistoryAttempt, HistoryTableHeaders } from "../questions/types/HistoryAttempt";
+import { HistoryTableData, HistoryTableHeaders } from "../questions/types/HistoryAttempt";
 
 // Define the props for the table
 interface HistoryQuestionTableProps {
-  attempts: Array<HistoryAttempt>;
+  attempts: Array<HistoryTableData>;
   columns: Column<HistoryTableHeaders>[];
-  onClick: (row: HistoryAttempt) => void;
+  onClick: (row: HistoryTableData) => void;
 }
 
 const HistoryAttemptTable: React.FC<HistoryQuestionTableProps> = ({
@@ -68,7 +68,7 @@ const HistoryAttemptTable: React.FC<HistoryQuestionTableProps> = ({
                   key={cell.column.id}
                   className="py-3 px-6 text-left"
                   onClick={() => {
-                    const attempt = row.original as HistoryAttempt
+                    const attempt = row.original as HistoryTableData
                     onClick(attempt);
                   }}
                 >

@@ -8,6 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import { UserProvider } from "./context/UserContext";
 import "bootstrap/dist/css/bootstrap.min.css";
+import HistoryAttemptPage from "./pages/HistoryDashboardPage";
 import HistoryPage from "./pages/HistoryPage";
 
 const App: React.FC = () => {
@@ -21,7 +22,8 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/historyDashboard" element={<HistoryAttemptPage />} />
+          <Route path="/historyAttempt/:attemptId" element={<HistoryPage />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>

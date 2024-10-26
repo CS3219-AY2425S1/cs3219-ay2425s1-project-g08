@@ -1,75 +1,88 @@
-import { useUser } from "../context/UserContext"; // Assuming you have a context providing the user
+import { useParams } from "react-router-dom";
+import { HistoryAttempt } from "../features/questions/types/HistoryAttempt";
+import { Question } from "../features/questions";
 import HistoryNavBar from "../components/navbars/HistoryNavBar";
-import HistoryAttemptTable from "../features/history/HistoryAttemptTable";
-import { Column } from "react-table";
-import { HistoryAttempt, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
+import { useEffect, useState } from "react";
+import apiConfig from "../config/config";
 
-// Sample data
-const attempts: HistoryAttempt[] = [
-  {
-    attemptId: "1",
-    title: "Java Basics Quiz",
-    category: "Programming",
-    complexity: "Beginner",
-    datetimeAttempted: "2023-10-25T12:34:00Z",
-    attemptText: "Example text of the attempt",
-  },
-  {
-    attemptId: "2",
-    title: "React Intermediate",
-    category: "Programming",
-    complexity: "Intermediate",
-    datetimeAttempted: "2023-10-26T15:45:00Z",
-    attemptText: "Another attempt text",
-  },
-];
+interface LabelProps {
+  text: string; // Declare the prop type
+}
 
-const columns: Array<Column<HistoryTableHeaders>> = [
-  {
-    Header: "Title",
-    accessor: "title",
-  },
-  {
-    Header: "Category",
-    accessor: "category",
-  },
-  {
-    Header: "Complexity",
-    accessor: "complexity",
-  },
-  {
-    Header: "Date Attempted",
-    accessor: "datetimeAttempted",
-  },
-];
+const ComplexityLabel: React.FC<LabelProps> = ({ text }) => {
+  return (
+    <div className="rounded bg-green h-8 px-4 border-l-black-4 flex items-center">
+      <div className="text-sm text-center font-semibold">{text}</div>
+    </div>
+  )
+}
 
-// onClick handler
-const handleRowClick = (attempt: HistoryAttempt) => {
-  console.log("Attempt clicked:", attempt);
-  // You could route to another page or perform any action with the attempt data here
-};
+const CategoryLabel: React.FC<LabelProps> = ({ text }) => {
+  return (
+    <div className="rounded bg-orange-300 h-8 px-4 mx-2 border-l-black-4 flex items-center">
+      <div className="text-sm text-center font-semibold">{text}</div>
+    </div>
+  )
+}
 
 const HistoryPage: React.FC = () => {
-
-  const { user } = useUser();
+  const { attemptId } = useParams<{ attemptId: string }>();
+  const [attempt, setAttempt] = useState<HistoryAttempt>();
   
-  if (!user) {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    const historyServiceUrl = "http://localhost:5000";
+    fetch(`${historyServiceUrl}/questions/${attemptId}`,
+      {
+        mode: "cors",
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": `${historyServiceUrl}`,
+        },
+      }
+    ).then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} - ${res.statusText}`)
+      }
+      res.json()
+        .then(data => {
+          setAttempt(data)
+        });
+    });
+  }, []);
 
   return (
-    <div className="w-screen h-screen flex flex-col">
-      <HistoryNavBar />
-      <div className="flex flex-row justify-center">
-        <div className="text-center text-3xl py-10 font-bold">Your Attempt History</div>
+    <>
+      <div className="flex flex-col h-screen w-screen">
+        <HistoryNavBar />
+        {
+          !attempt
+          ? <>Failed to obtain your history</>
+          : <div className="flex flex-row">
+              <div className="w-1/2">
+                  <div className="flex flex-row justify-items-center mt-4">
+                    <div className="text-2xl text-left font-bold px-2 mr-4">{attempt.title}</div>
+                    <ComplexityLabel text={attempt.complexity}/>
+                  </div>
+                  <div className="flex flex-row flex-wrap justify-items-center mb-4">
+                    {attempt.categories.map((category) => (
+                      <CategoryLabel text={category} />
+                    ))}
+                  </div>
+                <div className="max-w-full m-4">
+                  <div className="text-wrap break-words">{attempt.description}</div>
+                </div>
+              </div>
+              {/* Left side */}
+              <div className="w-1/2">
+                <div>
+                  <div>Editor</div>
+                </div>
+              </div>
+            </div>
+        }
       </div>
-      <HistoryAttemptTable
-        attempts={attempts}
-        columns={columns}
-        onClick={handleRowClick}
-      />
-    </div>
-  );
-};
+    </>
+  )
+}
 
 export default HistoryPage;
