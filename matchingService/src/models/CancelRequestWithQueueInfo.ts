@@ -1,5 +1,6 @@
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { Difficulty } from "../QueueService/matchingEnums";
 import { CancelRequest } from "./CancelRequest";
+import { Category } from "./Category";
 
 /**
  * CancelRequestWithQueueInfo stores additional information - timestamp. 
@@ -8,15 +9,15 @@ import { CancelRequest } from "./CancelRequest";
 class CancelRequestWithQueueInfo {
     private readonly matchId: string;
     private readonly difficulty: Difficulty;
-    private readonly topic: Topic;
+    private readonly category: string;
 
     private static readonly EXPIRATION_DURATION = 1 * 60 * 1000;
     private timestamp: Date;
 
-    constructor(matchId: string, difficulty: Difficulty, topic: Topic) {
+    constructor(matchId: string, difficulty: Difficulty, category: string) {
         this.matchId = matchId;
         this.difficulty = difficulty;
-        this.topic = topic;
+        this.category = category;
         this.timestamp = new Date();
     }
 
@@ -28,13 +29,13 @@ class CancelRequestWithQueueInfo {
         return this.difficulty;
     }
 
-    public getTopic(): Topic {
-        return this.topic;
+    public getCategory(): string {
+        return this.category;
     }
 
     public static createFromCancelRequest(cancelRequest: CancelRequest): CancelRequestWithQueueInfo {
         return new CancelRequestWithQueueInfo(cancelRequest.matchId, 
-            cancelRequest.difficulty, cancelRequest.topic);
+            cancelRequest.difficulty, cancelRequest.category);
     }
 
     public hasExpired(): boolean {

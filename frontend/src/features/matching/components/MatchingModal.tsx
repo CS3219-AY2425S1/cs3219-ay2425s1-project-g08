@@ -21,7 +21,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
 }) => {
   const [matchId, setMatchId] = useState("");
   const [formData, setFormData] = useState<MatchingRequestFormState>({
-    topic: "",
+    category: "",
     difficulty: "",
   });
 
@@ -57,7 +57,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
       });
       console.log("Sent match request: ", {
         name: user?.username, // set up with user context later
-        topic: formData.topic,
+        category: formData.category,
         difficulty: formData.difficulty,
       });
       const res = await fetch(
@@ -70,7 +70,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
           },
           body: JSON.stringify({
             name: user?.username, // set up with user context later
-            topic: formData.topic,
+            category: formData.category,
             difficulty: formData.difficulty,
           }),
         }
@@ -116,7 +116,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
   async function handleCancelMatchRequest() {
     console.log(`Cancelling request of matchId: ${matchId}`);
     await fetch(
-      `${apiConfig.matchExpressJsUrl}/match/cancelMatch?matchId=${matchId}&topic=${formData.topic}&difficulty=${formData.difficulty}`,
+      `${apiConfig.matchExpressJsUrl}/match/cancelMatch?matchId=${matchId}&category=${formData.category}&difficulty=${formData.difficulty}`,
       {
         mode: "cors",
         method: "DELETE",

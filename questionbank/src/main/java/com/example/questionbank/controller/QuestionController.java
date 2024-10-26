@@ -105,17 +105,21 @@ public class QuestionController {
     /**
      * Retrieves all questions.
      * <p>
-     * This endpoint returns a collection of all questions in the repository that have a certain complexity,
+     * This endpoint returns a collection of all questions in the
+     * repository that have a certain complexity,
      * each wrapped in an {@link EntityModel}.
      *
-     * @return a {@link CollectionModel} containing {@link EntityModel}s of
-     * all questions with a certain complexity 
+     * @param complexity is the specific complexity of all questions retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     * of all questions with a certain complexity
      */
     @GetMapping("/questions/complexity/all/{complexity}")
-    public CollectionModel<EntityModel<Question>> allByComplexity(@PathVariable Complexity complexity) {
+    public CollectionModel<EntityModel<Question>> allByComplexity(
+            @PathVariable Complexity complexity) {
         LOGGER.info("Fetching all questions with complexity: {}", complexity);
 
-        List<EntityModel<Question>> questions = service.getAllQuestionsByComplexity(complexity)
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByComplexity(complexity)
                 .stream() //
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
@@ -128,17 +132,21 @@ public class QuestionController {
     /**
      * Retrieves all questions.
      * <p>
-     * This endpoint returns a collection of all questions in the repository that have a certain category,
+     * This endpoint returns a collection of all questions in the repository
+     * that have a certain category,
      * each wrapped in an {@link EntityModel}.
      *
+     * @param category is the specific categories for all questions retrieved
      * @return a {@link CollectionModel} containing {@link EntityModel}s of
      * all questions with a certain category
      */
     @GetMapping("/questions/category/all/{category}")
-    public CollectionModel<EntityModel<Question>> allByCategory(@PathVariable Category category) {
+    public CollectionModel<EntityModel<Question>> allByCategory(
+            @PathVariable Category category) {
         LOGGER.info("Fetching all questions with category: {}", category);
 
-        List<EntityModel<Question>> questions = service.getAllQuestionsByCategory(category)
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByCategory(category)
                 .stream() //
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
@@ -151,25 +159,35 @@ public class QuestionController {
     /**
      * Retrieves all questions.
      * <p>
-     * This endpoint returns a collection of all questions in the repository that have a certain category and complexity,
+     * This endpoint returns a collection of all questions in the repository
+     * that have a certain category and complexity,
      * each wrapped in an {@link EntityModel}.
      *
-     * @return a {@link CollectionModel} containing {@link EntityModel}s of
-     * all questions with a certain category and complexity
+     * @param category the specific category of the questions retrieved
+     * @param complexity the specific complexity of the questions
+     *                   retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     * of all questions with a certain category and complexity
      */
-    @GetMapping("/questions/category-and-complexity/all/{category}/{complexity}")
+    @GetMapping(
+            "/questions/category-and-complexity/all/{category}/{complexity}"
+    )
     public CollectionModel<EntityModel<Question>> allByCategoryAndComplexity(
             @PathVariable Category category,
             @PathVariable Complexity complexity) {
-        LOGGER.info("Fetching all questions with category: {} and complexity: {}", category, complexity);
+        LOGGER.info(
+                "Fetching all questions with category: {} and complexity: {}",
+                category, complexity);
 
-        List<EntityModel<Question>> questions = service.getAllQuestionsByCategoryAndComplexity(category, complexity)
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByCategoryAndComplexity(category, complexity)
                 .stream() //
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
 
         return CollectionModel.of(questions, linkTo(
-                methodOn(QuestionController.class).allByCategoryAndComplexity(category, complexity)
+                methodOn(QuestionController.class).allByCategoryAndComplexity(
+                        category, complexity)
         ).withSelfRel());
     }
 
