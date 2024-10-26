@@ -5,6 +5,7 @@ import HistoryNavBar from "../components/navbars/HistoryNavBar";
 import { useEffect, useState } from "react";
 import apiConfig from "../config/config";
 import ReadonlyEditor from "../features/history/ReadonlyEditor";
+import ReadonlyReactEditor from "../features/history/ReadonlyReactEditor";
 
 interface LabelProps {
   text: string; // Declare the prop type
@@ -86,7 +87,8 @@ const HistoryPage: React.FC = () => {
               {/* Left side */}
               <div className="w-1/2">
                   <div className="font-bold text-xl text-center mb-2">Your attempt</div>
-                  <ReadonlyEditor />
+                  {/* <ReadonlyEditor /> */}
+                  <ReadonlyReactEditor />
               </div>
             </div>
         }

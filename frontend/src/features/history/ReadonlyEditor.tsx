@@ -10,7 +10,6 @@ const ReadonlyEditor: React.FC = () => {
     
     // Preload content, replace this with the actual content you want to display
     type.insert(0, "const example = 'Hello, Yjs with Monaco in read-only mode!';")
-
     const editor = monaco.editor.create(document.getElementById('monaco-editor') as HTMLElement, {
       value: type.toString(),
       // language: 'javascript',
