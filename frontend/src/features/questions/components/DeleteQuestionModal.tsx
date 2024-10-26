@@ -2,7 +2,7 @@ import React from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
-import apiConfig from "../../../config/config";
+import useDeleteQuestion from "../hooks/useDeleteQuestion";
 
 interface DeleteQuestionModalProps {
   oldQuestion: Question;
@@ -17,30 +17,8 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
   onDelete,
   fetchData,
 }) => {
-  const deleteQuestion = async (questionID: string) => {
-    try {
-      //console.log("deleting question");
-      const response = await fetch(
-        `${apiConfig.questionbankServiceBaseUrl}/questions/${questionID}`,
-        {
-          mode: "cors",
-          method: "DELETE",
-          headers: {
-            "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
-      }
-      fetchData();
-    } catch (error) {
-      alert("Error deleting question. Please try again.");
-      console.error("Error deleting question:", error);
-    }
-  };
+  
+  const { deleteQuestion } = useDeleteQuestion();
 
   return (
     <>
@@ -72,7 +50,7 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
           <div className="mt-3"></div>
           {/* Complexity */}
           <ComplexityDropDown
-            currComplexity={oldQuestion.complexity}
+            complexityValue={oldQuestion.complexity}
             setComplexityValue={() => {}}
             isDisabled={true}
           />
@@ -115,7 +93,7 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
             <div className="flex justify-evenly mt-2">
               <button
                 onClick={() => {
-                  deleteQuestion(oldQuestion.id);
+                  deleteQuestion(oldQuestion.id, fetchData);
                   onDelete();
                 }}
                 className="bg-black bg-opacity-80 rounded-lg px-4 py-1.5 text-white text-lg hover:bg-gray-600"

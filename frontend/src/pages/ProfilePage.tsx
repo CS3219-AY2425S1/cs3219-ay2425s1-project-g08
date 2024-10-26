@@ -61,7 +61,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    navigate("/", { replace: true });
     logoutUser();
   };
 
@@ -154,22 +154,20 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-11 justify-center gap-4">
-        <div className="col-span-4"></div>
+      <div className="flex justify-center">
         <button
           onClick={() => openPwModal()}
           className="bg-yellow text-black font-bold py-2 px-4 rounded-md"
         >
-          Change Password
+          Change <br /> Password
         </button>
-        <div className="col-span-1"></div>
+        <div className="px-10"></div>
         <button
           onClick={() => handleLogout()}
           className="bg-black text-white font-bold py-2 px-4 rounded-md"
         >
           Logout
         </button>
-        <div className="col-span-4"></div>
       </div>
     </div>
   );
