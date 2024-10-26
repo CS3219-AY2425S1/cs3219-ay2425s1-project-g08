@@ -42,7 +42,7 @@ const EditConfirmationModal: React.FC<EditConfirmationModalProps> = ({
           <div className="mt-3"></div>
           {/* Complexity */}
           <ComplexityDropDown
-            currComplexity={newQuestion.complexity}
+            complexityValue={newQuestion.complexity}
             setComplexityValue={() => {}}
             isDisabled={true}
           />

@@ -62,7 +62,7 @@ const EditUsernameModal: React.FC<EditUsernameModalProps> = ({
       id="editUsernameModal"
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 text-black"
     >
-      <div className="bg-off-white rounded-lg p-4 w-1/5 h-1/2 fade-in modal-context z-50">
+      <div className="bg-off-white rounded-lg p-4 w-1/4 fade-in modal-context z-50">
         <div className="mb-10">
           <h1>
             <b>Change username</b>

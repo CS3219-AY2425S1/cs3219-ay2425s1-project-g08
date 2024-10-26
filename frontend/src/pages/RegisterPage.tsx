@@ -76,7 +76,7 @@ const RegisterPage: React.FC = () => {
     if (success) {
       updateUser(registeredUser);
       /* All new users are 'User' by default */
-      navigate("/dashboard", { replace: true }); // Replace: true to clear back history
+      navigate("/dashboard", { replace: true }); // Replace: true to remove register page from history stack
     }
   }, [success]);
 
