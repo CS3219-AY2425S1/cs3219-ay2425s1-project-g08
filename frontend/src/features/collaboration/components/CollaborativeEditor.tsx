@@ -1,37 +1,47 @@
 // src/CollaborativeEditor.tsx
-import React, { useEffect, useRef } from 'react';
-import * as Y from 'yjs';
-import { MonacoBinding } from 'y-monaco';
-import { WebsocketProvider } from 'y-websocket';
-import * as monaco from 'monaco-editor';
+import React, { useEffect, useRef } from "react";
+import * as Y from "yjs";
+import { MonacoBinding } from "y-monaco";
+import { WebsocketProvider } from "y-websocket";
+import * as monaco from "monaco-editor";
 
-const CollaborativeEditor: React.FC = () => {
-  const editorRef = useRef<HTMLDivElement | null>(null);
+interface CollaborativeEditorProps {
+    roomID: string;
+}
 
-  useEffect(() => {
-    // Create a new Yjs document
-    const ydoc = new Y.Doc();
-    const yText = ydoc.getText('monaco');
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
+    roomID,
+}) => {
+    const editorRef = useRef<HTMLDivElement | null>(null);
 
-    // Connect to the WebSocket server
-    const provider = new WebsocketProvider('ws://localhost:8080', 'collaborative-editor', ydoc);
+    useEffect(() => {
+        // Create a new Yjs document
+        const ydoc = new Y.Doc();
+        const yText = ydoc.getText("monaco");
 
-    // Initialize the Monaco editor
-    const editor = monaco.editor.create(editorRef.current!, {
-      language: 'javascript',
-      automaticLayout: true,
-    });
+        // Connect to the WebSocket server
+        const provider = new WebsocketProvider(
+            "ws://localhost:8080",
+            roomID, // ensure that only mathced users are able to type together
+            ydoc
+        );
 
-    // Bind the Yjs document to the Monaco editor
-    new MonacoBinding(yText, editor.getModel()!, new Set([editor]));
+        // Initialize the Monaco editor
+        const editor = monaco.editor.create(editorRef.current!, {
+            language: "javascript",
+            automaticLayout: true,
+        });
 
-    return () => {
-      editor.dispose(); // Clean up editor on unmount
-      provider.destroy(); // Close the WebSocket connection
-    };
-  }, []);
+        // Bind the Yjs document to the Monaco editor
+        new MonacoBinding(yText, editor.getModel()!, new Set([editor]));
 
-  return <div ref={editorRef} style={{ height: '100vh', width: '100%' }} />;
+        return () => {
+            editor.dispose(); // Clean up editor on unmount
+            provider.destroy(); // Close the WebSocket connection
+        };
+    }, []);
+
+    return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };
 
 export default CollaborativeEditor;

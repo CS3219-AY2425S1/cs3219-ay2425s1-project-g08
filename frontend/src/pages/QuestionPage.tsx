@@ -23,7 +23,7 @@ const QuestionPage: React.FC = () => {
                     <QuestionDisplay question={question} />
                 </div>
                 <div>
-                    <CollaborativeEditor />
+                    <CollaborativeEditor roomID=""/>
                 </div>
             </div>
         </div>
