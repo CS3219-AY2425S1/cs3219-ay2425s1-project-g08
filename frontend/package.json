@@ -38,7 +38,6 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@monaco-editor/react": "^4.6.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
@@ -48,6 +47,9 @@
     "react-router-dom": "^6.26.2",
     "react-select": "^5.8.1",
     "react-table": "^7.8.0",
-    "socket.io-client": "^4.8.0"
+    "socket.io-client": "^4.8.0",
+    "y-monaco": "^0.1.6",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.20"
   }
 }
