@@ -16,7 +16,11 @@ public class CategoryModelAssembler implements
     @Override
     public EntityModel<CategoryDto> toModel(CategoryDto categoryDto) {
         return EntityModel.of(categoryDto,
-                linkTo(methodOn(CategoryController.class).getCategoriesWithQuestions()).withRel("categoriesWithQuestions"),
-                linkTo(methodOn(CategoryController.class).getAllCategories()).withSelfRel());
+                linkTo(methodOn(CategoryController.class)
+                        .getCategoriesWithQuestions())
+                        .withRel("categoriesWithQuestions"),
+                linkTo(methodOn(CategoryController.class)
+                        .getAllCategories())
+                        .withSelfRel());
     }
 }

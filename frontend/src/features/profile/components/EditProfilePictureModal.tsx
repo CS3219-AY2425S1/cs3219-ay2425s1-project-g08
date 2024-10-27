@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useUploadProfilePicture from "../hooks/useUploadProfilePicture.tsx";
 import { ErrorModal } from "../../dashboard";
 import { User } from "../../../types/User.tsx";
@@ -51,7 +51,7 @@ const EditProfilePictureModal: React.FC<EditProfilePictureModalProps> = ({
       id="editProfilePictureModal"
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 text-black"
     >
-      <div className="bg-off-white rounded-lg p-12 w-1/4 h-1/3 fade-in modal-context z-50">
+      <div className="bg-off-white rounded-lg p-12 w-1/4 fade-in modal-context z-50">
         {/* Browser and Upload image button */}
         <div className="p-1">
           <input type="file" className="w-full" onChange={handleFileChange} />

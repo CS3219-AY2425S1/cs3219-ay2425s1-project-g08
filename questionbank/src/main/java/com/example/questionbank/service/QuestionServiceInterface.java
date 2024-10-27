@@ -28,6 +28,7 @@ public interface QuestionServiceInterface {
     /**
      * Retrieves all questions with a given complexity.
      *
+     * @param complexity the complexity level of the questions to retrieve
      * @return a list of all {@link Question} entities with a given complexity.
      */
     List<Question> getAllQuestionsByComplexity(Complexity complexity);
@@ -35,6 +36,7 @@ public interface QuestionServiceInterface {
     /**
      * Retrieves all questions with a given category.
      *
+     * @param category the category of the questions to retrieve
      * @return a list of all {@link Question} entities with a given category.
      */
     List<Question> getAllQuestionsByCategory(Category category);
@@ -42,9 +44,15 @@ public interface QuestionServiceInterface {
     /**
      * Retrieves all questions with a given category and complexity.
      *
-     * @return a list of all {@link Question} entities with a given category and complexity.
+     * @param category the category of the questions to retrieve
+     * @param complexity the complexity level of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given category
+     * and complexity.
      */
-    List<Question> getAllQuestionsByCategoryAndComplexity(Category category, Complexity complexity);
+    List<Question> getAllQuestionsByCategoryAndComplexity(
+            Category category,
+            Complexity complexity
+    );
 
     /**
      * Retrieves a question by its ID.
@@ -84,7 +92,8 @@ public interface QuestionServiceInterface {
      * @throws QuestionNotFoundException if no question is found with the
      * specified ID
      */
-    Question updateQuestion(String id, Question updatedQuestion) throws QuestionNotFoundException;
+    Question updateQuestion(String id, Question updatedQuestion)
+            throws QuestionNotFoundException;
 
     /**
      * Deletes a question by its ID.

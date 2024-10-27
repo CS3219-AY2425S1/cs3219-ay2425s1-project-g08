@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (success) {
-      navigate("/dashboard", { replace: true }); // Replace: true to clear back history
+      navigate("/dashboard", { replace: true }); // Replace: true to remove login page from history stack
     }
   }, [success]);
 

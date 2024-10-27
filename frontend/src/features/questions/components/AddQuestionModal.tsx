@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import DescriptionInput from "./DescriptionInput";
-import apiConfig from "../../../config/config";
-import { Category, CategoryDropDown } from "..";
+import useAddQuestion from "../hooks/useAddQuestion";
+import { Category, CategoryDropDown, WarningMessage } from "..";
 
 interface AddQuestionModalProps {
   fetchData: () => Promise<void>;
@@ -19,50 +19,14 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
+
+  const missingWarningMessage = "* Please fill in all the empty fields. *";
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
-  //const [canSubmit, setCanSubmit] = useState(false);
 
-  /* POST request to API to add question */
-  const addQuestion = async (
-    complexityValue: string,
-    selectedCategoriesToSubmit: string[],
-    titleValue: string,
-    descriptionValue: string
-  ) => {
-    try {
-      const response = await fetch(
-        `${apiConfig.questionbankServiceBaseUrl}/questions`,
-        {
-          mode: "cors",
-          method: "POST",
-          headers: {
-            "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: titleValue,
-            description: descriptionValue,
-            categories: selectedCategoriesToSubmit,
-            complexity: complexityValue,
-          }),
-        }
-      );
+  const duplicateWarningMessage = "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
+  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] = useState(false);
 
-      const data = await response.json();
-      if (!response.ok) {
-        console.log(data);
-        throw new Error("Title already exists");
-      } else {
-        onClose();
-        fetchData();
-      }
-    } catch (error) {
-      alert(
-        "Error adding question. The question you are adding may be a duplicate (having the same title as an existing question). Please try again."
-      );
-      console.error("Error adding question:", error);
-    }
-  };
+  const { addQuestion } = useAddQuestion();
 
   /* Handle Submit button click */
   const onSubmit = async () => {
@@ -73,11 +37,15 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
       descriptionValue == ""
     ) {
       /* Empty fields detected, show warning */
-      //alert(complexityValue + categoryList + titleValue + descriptionValue);
+      setIsDuplicateWarningVisible(false);
       setIsMissingWarningVisible(true);
       return;
     }
-    // Extract only the names from selectedCategories
+
+    setIsDuplicateWarningVisible(false);
+    setIsMissingWarningVisible(false);
+
+    /* Extract only the names from selectedCategories */
     const selectedCategoriesToSubmit = selectedCategories.map(
       (category) => category.name
     );
@@ -87,7 +55,10 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
       complexityValue,
       selectedCategoriesToSubmit,
       titleValue,
-      descriptionValue
+      descriptionValue,
+      onClose,
+      fetchData,
+      setIsDuplicateWarningVisible
     );
   };
 
@@ -118,7 +89,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           <div className="mt-3"></div>
           {/* Complexity */}
           <ComplexityDropDown
-            currComplexity=""
+            complexityValue={complexityValue}
             setComplexityValue={setComplexityValue}
             isDisabled={false}
           />
@@ -156,9 +127,10 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
           {/* Action buttons */}
           <div className="mt-6">
             {isMissingWarningVisible && (
-              <p id="emptyMessage" className="flex justify-center text-red-500">
-                * Please fill in all the empty fields. *
-              </p>
+              <WarningMessage message={missingWarningMessage} />
+            )}
+            {isDuplicateWarningVisible && (
+              <WarningMessage message={duplicateWarningMessage} />
             )}
             <div className="flex justify-evenly mt-2">
               <button

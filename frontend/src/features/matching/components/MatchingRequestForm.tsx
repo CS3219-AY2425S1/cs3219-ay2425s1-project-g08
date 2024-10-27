@@ -29,7 +29,7 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
   categoriesWithQuestions,
 }) => {
   // Transform categoriesWithQuestions to the format needed for react-select
-  const topics = categoriesWithQuestions.map((category) => ({
+  const categories = categoriesWithQuestions.map((category) => ({
     value: category.name, // Assuming 'name' is the property you want to use
     label: category.displayName || category.name, // Use displayName or fallback to name
   }));
@@ -49,7 +49,7 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
         e.preventDefault();
 
         // Validate form data
-        if (!formData.topic || !formData.difficulty) {
+        if (!formData.category || !formData.difficulty) {
           alert("Please select both a topic and a difficulty level.");
           return; // Stop submission if topic or difficulty is not set
         }
@@ -67,14 +67,14 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
           Topic:
         </label>
         <Select
-          id="topic"
+          id="category"
           onChange={(e) =>
             setFormData((prevFormData) => ({
               ...prevFormData, // Spread the previous formData to keep the difficulty
-              topic: e.value, // Replace "new topic" with the actual value you want
+              category: e.value, // Replace "new topic" with the actual value you want
             }))
           }
-          options={topics}
+          options={categories}
         />
         {/* <input
           type="text"
@@ -102,7 +102,7 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
           required
         /> */}
         <Select
-          id="difficutly"
+          id="difficulty"
           onChange={(e) =>
             setFormData((prevFormData) => ({
               ...prevFormData, // Spread the previous formData to keep the difficulty
