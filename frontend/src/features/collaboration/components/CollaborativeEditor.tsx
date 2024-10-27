@@ -4,14 +4,15 @@ import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
+import { useUser } from "../../../context/UserContext";
 
 interface CollaborativeEditorProps {
     roomID: string;
 }
 
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
-    roomID,
-}) => {
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = () => {
+    const { roomId } = useUser();
+
     const editorRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -21,8 +22,8 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
 
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
-            "ws://localhost:8080",
-            roomID, // ensure that only mathced users are able to type together
+            "ws://localhost:1234",
+            roomId || "", // ensure that only mathced users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
             ydoc
         );
 
