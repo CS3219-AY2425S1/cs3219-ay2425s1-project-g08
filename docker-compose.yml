@@ -53,3 +53,11 @@ services:
         condition: service_healthy
       questionbank:
         condition: service_healthy
+
+  profilepicture-service:
+    build:
+      context: ./PeerPrep-UserService/profile-picture-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=classpath:gcp-service-account-key.json

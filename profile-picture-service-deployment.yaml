@@ -46,7 +46,7 @@ metadata:
   name: profilepicture-service
   namespace: peerprep
 spec:
-  type: NodePort  # To expose externally
+  type: ClusterIP  # To expose externally
   selector:
     app: profilepicture
   ports:

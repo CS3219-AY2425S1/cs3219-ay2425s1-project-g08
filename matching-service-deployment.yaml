@@ -92,7 +92,7 @@ metadata:
   name: matching-service
   namespace: peerprep
 spec:
-  type: NodePort  
+  type: ClusterIP
   selector:
     app: matching
   ports:
