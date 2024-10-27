@@ -67,9 +67,9 @@ class QueueService {
         );
 
         await service.init();
-        // await service.startConsumers(categories);
+        await service.startConsumers(categories);
 
-        // logger.info("QueueService initialized and consumers started");
+        logger.info("QueueService initialized and consumers started");
         return service;
     }
 
