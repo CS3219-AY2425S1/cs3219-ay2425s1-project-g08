@@ -19,7 +19,7 @@ export interface IQueueService {
  * Initialises the different services, controllers and websocket.
  */
 export async function initialiseServices(app: Application): Promise<MatchController> {
-    const QUESTION_SERVICE_URL: string = `http://questionbank:8080`; // Change as required
+    const QUESTION_SERVICE_URL: string = `http://localhost:8080`; // Change as required
     const categories: Category[] = await getQuestionCategories(QUESTION_SERVICE_URL);
     const requestValidator: RequestValidator = new RequestValidator(categories);
     const queueService: QueueService = await QueueService.of(process.env.RABBITMQ_URL || "amqp://localhost:5672", "gateway", "responseGateway", categories);
