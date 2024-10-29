@@ -213,12 +213,14 @@ public class QuestionService implements QuestionServiceInterface {
     @Override
     public Question getRandomQuestionByCategoryAndComplexity(Category category,
                                                       Complexity complexity) {
-        List<Question> questionList = repository.findQuestionsByCategoriesIsContainingAndComplexity(
+        List<Question> questionList = repository
+                .findQuestionsByCategoriesIsContainingAndComplexity(
                 category, complexity);
         int randomNum = new Random().nextInt(questionList.size());
         Question randomQuestion = questionList.get(randomNum);
         if (randomQuestion == null) {
-            throw new RandomQuestionNotFoundException(category.toString(), complexity.toString());
+            throw new RandomQuestionNotFoundException(category.toString(),
+                    complexity.toString());
         }
         return randomQuestion;
     }

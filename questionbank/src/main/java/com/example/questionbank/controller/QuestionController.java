@@ -257,7 +257,8 @@ public class QuestionController {
     /**
      * Retrieves one question.
      * <p>
-     * This endpoint returns one of a collection of all questions in the repository
+     * This endpoint returns one of a collection of all questions
+     * in the repository
      * that have a certain category and complexity,
      * each wrapped in an {@link EntityModel}.
      *
@@ -274,10 +275,12 @@ public class QuestionController {
             @PathVariable Category category,
             @PathVariable Complexity complexity) {
         LOGGER.info(
-                "Fetching a random question with category: {} and complexity: {}",
+                "Fetching a random question with category: "
+                        + "{} and complexity: {}",
                 category, complexity);
 
-        Question question = service.getRandomQuestionByCategoryAndComplexity(category, complexity);
+        Question question = service.getRandomQuestionByCategoryAndComplexity(
+                category, complexity);
 
         return assembler.toModel(question);
     }
