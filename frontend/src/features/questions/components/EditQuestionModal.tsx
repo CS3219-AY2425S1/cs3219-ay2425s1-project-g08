@@ -22,7 +22,6 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   fetchData,
   categories,
 }) => {
-  
   const { editQuestion } = useEditQuestion();
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -47,8 +46,10 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   const missingWarningMessage = "* Please fill in all the empty fields. *";
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
 
-  const duplicateWarningMessage = "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
-  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] = useState(false);
+  const duplicateWarningMessage =
+    "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
+  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] =
+    useState(false);
 
   const onDeleteConfirm = () => {
     closeDeleteModal();
@@ -139,14 +140,16 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
           isDisabled={false}
         />
 
-        {/* Category */}
-        <CategoryDropDown
-          rawCategories={oldQuestion.categories}
-          categories={categories}
-          selectedCategories={newCategoryList}
-          setSelectedCategories={setNewCategoryList}
-          isDisabled={false}
-        />
+        <div className="mt-2">
+          {/* Category */}
+          <CategoryDropDown
+            rawCategories={oldQuestion.categories}
+            categories={categories}
+            selectedCategories={newCategoryList}
+            setSelectedCategories={setNewCategoryList}
+            isDisabled={false}
+          />
+        </div>
 
         {/* Question Title */}
         <div className="mt-2">
