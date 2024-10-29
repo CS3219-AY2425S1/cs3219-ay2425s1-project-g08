@@ -68,13 +68,6 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
 
             console.log("Received response from server:", data);
 
-            if (!data.roomId) {
-                console.error("No room ID received");
-                return;
-            } else {
-                setRoomId(data.roomId);
-            }
-
             if (!data.matchId) {
                 console.error("No match ID received");
                 return;
@@ -89,6 +82,8 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
                 console.log("Received match response:", responseData);
                 ack(true);
                 socket.emit("broadcast", `hi from ${user?.username}`);
+                console.log("RoomId", data.roomId);
+                setRoomId(data.roomId);
                 setShowTimer(false);
                 setShowCancelButton(false);
                 setIsMatchFound(true);
