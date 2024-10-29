@@ -195,6 +195,7 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
                 onClose={closeDeleteModal}
                 onDelete={onDeleteConfirm}
                 fetchData={fetchData}
+                categories={categories}
               />
             )}
             <button
@@ -208,6 +209,7 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
                 newQuestion={newQuestion}
                 onClose={closeEditConfirmationModal}
                 onEditConfirm={onEditConfirm}
+                categories={categories}
               />
             )}
             <button

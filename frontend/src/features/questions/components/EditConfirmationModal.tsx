@@ -2,18 +2,28 @@ import React from "react";
 import ComplexityDropDown from "./ComplexityDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
+import { Category } from "..";
 
 interface EditConfirmationModalProps {
   newQuestion: Question;
   onClose: () => void;
   onEditConfirm: () => void;
+  categories: Array<Category>;
 }
 
 const EditConfirmationModal: React.FC<EditConfirmationModalProps> = ({
   newQuestion,
   onClose,
   onEditConfirm,
+  categories,
 }) => {
+  // Method to find the display name for a given category name
+  const findDisplay = (categoryName: string): string => {
+    if (!categories) return categoryName; // Fallback to the categoryName if categories array is undefined
+    const category = categories.find((cat) => cat.name === categoryName);
+    return category ? category.displayName : categoryName;
+  };
+
   return (
     <>
       <div
@@ -55,7 +65,9 @@ const EditConfirmationModal: React.FC<EditConfirmationModalProps> = ({
                 id="category"
                 className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-500 ring-1 ring-inset ring-gray-300 focus:outline-none sm:text-sm sm:leading-6"
               >
-                {newQuestion.categories.toString()}
+                {newQuestion.categories
+                  .map((category) => findDisplay(category))
+                  .join(", ")}
               </p>
             </div>
           </div>
