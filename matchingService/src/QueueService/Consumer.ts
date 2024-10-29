@@ -68,7 +68,7 @@ class Consumer {
             req.retries++;
             if (!this.pendingReq) {
                 const updatedMessageContent = Buffer.from(JSON.stringify(req));
-                this.channel.sendToQueue(msg.fields.routingKey, updatedMessageContent, {});
+                this.channel.sendToQueue(msg.fields.routingKey, updatedMessageContent, {persistent: true});
                 return;
             }
             req.difficulty = this.difficulty; // Fallback request's difficulty will change depending on who is available
@@ -183,8 +183,8 @@ class Consumer {
             roomId: roomId,
         }
 
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res1)), {});
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res2)), {});
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res1)), {persistent: true});
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res2)), {persistent: true});
 
         logger.debug("Responses sent to matched requests");
         this.pendingReq = null;
@@ -204,7 +204,7 @@ class Consumer {
             this.pendingReqTimeout = setTimeout(() => {
                 logger.debug(`Pending request expired: ${req.matchId}`);
                 this.pendingReq = null; // Clear the pending request
-                this.channel.publish(this.directExchange, req.category, Buffer.from(JSON.stringify(req)), {});
+                this.channel.publish(this.directExchange, req.category, Buffer.from(JSON.stringify(req)), {persistent: true});
                 logger.debug(`Expired request sent to ${req.category}`);
             }, delay);
         } else {
