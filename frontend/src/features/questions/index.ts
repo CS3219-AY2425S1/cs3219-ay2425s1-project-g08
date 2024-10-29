@@ -10,12 +10,16 @@ export { default as EditConfirmationModal } from "./components/EditConfirmationM
 export { default as EditQuestionModal } from "./components/EditQuestionModal";
 export { default as QuestionDisplay } from "./components/QuestionDisplay";
 export { default as CategoryDropDown } from "./components/CategoryDropDown";
+export { default as WarningMessage } from "./components/WarningMessage";
 
 // Export hooks
 export { default as useQuestionList } from "./hooks/useQuestionList";
 export { default as useCategoryList } from "./hooks/useCategoryList";
 export { default as useCategoryWithQuestionsList } from "./hooks/useCategoryWithQuestionsList";
 export { default as useRetrieveQuestion } from "./hooks/useRetrieveQuestion";
+export { default as useAddQuestion } from "./hooks/useAddQuestion";
+export { default as useDeleteQuestion } from "./hooks/useDeleteQuestion";
+export { default as useEditQuestion } from "./hooks/useEditQuestion";
 
 // Export types
 export * from "./types/Question";

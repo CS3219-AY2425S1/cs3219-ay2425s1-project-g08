@@ -6,8 +6,8 @@ import ComplexityDropDown from "./ComplexityDropDown";
 import CategoryDropDown from "./CategoryDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
-import apiConfig from "../../../config/config";
-import { Category } from "..";
+import useEditQuestion from "../hooks/useEditQuestion";
+import { Category, WarningMessage } from "..";
 
 interface EditQuestionModalProps {
   oldQuestion: Question;
@@ -22,51 +22,8 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
   fetchData,
   categories,
 }) => {
-  /* PUT request to API to edit question */
-  const editQuestion = async (
-    questionID: string,
-    complexityValue: string,
-    categoryValue: string[],
-    titleValue: string,
-    descriptionValue: string
-  ) => {
-    await fetch(
-      `${apiConfig.questionbankServiceBaseUrl}/questions/${questionID}`,
-      {
-        mode: "cors",
-        method: "PUT",
-        headers: {
-          "Access-Control-Allow-Origin": `${apiConfig.questionbankServiceBaseUrl}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: questionID,
-          title: titleValue,
-          description: descriptionValue,
-          categories: categoryValue,
-          complexity: complexityValue,
-        }),
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          console.log(response);
-          throw new Error("Title already exists");
-        } else {
-          response.json();
-          closeEditConfirmationModal();
-          onClose();
-          fetchData();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(
-          "Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again."
-        );
-        closeEditConfirmationModal();
-      });
-  };
+  
+  const { editQuestion } = useEditQuestion();
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const openDeleteModal = () => setDeleteModalOpen(true);
@@ -86,7 +43,12 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
     oldQuestion.description
   );
   const [newQuestion, setNewQuestion] = useState(oldQuestion);
+
+  const missingWarningMessage = "* Please fill in all the empty fields. *";
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
+
+  const duplicateWarningMessage = "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
+  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] = useState(false);
 
   const onDeleteConfirm = () => {
     closeDeleteModal();
@@ -104,7 +66,11 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       newComplexityValue,
       selectedCategoriesToSubmit,
       newTitleValue,
-      newDescriptionValue
+      newDescriptionValue,
+      closeEditConfirmationModal,
+      onClose,
+      fetchData,
+      setIsDuplicateWarningVisible
     );
   };
 
@@ -116,11 +82,13 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
       newTitleValue == "" ||
       newDescriptionValue == ""
     ) {
-      //alert(newComplexityValue + newCategoryList + newTitleValue + newDescriptionValue);
+      /* Show missing field warning message */
+      setIsDuplicateWarningVisible(false);
       setIsMissingWarningVisible(true);
     } else {
       /* All fields are filled -> ask user to confirm the changes */
       setIsMissingWarningVisible(false);
+      setIsDuplicateWarningVisible(false);
 
       // Extract only the names from selectedCategories
       const selectedCategoriesToSubmit = newCategoryList.map(
@@ -166,7 +134,7 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
         <div className="mt-3"></div>
         {/* Complexity */}
         <ComplexityDropDown
-          currComplexity={oldQuestion.complexity}
+          complexityValue={newComplexityValue}
           setComplexityValue={setNewComplexityValue}
           isDisabled={false}
         />
@@ -206,9 +174,10 @@ const EditQuestionModal: React.FC<EditQuestionModalProps> = ({
         {/* Action buttons */}
         <div className="mt-6">
           {isMissingWarningVisible && (
-            <p id="emptyMessage" className="flex justify-center text-red-500">
-              * Please fill in all the empty fields. *
-            </p>
+            <WarningMessage message={missingWarningMessage} />
+          )}
+          {isDuplicateWarningVisible && (
+            <WarningMessage message={duplicateWarningMessage} />
           )}
           <div className="flex justify-evenly mt-2">
             <button
