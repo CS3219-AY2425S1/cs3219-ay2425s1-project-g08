@@ -2,10 +2,12 @@ package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionNotFoundException;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
+import com.example.questionbank.commons.RandomQuestionNotFoundException;
 import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -111,4 +113,16 @@ public interface QuestionServiceInterface {
      * @return a set of unique categories
      */
     Set<Category> getUniqueCategoriesWithQuestions();
+
+    /**
+     * Retrieves one question by its category and complexity.
+     *
+     * @param category the category of the questions to retrieve
+     * @param complexity the complexity level of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given category
+     * and complexity.
+     */
+    Question getRandomQuestionByCategoryAndComplexity(
+            Category category, Complexity complexity)
+            throws RandomQuestionNotFoundException;
 }
