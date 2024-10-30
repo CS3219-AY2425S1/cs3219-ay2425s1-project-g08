@@ -9,16 +9,10 @@ interface MatchingRequestFormProps {
   categoriesWithQuestions: Array<Category>;
 }
 
-// const topics = [
-//   { value: "algorithm", label: "Algorithms" },
-//   { value: "graph", label: "Graphs" },
-//   { value: "dp", label: "Dynamic Programming" },
-// ];
-
 const difficulty = [
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
+  { value: "EASY", label: "Easy" },
+  { value: "MEDIUM", label: "Medium" },
+  { value: "HARD", label: "Hard" },
 ];
 
 // MatchingRequestForm.tsx
@@ -33,15 +27,6 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
     value: category.name, // Assuming 'name' is the property you want to use
     label: category.displayName || category.name, // Use displayName or fallback to name
   }));
-
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   return (
     <form
@@ -76,15 +61,6 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
           }
           options={categories}
         />
-        {/* <input
-          type="text"
-          id="topic"
-          name="topic"
-          value={formData.topic}
-          onChange={handleInputChange}
-          className="w-2/3 block rounded-md border border-gray-300 px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-black"
-          required
-        /> */}
       </div>
 
       {/* Difficulty input */}
@@ -92,15 +68,6 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
         <label htmlFor="difficulty" className="w-1/3 text-right">
           Difficulty:
         </label>
-        {/* <input
-          type="text"
-          id="difficulty"
-          name="difficulty"
-          value={formData.difficulty}
-          onChange={handleInputChange}
-          className="w-2/3 block rounded-md border border-gray-300 px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-black"
-          required
-        /> */}
         <Select
           id="difficulty"
           onChange={(e) =>
