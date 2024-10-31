@@ -5,6 +5,7 @@ import { Column } from "react-table";
 import { HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import apiConfig from "../config/config";
 
 const columns: Array<Column<HistoryTableHeaders>> = [
   {
@@ -42,15 +43,14 @@ const HistoryAttemptPage: React.FC = () => {
   const { user } = useUser();
   const [attempts, setAttempts] = useState<HistoryTableData[]>([]);
   const navigate = useNavigate();
-  const historyServiceUrl = "http://localhost:9090"
 
   useEffect(() => {
-    fetch(`${historyServiceUrl}/user123/attempts`,
+    fetch(`${apiConfig.historyServiceUrl}/user123/attempts`,
       { 
         mode: "cors",
         method: "GET",
         headers: {
-          "Access-Control-Allow-Origin": `${historyServiceUrl}`,
+          "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
         },
       }
     ).then(res => {

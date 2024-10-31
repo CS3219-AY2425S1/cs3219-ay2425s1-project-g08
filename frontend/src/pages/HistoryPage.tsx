@@ -1,10 +1,8 @@
 import { useParams } from "react-router-dom";
 import { HistoryAttempt } from "../features/questions/types/HistoryAttempt";
-import { Question } from "../features/questions";
 import HistoryNavBar from "../components/navbars/HistoryNavBar";
 import { useEffect, useState } from "react";
 import apiConfig from "../config/config";
-import ReadonlyEditor from "../features/history/ReadonlyEditor";
 import ReadonlyReactEditor from "../features/history/ReadonlyReactEditor";
 
 interface LabelProps {
@@ -32,13 +30,12 @@ const HistoryPage: React.FC = () => {
   const [attempt, setAttempt] = useState<HistoryAttempt>();
   
   useEffect(() => {
-    const historyServiceUrl = "http://localhost:9090";
-    fetch(`${historyServiceUrl}/attempt/${attemptId}`,
+    fetch(`${apiConfig.historyServiceUrl}/attempt/${attemptId}`,
       {
         mode: "cors",
         method: "GET",
         headers: {
-          "Access-Control-Allow-Origin": `${historyServiceUrl}`,
+          "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
         },
       }
     ).then(res => {
@@ -71,7 +68,7 @@ const HistoryPage: React.FC = () => {
                     ))}
                   </div>
                 <div className="max-w-full m-4">
-                  <div className="text-wrap break-words">{attempt.description}</div>
+                  <div className="text-wrap break-words">{attempt.content}</div>
                 </div>
               </div>
               {/* Right side */}
