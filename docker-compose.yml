@@ -57,3 +57,8 @@ services:
         condition: service_healthy
       questionbank:
         condition: service_healthy
+  historyMongodb:
+    image: 'mongo:8.0.3'
+    restart: always
+    ports:
+      - '27017:27017'
