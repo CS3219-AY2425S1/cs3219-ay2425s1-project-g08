@@ -1,4 +1,4 @@
-package com.example.history_service.attempt;
+package com.example.history_service.attempt.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

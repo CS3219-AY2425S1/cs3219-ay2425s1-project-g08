@@ -1,5 +1,6 @@
 package com.example.history_service.attempt;
 
+import com.example.history_service.attempt.models.Attempt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

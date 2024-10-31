@@ -1,5 +1,8 @@
 package com.example.history_service.attempt;
 
+import com.example.history_service.attempt.models.Attempt;
+import com.example.history_service.attempt.models.AttemptDTO;
+import com.example.history_service.attempt.models.AttemptForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins="*")
 @RestController
 public class AttemptController {
     private IAttemptService attemptService;
@@ -34,10 +37,9 @@ public class AttemptController {
     }
 
     @PostMapping(value="/attempt")
-    public ResponseEntity<Attempt> createAttempt(@RequestBody Attempt attempt) {
-        this.attemptService.createAttempt(new AttemptDTO(attempt.getId(), attempt.getAttempt_date(),
-                attempt.getContent(), attempt.getUserId(), attempt.getTitle(), attempt.getCategories(),
-                attempt.getComplexity()));
-        return new ResponseEntity<>(attempt, HttpStatus.OK);
+    public ResponseEntity<AttemptForm> createAttempt(@RequestBody AttemptForm form) {
+        this.attemptService.createAttempt(new AttemptDTO(null, form.attempt_date(), form.content(), form.userId(),
+                form.title(), form.categories(), form.complexity()));
+        return new ResponseEntity<>(form, HttpStatus.OK);
     }
 }
