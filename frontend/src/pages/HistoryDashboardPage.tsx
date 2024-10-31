@@ -6,23 +6,6 @@ import { HistoryTableData, HistoryTableHeaders } from "../features/questions/typ
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const attempts: HistoryTableData[] = [
-  {
-    attemptId: "1",
-    title: "Java Basics Quiz",
-    category: "Programming",
-    complexity: "Beginner",
-    datetimeAttempted: "2023-10-25T12:34:00Z",
-  },
-  {
-    attemptId: "12413",
-    title: "React Intermediate",
-    category: "Programming",
-    complexity: "Intermediate",
-    datetimeAttempted: "2023-10-26T15:45:00Z",
-  },
-];
-
 const columns: Array<Column<HistoryTableHeaders>> = [
   {
     Header: "Title",
@@ -78,12 +61,11 @@ const HistoryAttemptPage: React.FC = () => {
         .then(data => {
           const tableDatas: HistoryTableData[] = data.map(attempt => ({
             attemptId: attempt.id,
-            title: "Testing",
-            category: "easy",
-            complexity: "shagaf",
+            title: attempt.title,
+            category: attempt.category,
+            complexity: attempt.complexity,
             datetimeAttempted: attempt.attemptDate
           }));
-          console.log(tableDatas);
           setAttempts(tableDatas);
         }
       );

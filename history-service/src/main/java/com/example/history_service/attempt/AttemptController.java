@@ -35,7 +35,9 @@ public class AttemptController {
 
     @PostMapping(value="/attempt")
     public ResponseEntity<Attempt> createAttempt(@RequestBody Attempt attempt) {
-        this.attemptService.createAttempt(new AttemptDTO(attempt.getId(), attempt.getAttempt_date(), attempt.getContent(), attempt.getUserId()));
+        this.attemptService.createAttempt(new AttemptDTO(attempt.getId(), attempt.getAttempt_date(),
+                attempt.getContent(), attempt.getUserId(), attempt.getTitle(), attempt.getCategories(),
+                attempt.getComplexity()));
         return new ResponseEntity<>(attempt, HttpStatus.OK);
     }
 }

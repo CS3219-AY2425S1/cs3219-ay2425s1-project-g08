@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document("attempt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -17,4 +18,7 @@ public class Attempt {
     private Date attempt_date;
     private String content;
     private String userId;
+    private String title;
+    private List<String> categories;
+    private String complexity;
 }

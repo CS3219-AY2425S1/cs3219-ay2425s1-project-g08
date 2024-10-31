@@ -32,8 +32,8 @@ const HistoryPage: React.FC = () => {
   const [attempt, setAttempt] = useState<HistoryAttempt>();
   
   useEffect(() => {
-    const historyServiceUrl = "http://localhost:5000";
-    fetch(`${historyServiceUrl}/questions/${attemptId}`,
+    const historyServiceUrl = "http://localhost:9090";
+    fetch(`${historyServiceUrl}/attempt/${attemptId}`,
       {
         mode: "cors",
         method: "GET",
@@ -50,16 +50,6 @@ const HistoryPage: React.FC = () => {
           setAttempt(data)
         });
     });
-
-    setAttempt({
-      attemptId: "123",
-      title: "Testing title",
-      description: "Testng description",
-      categories: ["Testing categories", "Testing cateofgires 2"],
-      complexity: "Easy",
-      datetimeAttempted: "Date time example",
-      attemptText: "function call() {}"
-    })
   }, []);
 
   return (
@@ -84,11 +74,11 @@ const HistoryPage: React.FC = () => {
                   <div className="text-wrap break-words">{attempt.description}</div>
                 </div>
               </div>
-              {/* Left side */}
+              {/* Right side */}
               <div className="w-1/2">
                   <div className="font-bold text-xl text-center mb-2">Your attempt</div>
                   {/* <ReadonlyEditor /> */}
-                  <ReadonlyReactEditor />
+                  <ReadonlyReactEditor content={attempt.content}/>
               </div>
             </div>
         }
