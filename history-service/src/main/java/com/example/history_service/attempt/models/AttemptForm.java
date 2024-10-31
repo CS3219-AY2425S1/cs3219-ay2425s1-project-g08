@@ -17,6 +17,8 @@ public record AttemptForm(
         String userId,
         @NotEmpty(message="Title must not be empty!")
         String title,
+        @NotEmpty(message="Description must not be empty!")
+        String description,
         @NotEmpty(message="Categories must not be empty!")
         List<String> categories,
         @NotEmpty(message="Complexity must not be empty!")

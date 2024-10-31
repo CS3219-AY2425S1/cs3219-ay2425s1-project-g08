@@ -44,6 +44,7 @@ const HistoryPage: React.FC = () => {
       }
       res.json()
         .then(data => {
+          console.log(data);
           setAttempt(data)
         });
     });
@@ -68,7 +69,7 @@ const HistoryPage: React.FC = () => {
                     ))}
                   </div>
                 <div className="max-w-full m-4">
-                  <div className="text-wrap break-words">{attempt.content}</div>
+                  <div className="text-wrap break-words">{attempt.description}</div>
                 </div>
               </div>
               {/* Right side */}

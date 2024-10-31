@@ -22,6 +22,7 @@ public class Attempt {
     private String content;
     private String userId;
     private String title;
+    private String description;
     private List<String> categories;
     private String complexity;
 }

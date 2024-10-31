@@ -39,7 +39,7 @@ public class AttemptController {
     @PostMapping(value="/attempt")
     public ResponseEntity<AttemptDTO> createAttempt(@Valid @RequestBody AttemptForm form) {
         AttemptDTO attempt = this.attemptService.createAttempt(new AttemptDTO(null, form.attempt_date(), form.content(), form.userId(),
-                form.title(), form.categories(), form.complexity()));
+                form.title(), form.description(), form.categories(), form.complexity()));
         return new ResponseEntity<>(attempt, HttpStatus.OK);
     }
 }

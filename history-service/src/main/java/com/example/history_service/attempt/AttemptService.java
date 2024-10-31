@@ -20,7 +20,7 @@ public class AttemptService implements IAttemptService {
         Attempt attempt = this.attemptRepository.findById(id)
                 .orElseThrow(() -> new AttemptNotFoundException("Attempt not found"));
         return new AttemptDTO(attempt.getId(), attempt.getAttempt_date(), attempt.getContent(), attempt.getUserId(),
-                attempt.getTitle(), attempt.getCategories(), attempt.getComplexity());
+                attempt.getTitle(), attempt.getDescription(), attempt.getCategories(), attempt.getComplexity());
     }
 
     public List<AttemptDTO> getAttemptsByUserId(String userId) {
@@ -32,6 +32,7 @@ public class AttemptService implements IAttemptService {
                         attempt.getContent(),
                         attempt.getUserId(),
                         attempt.getTitle(),
+                        attempt.getDescription(),
                         attempt.getCategories(),
                         attempt.getComplexity()
                 ))
@@ -39,14 +40,15 @@ public class AttemptService implements IAttemptService {
     }
 
     public AttemptDTO createAttempt(AttemptDTO dto) {
-        Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(), dto.userId(), dto.title(),
-                dto.categories(), dto.complexity()));
+        Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(),
+                dto.userId(), dto.title(), dto.description(), dto.categories(), dto.complexity()));
         return new AttemptDTO(
                 attempt.getId(),
                 attempt.getAttempt_date(),
                 attempt.getContent(),
                 attempt.getUserId(),
                 attempt.getTitle(),
+                attempt.getDescription(),
                 attempt.getCategories(),
                 attempt.getComplexity()
         );
