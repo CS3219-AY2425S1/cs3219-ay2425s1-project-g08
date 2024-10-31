@@ -1,9 +1,9 @@
 services:
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   ports:
-  #     - "5173:5173"
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
 
   questionbank:
     build:
