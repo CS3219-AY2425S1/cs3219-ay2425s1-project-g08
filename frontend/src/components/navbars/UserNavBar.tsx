@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MatchButton } from "../../features/matching";
 import ProfileButton from "../../features/profile/components/ProfileButton";
 import { useUser } from "../../context/UserContext";
@@ -13,6 +13,7 @@ interface UserNavBarProps {
 
 const UserNavBar: React.FC<UserNavBarProps> = ({ categoriesWithQuestions }) => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [isUserMatchingModalOpen, setIsUserMatchingModalOpen] = useState(false);
 
   const openMatchingModal = () => setIsUserMatchingModalOpen(true);
@@ -35,6 +36,9 @@ const UserNavBar: React.FC<UserNavBarProps> = ({ categoriesWithQuestions }) => {
           categoriesWithQuestions={categoriesWithQuestions}
         />
       )}
+      <Link to="/historyDashboard">
+        <div className="text-gray-700 font-bold hover:text-emerald-700 hover:underline">History</div>
+      </Link>
       <div className="flex-none">
         <Link to="/profile">
           <ProfileButton currUser={user} />

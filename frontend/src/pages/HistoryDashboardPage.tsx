@@ -13,8 +13,8 @@ const columns: Array<Column<HistoryTableHeaders>> = [
     accessor: "title",
   },
   {
-    Header: "Category",
-    accessor: "category",
+    Header: "Categories",
+    accessor: "categories",
   },
   {
     Header: "Complexity",
@@ -62,7 +62,7 @@ const HistoryAttemptPage: React.FC = () => {
           const tableDatas: HistoryTableData[] = data.map(attempt => ({
             attemptId: attempt.id,
             title: attempt.title,
-            category: attempt.category,
+            categories: attempt.categories,
             complexity: attempt.complexity,
             datetimeAttempted: attempt.attemptDate
           }));

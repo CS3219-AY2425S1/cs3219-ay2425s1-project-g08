@@ -10,7 +10,7 @@ export type HistoryAttempt = {
 
 export type HistoryTableHeaders = {
   title: string,
-  category: string,
+  categories: string[],
   complexity: string,
   datetimeAttempted: string
 }
@@ -18,7 +18,7 @@ export type HistoryTableHeaders = {
 export type HistoryTableData = {
   attemptId: string,
   title: string,
-  category: string,
-  complexity: string[],
+  categories: string[],
+  complexity: string,
   datetimeAttempted: string
 }

@@ -1,5 +1,5 @@
 // QuestionTable.tsx
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useTable, Column } from "react-table";
 import { HistoryTableData, HistoryTableHeaders } from "../questions/types/HistoryAttempt";
 
@@ -72,7 +72,17 @@ const HistoryAttemptTable: React.FC<HistoryQuestionTableProps> = ({
                     onClick(attempt);
                   }}
                 >
-                  {cell.render("Cell")}
+                  {cell.column.Header === "Categories" ? (
+                    
+                    Array.isArray(cell.value) && cell.value.length > 0 ? (
+                      cell.value.reduce((total: string, category: string) => 
+                        total + category + "\n", "")
+                    ) : (
+                      "No categories"
+                    )
+                  ) : (
+                    cell.render("Cell")
+                  )}
                 </td>
               ))}
             </tr>
