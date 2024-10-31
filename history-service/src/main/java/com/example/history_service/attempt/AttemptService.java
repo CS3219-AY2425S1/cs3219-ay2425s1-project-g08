@@ -37,8 +37,17 @@ public class AttemptService implements IAttemptService {
                 .collect(Collectors.toList());
     }
 
-    public void createAttempt(AttemptDTO dto) {
-        this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(), dto.userId(), dto.title(),
+    public AttemptDTO createAttempt(AttemptDTO dto) {
+        Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(), dto.userId(), dto.title(),
                 dto.categories(), dto.complexity()));
+        return new AttemptDTO(
+                attempt.getId(),
+                attempt.getAttempt_date(),
+                attempt.getContent(),
+                attempt.getUserId(),
+                attempt.getTitle(),
+                attempt.getCategories(),
+                attempt.getComplexity()
+        );
     }
 }

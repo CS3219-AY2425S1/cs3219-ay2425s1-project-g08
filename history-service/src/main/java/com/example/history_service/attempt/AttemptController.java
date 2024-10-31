@@ -1,8 +1,8 @@
 package com.example.history_service.attempt;
 
-import com.example.history_service.attempt.models.Attempt;
 import com.example.history_service.attempt.models.AttemptDTO;
 import com.example.history_service.attempt.models.AttemptForm;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +37,9 @@ public class AttemptController {
     }
 
     @PostMapping(value="/attempt")
-    public ResponseEntity<AttemptForm> createAttempt(@RequestBody AttemptForm form) {
-        this.attemptService.createAttempt(new AttemptDTO(null, form.attempt_date(), form.content(), form.userId(),
+    public ResponseEntity<AttemptDTO> createAttempt(@Valid @RequestBody AttemptForm form) {
+        AttemptDTO attempt = this.attemptService.createAttempt(new AttemptDTO(null, form.attempt_date(), form.content(), form.userId(),
                 form.title(), form.categories(), form.complexity()));
-        return new ResponseEntity<>(form, HttpStatus.OK);
+        return new ResponseEntity<>(attempt, HttpStatus.OK);
     }
 }
