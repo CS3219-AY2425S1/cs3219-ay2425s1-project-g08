@@ -1,4 +1,4 @@
-package com.example.history_service.attempt;
+package com.example.history_service.attempt.exceptions;
 
 public class AttemptNotFoundException extends RuntimeException {
     public AttemptNotFoundException(String message) {

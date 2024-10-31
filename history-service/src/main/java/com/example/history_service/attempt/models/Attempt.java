@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Attempt represents the document we are storing in the database.
+ */
 @Document("attempt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Attempt {

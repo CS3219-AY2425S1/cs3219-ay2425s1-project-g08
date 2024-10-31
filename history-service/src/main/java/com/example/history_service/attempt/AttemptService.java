@@ -1,5 +1,6 @@
 package com.example.history_service.attempt;
 
+import com.example.history_service.attempt.exceptions.AttemptNotFoundException;
 import com.example.history_service.attempt.models.Attempt;
 import com.example.history_service.attempt.models.AttemptDTO;
 import org.springframework.beans.factory.annotation.Autowired;
