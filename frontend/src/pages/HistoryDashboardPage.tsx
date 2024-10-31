@@ -4,6 +4,7 @@ import HistoryAttemptTable from "../features/history/HistoryAttemptTable";
 import { Column } from "react-table";
 import { HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const attempts: HistoryTableData[] = [
   {
@@ -56,8 +57,39 @@ type Question = {
 const HistoryAttemptPage: React.FC = () => {
 
   const { user } = useUser();
+  const [attempts, setAttempts] = useState<HistoryTableData[]>([]);
   const navigate = useNavigate();
-  
+  const historyServiceUrl = "http://localhost:9090"
+
+  useEffect(() => {
+    fetch(`${historyServiceUrl}/user123/attempts`,
+      { 
+        mode: "cors",
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": `${historyServiceUrl}`,
+        },
+      }
+    ).then(res => {
+      if (!res.ok) {
+        throw new Error(`Error: Failed to fetch your attempt records!`);
+      }
+      res.json()
+        .then(data => {
+          const tableDatas: HistoryTableData[] = data.map(attempt => ({
+            attemptId: attempt.id,
+            title: "Testing",
+            category: "easy",
+            complexity: "shagaf",
+            datetimeAttempted: attempt.attemptDate
+          }));
+          console.log(tableDatas);
+          setAttempts(tableDatas);
+        }
+      );
+    })
+  }, []);
+
   if (!user) {
     return <p>Loading...</p>;
   }
