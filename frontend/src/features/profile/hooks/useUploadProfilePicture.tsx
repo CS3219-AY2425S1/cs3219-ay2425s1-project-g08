@@ -22,19 +22,12 @@ const useUploadProfilePicture = async (
       `${apiConfig.profilePictureServiceBaseUrl}/users/${user.id}/profile-picture`,
       {
         method: "POST",
-        mode: "cors",
-        headers: {
-          "Access-Control-Allow-Origin": `${apiConfig.profilePictureServiceBaseUrl}`,
-        },
         body: formData,
       }
     );
 
     if (!response.ok) {
-      const err = await response.json();
-      console.log(err);
-      setErr(err.message);
-      throw new Error("Failed to fetch image");
+      throw new Error("Failed to upload image");
     }
     useFetchProfilePicture(user, updateUser);
   } catch (error) {

@@ -1,25 +1,24 @@
 package peerprep.profile_picture_service.controller;
 
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import peerprep.profile_picture_service.service.StorageService;
-import peerprep.profile_picture_service.config.ApiConfig;
 
-import java.io.IOException;
 
 /**
  * Controller for Profile Picture Service, handles API and calls necessary
  * service.
  */
-@CrossOrigin(origins = ApiConfig.FRONTEND_URL)
+@CrossOrigin
 @RestController
 @RequestMapping("/users")
 public class ProfilePictureController {
