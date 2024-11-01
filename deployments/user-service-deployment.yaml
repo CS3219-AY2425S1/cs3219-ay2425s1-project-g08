@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: seanpzk/user-service:1.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: peerprep
+spec:
+  type: ClusterIP  # To expose externally
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 3001  # External port
+      targetPort: 3001  # Pod's container port
+
+  
