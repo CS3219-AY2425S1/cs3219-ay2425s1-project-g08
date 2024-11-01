@@ -1,6 +1,7 @@
 import React from "react";
 import LandingNavBar from "../components/navbars/LandingNavBar.tsx";
 import { Link } from "react-router-dom";
+import ChatBoxModal from "../features/communication/components/ChatBoxModal.tsx";
 
 const LandingPage: React.FC = () => {
   return (
