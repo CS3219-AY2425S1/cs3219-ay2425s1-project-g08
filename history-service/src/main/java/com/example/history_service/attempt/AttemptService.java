@@ -9,13 +9,30 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class encapsulating business logic for managing Attempt entities.
+ */
 @Service
 public class AttemptService implements IAttemptService {
     private AttemptRepository attemptRepository;
+
+    /**
+     * Constructs a new AttemptService with the provided AttemptRepository.
+     *
+     * @param attemptRepository the repository for performing database operations on Attempt documents.
+     */
     @Autowired
     public AttemptService(AttemptRepository attemptRepository) {
         this.attemptRepository = attemptRepository;
     }
+
+    /**
+     * Retrieves an attempt by its unique id.
+     *
+     * @param id the unique identifier of the attempt.
+     * @return the AttemptDTO representing the found attempt.
+     * @throws AttemptNotFoundException if no attempt with the given id exists.
+     */
     public AttemptDTO getAttemptById(String id) {
         Attempt attempt = this.attemptRepository.findById(id)
                 .orElseThrow(() -> new AttemptNotFoundException("Attempt not found"));
@@ -23,6 +40,12 @@ public class AttemptService implements IAttemptService {
                 attempt.getTitle(), attempt.getDescription(), attempt.getCategories(), attempt.getComplexity());
     }
 
+    /**
+     * Retrieves all attempts associated with a specific user.
+     *
+     * @param userId the unique identifier of the user.
+     * @return a list of AttemptDTO representing the attempts associated with the userId.
+     */
     public List<AttemptDTO> getAttemptsByUserId(String userId) {
         return this.attemptRepository.findByUserId(userId)
                 .stream()
@@ -39,6 +62,12 @@ public class AttemptService implements IAttemptService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Creates a new attempt based on the provided DTO.
+     *
+     * @param dto the data transfer object containing attempt details.
+     * @return an AttemptDTO representing the newly created attempt.
+     */
     public AttemptDTO createAttempt(AttemptDTO dto) {
         Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(),
                 dto.userId(), dto.title(), dto.description(), dto.categories(), dto.complexity()));

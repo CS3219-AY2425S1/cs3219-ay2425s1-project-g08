@@ -20,8 +20,18 @@ import java.util.Map;
  */
 @ControllerAdvice(annotations = RestController.class)
 public class ControllerExceptionHandler {
+
+    /**
+     * Handles validation errors for request body fields, collects all the
+     * error messages and returns them.
+     *
+     * @param ex MethodArgumentNotValidException.class thrown on validation
+     *           failure
+     * @return ResponseEntity with error details and BAD_REQUEST status
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public final ResponseEntity<ApiError> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex) {
         List<String> messages = new ArrayList<>();
 
 
@@ -39,8 +49,16 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(apiError, status);
     }
 
+    /**
+     * Handles AttemptNotFoundException, returning a NOT_FOUND status and
+     * message indicating that the attempt was not found.
+     *
+     * @param ex AttemptNotFoundException thrown when an attempt is not found
+     * @return ResponseEntity with error details and NOT_FOUND status
+     */
     @ExceptionHandler(AttemptNotFoundException.class)
-    public final ResponseEntity<ApiError> handleAttemptNotFoundException(AttemptNotFoundException ex) {
+    public final ResponseEntity<ApiError> handleAttemptNotFoundException(
+            AttemptNotFoundException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         List<String> messages = new ArrayList<>();
         messages.add(ex.getMessage());

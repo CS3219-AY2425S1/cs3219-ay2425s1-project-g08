@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for handling HTTP requests related to attempts.
+ *
+ * This class provides endpoints to retrieve and create attempts.
+ */
 @CrossOrigin(origins={"*"})
 @RestController
 public class AttemptController {
@@ -24,18 +29,36 @@ public class AttemptController {
         this.attemptService = attemptService;
     }
 
+    /**
+     * Retrieves an attempt by its ID.
+     *
+     * @param id the ID of the attempt
+     * @return ResponseEntity containing the AttemptDTO and HTTP status
+     */
     @GetMapping(value="/attempt/{id}")
     public ResponseEntity<AttemptDTO> getAttemptById(@PathVariable("id") String id) {
         AttemptDTO attempt = this.attemptService.getAttemptById(id);
         return new ResponseEntity<>(attempt, HttpStatus.OK);
     }
 
+    /**
+     * Retrieves all attempts for a specific user.
+     *
+     * @param userId the ID of the user
+     * @return ResponseEntity containing a list of AttemptDTOs and HTTP status
+     */
     @GetMapping(value="/{userId}/attempts")
     public ResponseEntity<List<AttemptDTO>> getAttemptsByUserId(@PathVariable("userId") String userId) {
         List<AttemptDTO> attempts = this.attemptService.getAttemptsByUserId(userId);
         return new ResponseEntity<>(attempts, HttpStatus.OK);
     }
 
+    /**
+     * Creates a new attempt.
+     *
+     * @param form the AttemptForm containing attempt details
+     * @return ResponseEntity containing the created AttemptDTO and HTTP status
+     */
     @PostMapping(value="/attempt")
     public ResponseEntity<AttemptDTO> createAttempt(@Valid @RequestBody AttemptForm form) {
         AttemptDTO attempt = this.attemptService.createAttempt(new AttemptDTO(null, form.attempt_date(), form.content(), form.userId(),
