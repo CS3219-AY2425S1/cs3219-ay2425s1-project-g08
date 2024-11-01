@@ -51,7 +51,7 @@
     "socket.io-client": "^4.8.0",
     "y-monaco": "^0.1.6",
     "y-websocket": "^2.0.4",
-    "yjs": "^13.6.20"
+    "yjs": "^13.6.20",
     "y-protocols": "^1.0.6"
   }
 }
