@@ -13,7 +13,7 @@ import java.util.List;
  * This record enforces validation constraints on the input fields to ensure
  * data integrity and correctness.
  *
- * @param attemptDateTime LocalDateTime when the attempt was made in 24hr format.
+ * @param attemptDateTime LocalDateTime when the attempt was made in 24hr format
  *                    Must be in the past and not null
  * @param content      Content of the attempt. Must not be empty
  * @param userId       ID of the user who made the attempt. Must not be empty
