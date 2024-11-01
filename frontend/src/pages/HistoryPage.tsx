@@ -11,7 +11,7 @@ interface LabelProps {
 
 const ComplexityLabel: React.FC<LabelProps> = ({ text }) => {
   return (
-    <div className="rounded bg-green h-8 px-4 border-l-black-4 flex items-center">
+    <div className="rounded-full bg-green  h-8 px-4 flex items-center shadow-lg border-2 border-[#D4AF37]">
       <div className="text-sm text-center font-semibold">{text}</div>
     </div>
   )
@@ -19,8 +19,8 @@ const ComplexityLabel: React.FC<LabelProps> = ({ text }) => {
 
 const CategoryLabel: React.FC<LabelProps> = ({ text }) => {
   return (
-    <div className="rounded bg-orange-300 h-8 px-4 mx-2 border-l-black-4 flex items-center">
-      <div className="text-sm text-center font-semibold">{text}</div>
+    <div className="rounded bg-orange-300 h-8 px-4 m-1 border-l-black-4 flex items-center">
+      <div className="text-xs text-center font-semibold">{text}</div>
     </div>
   )
 }
@@ -58,12 +58,12 @@ const HistoryPage: React.FC = () => {
           !attempt
           ? <>Failed to obtain your history</>
           : <div className="flex flex-row">
-              <div className="w-1/2">
-                  <div className="flex flex-row justify-items-center mt-4">
+              <div className="w-1/2 border border-black-2">
+                  <div className="flex flex-row items-center mt-4 mb-2">
                     <div className="text-2xl text-left font-bold px-2 mr-4">{attempt.title}</div>
                     <ComplexityLabel text={attempt.complexity}/>
                   </div>
-                  <div className="flex flex-row flex-wrap justify-items-center mb-4">
+                  <div className="flex flex-row flex-wrap justify-items-center mb-4 ">
                     {attempt.categories.map((category) => (
                       <CategoryLabel text={category} />
                     ))}
@@ -73,7 +73,7 @@ const HistoryPage: React.FC = () => {
                 </div>
               </div>
               {/* Right side */}
-              <div className="w-1/2">
+              <div className="w-1/2 border border-black-2">
                   <div className="font-bold text-xl text-center mb-2">Your attempt</div>
                   {/* <ReadonlyEditor /> */}
                   <ReadonlyReactEditor content={attempt.content}/>
