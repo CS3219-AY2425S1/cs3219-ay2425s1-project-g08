@@ -23,8 +23,10 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   const missingWarningMessage = "* Please fill in all the empty fields. *";
   const [isMissingWarningVisible, setIsMissingWarningVisible] = useState(false);
 
-  const duplicateWarningMessage = "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
-  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] = useState(false);
+  const duplicateWarningMessage =
+    "* Error adding question. Your newly edited question may be a duplicate (having the same title as an existing question). Please try again. *";
+  const [isDuplicateWarningVisible, setIsDuplicateWarningVisible] =
+    useState(false);
 
   const { addQuestion } = useAddQuestion();
 
@@ -94,13 +96,15 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
             isDisabled={false}
           />
 
-          {/* Category */}
-          <CategoryDropDown
-            categories={categories}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            isDisabled={false}
-          />
+          <div className="mt-2">
+            {/* Category */}
+            <CategoryDropDown
+              categories={categories}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+              isDisabled={false}
+            />
+          </div>
 
           {/* Question Title */}
           <div className="mt-2">

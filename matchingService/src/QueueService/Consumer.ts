@@ -7,6 +7,15 @@ import QueueManager from "./QueueManager";
 import { v4 as uuidv4 } from "uuid";
 import { Difficulty } from "./matchingEnums";
 import { MatchSuccessResponse } from "../models/MatchSuccessResponse";
+import { fetchData } from "../utils/http";
+
+type Question = {
+    id: string,
+    title: string;
+    description: string,
+    categories: string[],
+    complexity: string,
+}
 
 /** 
  * Consumer consumes incoming messages from queues that will contain Matchmaking requests
@@ -51,7 +60,7 @@ class Consumer {
         }, { noAck: true });
     }
 
-    private handleFallbackMatchRequest(msg: QueueMessage | null): void {
+    private async handleFallbackMatchRequest(msg: QueueMessage | null): Promise<void> {
         if (!msg) {
             logger.warn("Received null message in handleMatchRequest");
             return;
@@ -68,11 +77,11 @@ class Consumer {
             req.retries++;
             if (!this.pendingReq) {
                 const updatedMessageContent = Buffer.from(JSON.stringify(req));
-                this.channel.sendToQueue(msg.fields.routingKey, updatedMessageContent, {});
+                this.channel.sendToQueue(msg.fields.routingKey, updatedMessageContent, {persistent: true});
                 return;
             }
             req.difficulty = this.difficulty; // Fallback request's difficulty will change depending on who is available
-            this.processMatchRequest(req);
+            await this.processMatchRequest(req);
         } catch (e) {
             if (e instanceof Error) {
                 logger.error(`Error occurred while handling match request: ${e.message}`);
@@ -97,7 +106,7 @@ class Consumer {
         }
     }
 
-    private handleMatchRequest(msg: QueueMessage | null): void {
+    private async handleMatchRequest(msg: QueueMessage | null): Promise<void> {
         if (!msg) {
             logger.warn("Received null message in handleMatchRequest");
             return;
@@ -119,7 +128,7 @@ class Consumer {
                 return;
             }
 
-            this.processMatchRequest(req);
+            await this.processMatchRequest(req);
         } catch (e) {
             if (e instanceof Error) {
                 logger.error(`Error occurred while handling match request: ${e.message}`);
@@ -150,7 +159,7 @@ class Consumer {
         return req;
     }
 
-    private processMatchRequest(incomingReq: MatchRequestDTO): void {
+    private async processMatchRequest(incomingReq: MatchRequestDTO): Promise<void> {
         logger.debug(`Processing match request: ${incomingReq.matchId}`);
 
         if (!this.pendingReq) {
@@ -161,19 +170,21 @@ class Consumer {
         }
 
         logger.debug(`Matching and responding to requests: ${this.pendingReq.matchId} and ${incomingReq.matchId}`);
-        this.matchAndRespond(this.pendingReq, incomingReq);
+        await this.matchAndRespond(this.pendingReq, incomingReq);
     }
 
-    private matchAndRespond(req1: MatchRequestDTO, req2: MatchRequestDTO): void {
+    private async matchAndRespond(req1: MatchRequestDTO, req2: MatchRequestDTO): Promise<void> {
         logger.debug(`Responding to matched requests: ${req1.matchId} and ${req2.matchId}`);
         const roomId: string = uuidv4();
-
+        const res: Question = await fetchData(`http://questionbank:8080/questions/category-and-complexity/random/${req1.category}/${req1.difficulty}`);
+        logger.debug(res);
         const res1: MatchSuccessResponse = {
             userId: req1.userId,
             matchId: req1.matchId,
             category: req1.category,
             difficulty: req1.difficulty,
             roomId: roomId,
+            questionId: res.id
         }
         const res2: MatchSuccessResponse = {
             userId: req2.userId,
@@ -181,10 +192,11 @@ class Consumer {
             category: req2.category,
             difficulty: req2.difficulty,
             roomId: roomId,
+            questionId: res.id
         }
 
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res1)), {});
-        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res2)), {});
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res1)), {persistent: true});
+        this.channel.publish(this.directExchange, QueueManager.RESPONSE_QUEUE, Buffer.from(JSON.stringify(res2)), {persistent: true});
 
         logger.debug("Responses sent to matched requests");
         this.pendingReq = null;
@@ -204,7 +216,7 @@ class Consumer {
             this.pendingReqTimeout = setTimeout(() => {
                 logger.debug(`Pending request expired: ${req.matchId}`);
                 this.pendingReq = null; // Clear the pending request
-                this.channel.publish(this.directExchange, req.category, Buffer.from(JSON.stringify(req)), {});
+                this.channel.publish(this.directExchange, req.category, Buffer.from(JSON.stringify(req)), {persistent: true});
                 logger.debug(`Expired request sent to ${req.category}`);
             }, delay);
         } else {

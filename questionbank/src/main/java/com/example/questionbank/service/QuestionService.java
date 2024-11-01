@@ -1,6 +1,7 @@
 package com.example.questionbank.service;
 
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
+import com.example.questionbank.commons.RandomQuestionNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
 import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
@@ -10,6 +11,7 @@ import com.example.questionbank.commons.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -198,5 +200,28 @@ public class QuestionService implements QuestionServiceInterface {
                 .flatMap(question -> question.getCategories().stream())
                 // Collect the unique categories into a Set
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieves one question by its category and complexity.
+     *
+     * @param category the category of the questions to retrieve
+     * @param complexity the complexity level of the questions to retrieve
+     * @return a list of all {@link Question} entities with a given category
+     * and complexity.
+     */
+    @Override
+    public Question getRandomQuestionByCategoryAndComplexity(Category category,
+                                                      Complexity complexity) {
+        List<Question> questionList = repository
+                .findQuestionsByCategoriesIsContainingAndComplexity(
+                category, complexity);
+        int randomNum = new Random().nextInt(questionList.size());
+        Question randomQuestion = questionList.get(randomNum);
+        if (randomQuestion == null) {
+            throw new RandomQuestionNotFoundException(category.toString(),
+                    complexity.toString());
+        }
+        return randomQuestion;
     }
 }

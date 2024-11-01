@@ -254,6 +254,37 @@ public class QuestionController {
         return assembler.toModel(question);
     }
 
+    /**
+     * Retrieves one question.
+     * <p>
+     * This endpoint returns one of a collection of all questions
+     * in the repository
+     * that have a certain category and complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @param category the specific category of the question retrieved
+     * @param complexity the specific complexity of the question
+     *                   retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     * one of the questions with a certain category and complexity
+     */
+    @GetMapping(
+            "/questions/category-and-complexity/random/{category}/{complexity}"
+    )
+    public EntityModel<Question> randomByCategoryAndComplexity(
+            @PathVariable Category category,
+            @PathVariable Complexity complexity) {
+        LOGGER.info(
+                "Fetching a random question with category: "
+                        + "{} and complexity: {}",
+                category, complexity);
+
+        Question question = service.getRandomQuestionByCategoryAndComplexity(
+                category, complexity);
+
+        return assembler.toModel(question);
+    }
+
 
     /**
      * Replaces an existing question with a new question.

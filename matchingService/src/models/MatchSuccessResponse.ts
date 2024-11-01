@@ -6,4 +6,5 @@ export type MatchSuccessResponse = {
     readonly category: string;
     readonly difficulty: Difficulty;
     readonly roomId: string;
+    readonly questionId: string;
 }
