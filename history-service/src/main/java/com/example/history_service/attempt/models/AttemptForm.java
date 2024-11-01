@@ -3,8 +3,9 @@ package com.example.history_service.attempt.models;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -12,8 +13,8 @@ import java.util.List;
  * This record enforces validation constraints on the input fields to ensure
  * data integrity and correctness.
  *
- * @param attemptDate Date when the attempt was made. Must be in the past and
- *                     not null
+ * @param attemptDateTime LocalDateTime when the attempt was made in 24hr format.
+ *                    Must be in the past and not null
  * @param content      Content of the attempt. Must not be empty
  * @param userId       ID of the user who made the attempt. Must not be empty
  * @param title        Title of the attempt. Must not be empty
@@ -24,7 +25,8 @@ import java.util.List;
 public record AttemptForm(
         @Past(message = "Attempt date provided must be in the past!")
         @NotNull(message = "Attempt date must not be null!")
-        Date attemptDate,
+        @DateTimeFormat(pattern = "YYYY-MM-DD'T'HH:mm:ss")
+        LocalDateTime attemptDateTime,
         @NotEmpty(message = "Content must not be empty!")
         String content,
         @NotEmpty(message = "User ID must not be empty!")

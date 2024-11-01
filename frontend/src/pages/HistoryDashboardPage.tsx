@@ -21,7 +21,7 @@ const columns: Array<Column<HistoryTableHeaders>> = [
     accessor: "complexity",
   },
   {
-    Header: "Date Attempted",
+    Header: "Date, Time Attempted",
     accessor: "datetimeAttempted",
   },
 ];
@@ -29,14 +29,6 @@ const columns: Array<Column<HistoryTableHeaders>> = [
 const handleRowClick = (attempt: HistoryTableData, navigate: NavigateFunction) => {
   navigate(`/historyAttempt/${attempt.attemptId}`);
 };
-
-type Question = {
-  id: string,
-  title: string,
-  description: string,
-  categories: string[],
-  complexity: string
-}
 
 const HistoryAttemptPage: React.FC = () => {
 
@@ -64,7 +56,7 @@ const HistoryAttemptPage: React.FC = () => {
             title: attempt.title,
             categories: attempt.categories,
             complexity: attempt.complexity,
-            datetimeAttempted: attempt.attemptDate
+            datetimeAttempted: new Date(attempt.attemptDateTime).toLocaleString()
           }));
           setAttempts(tableDatas);
         }
