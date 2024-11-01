@@ -5,7 +5,7 @@ package com.example.history_service.attempt.exceptions;
  */
 public class AttemptNotFoundException extends RuntimeException {
     /**
-     * Constructs a new AttemptNotFoundException with the specified detial message.
+     * Constructs a new AttemptNotFoundException with the specified message.
      *
      * @param message the detail message explaining the cuase of its exception.
      */

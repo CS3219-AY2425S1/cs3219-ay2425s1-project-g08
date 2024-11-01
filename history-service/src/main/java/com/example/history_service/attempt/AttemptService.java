@@ -19,7 +19,8 @@ public class AttemptService implements IAttemptService {
     /**
      * Constructs a new AttemptService with the provided AttemptRepository.
      *
-     * @param attemptRepository the repository for performing database operations on Attempt documents.
+     * @param attemptRepository the repository for performing database
+     *                          operations on Attempt documents.
      */
     @Autowired
     public AttemptService(AttemptRepository attemptRepository) {
@@ -35,23 +36,27 @@ public class AttemptService implements IAttemptService {
      */
     public AttemptDTO getAttemptById(String id) {
         Attempt attempt = this.attemptRepository.findById(id)
-                .orElseThrow(() -> new AttemptNotFoundException("Attempt not found"));
-        return new AttemptDTO(attempt.getId(), attempt.getAttempt_date(), attempt.getContent(), attempt.getUserId(),
-                attempt.getTitle(), attempt.getDescription(), attempt.getCategories(), attempt.getComplexity());
+                .orElseThrow(() -> new AttemptNotFoundException(
+                        "Attempt not found"));
+        return new AttemptDTO(attempt.getId(), attempt.getAttemptDate(),
+                attempt.getContent(), attempt.getUserId(), attempt.getTitle(),
+                attempt.getDescription(), attempt.getCategories(),
+                attempt.getComplexity());
     }
 
     /**
      * Retrieves all attempts associated with a specific user.
      *
      * @param userId the unique identifier of the user.
-     * @return a list of AttemptDTO representing the attempts associated with the userId.
+     * @return a list of AttemptDTO representing the attempts associated with
+     * the userId.
      */
     public List<AttemptDTO> getAttemptsByUserId(String userId) {
         return this.attemptRepository.findByUserId(userId)
                 .stream()
                 .map(attempt -> new AttemptDTO(
                         attempt.getId(),
-                        attempt.getAttempt_date(),
+                        attempt.getAttemptDate(),
                         attempt.getContent(),
                         attempt.getUserId(),
                         attempt.getTitle(),
@@ -69,11 +74,12 @@ public class AttemptService implements IAttemptService {
      * @return an AttemptDTO representing the newly created attempt.
      */
     public AttemptDTO createAttempt(AttemptDTO dto) {
-        Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(), dto.attemptDate(), dto.content(),
-                dto.userId(), dto.title(), dto.description(), dto.categories(), dto.complexity()));
+        Attempt attempt = this.attemptRepository.insert(new Attempt(dto.id(),
+                dto.attemptDate(), dto.content(), dto.userId(), dto.title(),
+                dto.description(), dto.categories(), dto.complexity()));
         return new AttemptDTO(
                 attempt.getId(),
-                attempt.getAttempt_date(),
+                attempt.getAttemptDate(),
                 attempt.getContent(),
                 attempt.getUserId(),
                 attempt.getTitle(),

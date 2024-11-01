@@ -16,6 +16,7 @@ import java.util.List;
  * @param categories  Categories associated with the attempt.
  * @param complexity  Complexity level of the attempt.
  */
-public record AttemptDTO(String id, Date attemptDate, String content, String userId, String title, String description,
+public record AttemptDTO(String id, Date attemptDate, String content,
+                         String userId, String title, String description,
                          List<String> categories, String complexity) {
 }

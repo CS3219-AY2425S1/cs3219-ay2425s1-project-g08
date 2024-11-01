@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 public class AttemptController {
 
-    /** The service for handling attempts */
+    /** The service for handling attempts. */
     private final IAttemptService attemptService;
 
     /**
@@ -59,7 +59,8 @@ public class AttemptController {
     @GetMapping(value = "/{userId}/attempts")
     public ResponseEntity<List<AttemptDTO>> getAttemptsByUserId(
             @PathVariable("userId") String userId) {
-        List<AttemptDTO> attempts = this.attemptService.getAttemptsByUserId(userId);
+        List<AttemptDTO> attempts = this.attemptService.
+                getAttemptsByUserId(userId);
         return new ResponseEntity<>(attempts, HttpStatus.OK);
     }
 

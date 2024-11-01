@@ -14,7 +14,8 @@ import java.util.List;
  * Attempt represents the document stored in mongodb.
  * This model stores the all relevant details about a user's attempt.
  *
- * Question details are also stored in this class to avoid issues when questions are modified or deleted.
+ * Question details are also stored in this class to avoid issues when questions
+ * are modified or deleted.
  */
 @Document("attempt")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -28,7 +29,7 @@ public class Attempt {
     /**
      * Date when the attempt was made.
      */
-    private Date attempt_date;
+    private Date attemptDate;
 
     /**
      * Content of the attempt.

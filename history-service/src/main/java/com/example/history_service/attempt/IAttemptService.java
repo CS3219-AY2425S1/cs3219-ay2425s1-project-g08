@@ -5,7 +5,8 @@ import com.example.history_service.attempt.models.AttemptDTO;
 import java.util.List;
 
 /**
- * Interface for the Attempt Service, providing methods for managing user attempts.
+ * Interface for the Attempt Service, providing methods for managing
+ * user attempts.
  */
 public interface IAttemptService {
 
@@ -20,7 +21,8 @@ public interface IAttemptService {
     /**
      * Retrieves a list of attempts for a specific user.
      *
-     * @param userId the unique identifier of the user whose attempts are being retrieved.
+     * @param userId the unique identifier of the user whose attempts are
+     *               being retrieved.
      * @return a list of AttepmtDTO objects for the specified user.
      */
     List<AttemptDTO> getAttemptsByUserId(String userId);
@@ -28,7 +30,8 @@ public interface IAttemptService {
     /**
      * Creates a new attempt with the specified details.
      *
-     * @param dto an AttemptDTO containing the information of the attempt to create.
+     * @param dto an AttemptDTO containing the information of the attempt
+     *            to create.
      * @return the created AttemptDTO with a unique identifier.
      */
     AttemptDTO createAttempt(AttemptDTO dto);
