@@ -57,3 +57,9 @@ services:
         condition: service_healthy
       questionbank:
         condition: service_healthy
+
+  historyservice:
+    build:
+      context: ./history-service
+    ports:
+      - "9090:9090"
