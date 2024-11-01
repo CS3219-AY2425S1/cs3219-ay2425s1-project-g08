@@ -7,6 +7,8 @@ import { useUser } from "../../../context/UserContext.tsx";
 import Alert from "react-bootstrap/Alert";
 import apiConfig from "../../../config/config.ts";
 import { Category } from "../../questions/index.ts";
+import { useNavigate } from "react-router-dom";
+
 
 interface MatchingModalProps {
     closeMatchingModal: () => void;
@@ -25,6 +27,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
         difficulty: "",
     });
 
+    const navigate = useNavigate();
     const { user, setRoomId } = useUser();
 
     const [isMatchFound, setIsMatchFound] = useState(false);
@@ -79,13 +82,6 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
 
             console.log("Received response from server:", data);
 
-            if (!data.roomId) {
-                console.error("No room ID received");
-                return;
-            } else {
-                setRoomId(data.roomId);
-            }
-
             if (!data.matchId) {
                 console.error("No match ID received");
                 return;
@@ -100,14 +96,13 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
                 console.log("Received match response:", responseData);
                 ack(true);
                 socket.emit("broadcast", `hi from ${user?.username}`);
+                console.log("RoomId", responseData.roomId);
+                setRoomId(responseData.roomId);
                 setShowTimer(false);
                 setShowCancelButton(false);
                 setIsMatchFound(true);
-            });
-            console.log(`Listening to room: ${data.matchId}`);
-
-            socket.on("broadcast", (message) => {
-                console.log("Received broadcast message:", message);
+                console.log(`Listening to room: ${responseData.roomId}`);
+                navigate(`/question/6717d20dc04db94b5e4602dc`); // question id for first question. placeholder for now.
             });
 
             socket.on("disconnect", () => {

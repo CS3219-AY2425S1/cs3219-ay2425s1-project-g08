@@ -29,5 +29,4 @@ const QuestionPage: React.FC = () => {
         </div>
     );
 };
-
 export default QuestionPage;
