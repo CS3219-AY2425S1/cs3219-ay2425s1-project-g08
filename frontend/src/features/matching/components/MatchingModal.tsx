@@ -95,7 +95,6 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
             socket.on("receiveMatchResponse", (responseData, ack) => {
                 console.log("Received match response:", responseData);
                 ack(true);
-                socket.emit("broadcast", `hi from ${user?.username}`);
                 console.log("RoomId", responseData.roomId);
                 setRoomId(responseData.roomId);
                 setShowTimer(false);
