@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 public class HistoryServiceApplication {
 
 	/**
-	 * Main method to launch application.
+	 * Main method to launch the application.
 	 *
 	 * @param args CLI arguments
 	 */
