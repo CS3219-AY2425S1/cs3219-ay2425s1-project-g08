@@ -1,4 +1,4 @@
 /**
- * Package containing classes related to attempts.
+ * Package containing classes related to the history service.
  */
 package com.example.history_service;
