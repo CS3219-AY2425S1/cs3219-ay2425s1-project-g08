@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AttemptService implements IAttemptService {
+    /**
+     * Repository interface to interact with the underlying database.
+     */
     private AttemptRepository attemptRepository;
 
     /**
