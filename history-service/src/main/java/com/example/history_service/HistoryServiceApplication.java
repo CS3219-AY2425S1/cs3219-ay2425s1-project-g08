@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 @EnableMongoRepositories
 public class HistoryServiceApplication {
-
 	/**
 	 * Main method to launch the application.
 	 *
