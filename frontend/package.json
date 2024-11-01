@@ -38,6 +38,7 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@monaco-editor/react": "^4.6.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
@@ -51,5 +52,6 @@
     "y-monaco": "^0.1.6",
     "y-websocket": "^2.0.4",
     "yjs": "^13.6.20"
+    "y-protocols": "^1.0.6"
   }
 }

@@ -9,11 +9,14 @@ const apiConfig = {
     ? "/ppsvcapi"
     : "http://localhost:8081",
   matchWebsocketUrl: import.meta.env.VITE_MATCH_WEBSOCKET_URL
-    ? "/matchwssvcapi"
+    ? "/"
     : "ws://localhost:8082",
   matchExpressJsUrl: import.meta.env.VITE_MATCH_EXPRESS_URL
     ? "/matchexpresssvcapi"
     : "http://localhost:3000",
+  historyServiceUrl: import.meta.env.VITE_HISTORY_URL
+    ? "/placeholdernameforhistoryservice"
+    : "http://localhost:9090",
 };
 
 export default apiConfig;

@@ -3,12 +3,14 @@ import ComplexityDropDown from "./ComplexityDropDown";
 import { Question } from "../types/Question";
 import DescriptionInput from "./DescriptionInput";
 import useDeleteQuestion from "../hooks/useDeleteQuestion";
+import { Category } from "..";
 
 interface DeleteQuestionModalProps {
   oldQuestion: Question;
   onClose: () => void;
   onDelete: () => void;
   fetchData: () => Promise<void>;
+  categories: Array<Category>;
 }
 
 const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
@@ -16,9 +18,16 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
   onClose,
   onDelete,
   fetchData,
+  categories,
 }) => {
-  
   const { deleteQuestion } = useDeleteQuestion();
+
+  // Method to find the display name for a given category name
+  const findDisplay = (categoryName: string): string => {
+    if (!categories) return categoryName; // Fallback to the categoryName if categories array is undefined
+    const category = categories.find((cat) => cat.name === categoryName);
+    return category ? category.displayName : categoryName;
+  };
 
   return (
     <>
@@ -57,13 +66,15 @@ const DeleteQuestionModal: React.FC<DeleteQuestionModalProps> = ({
 
           {/* Category */}
           <div className="mt-2">
-            <label className="font-semibold">Category</label>
+            <label className="font-semibold">Categories</label>
             <div className="relative mt-1 shadow-md">
               <p
                 id="category"
                 className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-500 ring-1 ring-inset ring-gray-300 focus:outline-none sm:text-sm sm:leading-6"
               >
-                {oldQuestion.categories.toString()}
+                {oldQuestion.categories
+                  .map((category) => findDisplay(category))
+                  .join(", ")}
               </p>
             </div>
           </div>

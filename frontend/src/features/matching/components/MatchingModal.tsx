@@ -44,6 +44,17 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
             socket.on("connect", () => {
                 console.log("Connected to server", socket.id);
             });
+      socket.on("connect_error", (error) => {
+        console.error("Connection error:", error);
+      });
+      
+      socket.on("connect_timeout", (timeout) => {
+        console.error("Connection timeout:", timeout);
+      });
+      
+      socket.on("error", (error) => {
+        console.error("Socket error:", error);
+      });
             console.log("Sent match request: ", {
                 name: user?.username, // set up with user context later
                 category: formData.category,

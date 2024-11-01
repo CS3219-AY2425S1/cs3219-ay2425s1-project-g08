@@ -24,12 +24,16 @@ services:
       - "3001:3001"
 
   rabbitmq:
+    hostname: rabbitmq_0 # Must include so that it knows which specific data in volume to use
     image: rabbitmq:4.0.0-rc.1-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672" # Dashboard port -dev purpose
     environment:
       RABBITMQ_NODE_PORT: 5672
+      RABBITMQ_MNESIA_DIR: /var/lib/rabbitmq/mnesia/
+    volumes:
+      - "./rabbitmq_data:/var/lib/rabbitmq/mnesia/"
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
@@ -53,3 +57,17 @@ services:
         condition: service_healthy
       questionbank:
         condition: service_healthy
+
+  profilepicture-service:
+    build:
+      context: ./PeerPrep-UserService/profile-picture-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=classpath:gcp-service-account-key.json
+      
+  historyservice:
+    build:
+      context: ./history-service
+    ports:
+      - "9090:9090"
