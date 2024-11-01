@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, useCallback } from "react";
+import { useState } from "react";
 import { Question } from "../types/Question";
 import apiConfig from "../../../config/config";
 

@@ -9,7 +9,7 @@ const apiConfig = {
     ? "/ppsvcapi"
     : "http://localhost:8081",
   matchWebsocketUrl: import.meta.env.VITE_MATCH_WEBSOCKET_URL
-    ? "/matchwssvcapi"
+    ? "/"
     : "ws://localhost:8082",
   matchExpressJsUrl: import.meta.env.VITE_MATCH_EXPRESS_URL
     ? "/matchexpresssvcapi"
