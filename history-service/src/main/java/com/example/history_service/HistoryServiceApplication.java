@@ -2,6 +2,7 @@ package com.example.history_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
  * The main entry point for the History service Spring Boot application.
