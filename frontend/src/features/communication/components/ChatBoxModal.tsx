@@ -21,6 +21,7 @@ const ChatBoxModal: React.FC = () => {
     setIsOpen(!isOpen);
   }
 
+  /* for testing purposes */
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -88,26 +89,26 @@ const ChatBoxModal: React.FC = () => {
             ))}
           </div>
 
-            {/* Action buttons */}
-            <div className="mt-6">
-              <form onSubmit={handleSendMessage} className="flex">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="border border-gray-700 rounded-l p-2 flex-grow text-black"
-                  placeholder="Type your message..."
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white rounded-r p-2"
-                >
-                  Send
-                </button>
-              </form>
-            </div>
-          </div>)}
-      </div>
+          {/* Action buttons */}
+          <div className="mt-6">
+            <form onSubmit={handleSendMessage} className="flex">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="border border-gray-700 rounded-l p-2 flex-grow text-black"
+                placeholder="Type your message..."
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white rounded-r p-2"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>)}
+    </div>
   );
 };
 

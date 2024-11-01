@@ -5,7 +5,10 @@ interface MessageBubbleProps {
   isUser: boolean;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isUser }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({
+  message, 
+  isUser 
+}) => {
   return (
     <div
       className={`p-2 rounded mb-2 text-black ${
