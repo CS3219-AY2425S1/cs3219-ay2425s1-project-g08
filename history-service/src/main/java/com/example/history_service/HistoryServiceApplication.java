@@ -5,17 +5,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
- * Entry point for the History Service application.
+ * The main entry point for the history service Spring Boot application.
  */
 @SpringBootApplication
 @EnableMongoRepositories
 public class HistoryServiceApplication {
+
 	/**
-	 * Main method to launch the application.
+	 * The main method that is the entry point to the
+	 * Spring Boot application.
 	 *
-	 * @param args CLI arguments
+	 * @param args command-line arguments passed to the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String... args) {
 		SpringApplication.run(HistoryServiceApplication.class, args);
 	}
 
