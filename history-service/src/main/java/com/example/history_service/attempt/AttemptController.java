@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins="*")
+@CrossOrigin(origins={"*"})
 @RestController
 public class AttemptController {
     private IAttemptService attemptService;
