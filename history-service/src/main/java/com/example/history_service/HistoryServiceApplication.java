@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories
 public class HistoryServiceApplication {
 
-	 /**
+	/**
 	 * The main method that is the entry point to the
 	 * Spring Boot application.
 	 *
