@@ -6,11 +6,7 @@ import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
 
-interface CollaborativeEditorProps {
-    roomID: string;
-}
-
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = () => {
+const CollaborativeEditor: React.FC = () => {
     const { roomId } = useUser();
 
     const editorRef = useRef<HTMLDivElement | null>(null);
