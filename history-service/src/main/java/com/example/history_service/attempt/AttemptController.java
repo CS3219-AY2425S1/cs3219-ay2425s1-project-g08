@@ -74,7 +74,7 @@ public class AttemptController {
     public ResponseEntity<AttemptDTO> createAttempt(@Valid @RequestBody
                                                     AttemptForm form) {
         AttemptDTO attempt = this.attemptService.createAttempt(
-                new AttemptDTO(null, form.attemptDate(), form.content(),
+                new AttemptDTO(null, form.attemptDateTime(), form.content(),
                         form.userId(), form.title(), form.description(),
                         form.categories(), form.complexity()));
         return new ResponseEntity<>(attempt, HttpStatus.OK);

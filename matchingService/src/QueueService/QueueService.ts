@@ -6,7 +6,7 @@ import {
     IConnectionManager,
 } from "../config/ConnectionManager";
 import ChannelNotFoundError from "../errors/ChannelNotFoundError";
-import Consumer from "./Consumer";
+import MatchingConsumer from "./MatchingConsumer";
 import Producer from "./Producer";
 import QueueManager from "./QueueManager";
 import { Difficulty } from "./matchingEnums";
@@ -97,7 +97,7 @@ class QueueService {
         cancellationConsumer.consumeCancelRequest();
         for (const category of categories) {
             for (const difficulty of Object.values(Difficulty)) {
-                const consumer: Consumer = new Consumer(
+                const consumer: MatchingConsumer = new MatchingConsumer(
                     channel,
                     this.directExchange,
                     difficulty,
