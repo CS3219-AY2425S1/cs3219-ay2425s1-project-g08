@@ -93,13 +93,18 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
 
             socket.on("receiveMatchResponse", (responseData, ack) => {
                 console.log("Received match response:", responseData);
-                ack(true);
-                console.log("RoomId", responseData.roomId);
-                setRoomId(responseData.roomId);
-                setShowTimer(false);
-                setShowCancelButton(false);
-                setIsMatchFound(true);
-                console.log(`Listening to room: ${responseData.roomId}`);
+                if (responseData.roomId !== undefined) {
+                    ack(true);
+                    console.log("RoomId", responseData.roomId);
+                    setRoomId(responseData.roomId);
+                    setShowTimer(false);
+                    setShowCancelButton(false);
+                    setIsMatchFound(true);
+                    console.log(`Listening to room: ${responseData.roomId}`);
+                } else {
+                    ack(false);
+                    console.error("RoomId is undefined");
+                }
                 if (responseData.questionId) {
                     console.log("Navigating to question page");
                     navigate(`/question/${responseData.questionId}`);

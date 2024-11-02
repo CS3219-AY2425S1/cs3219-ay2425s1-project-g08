@@ -15,6 +15,7 @@ interface UserContextType {
     roomId: string | undefined;
     setRoomId: (id: string) => void;
     clearRoomId: () => void;
+    isConnectedToRoom: boolean;
 }
 
 // Create user context
@@ -60,6 +61,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         setRoomId("");
     };
 
+    const isConnectedToRoom = roomId !== "" || roomId !== undefined;
+
     return (
         <UserContext.Provider
             value={{
@@ -69,6 +72,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 roomId,
                 setRoomId,
                 clearRoomId,
+                isConnectedToRoom,
             }}
         >
             {children}
