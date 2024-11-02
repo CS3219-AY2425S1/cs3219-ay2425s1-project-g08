@@ -101,7 +101,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
                 setShowCancelButton(false);
                 setIsMatchFound(true);
                 console.log(`Listening to room: ${responseData.roomId}`);
-                navigate(`/question/6717d20dc04db94b5e4602dc`); // question id for first question. placeholder for now.
+                navigate(`/question/${responseData.questionId}`); // question id for first question. placeholder for now.
             });
 
             socket.on("disconnect", () => {
