@@ -9,7 +9,6 @@ import apiConfig from "../../../config/config.ts";
 import { Category } from "../../questions/index.ts";
 import { useNavigate } from "react-router-dom";
 
-
 interface MatchingModalProps {
     closeMatchingModal: () => void;
     categoriesWithQuestions: Array<Category>;
@@ -47,17 +46,17 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
             socket.on("connect", () => {
                 console.log("Connected to server", socket.id);
             });
-      socket.on("connect_error", (error) => {
-        console.error("Connection error:", error);
-      });
-      
-      socket.on("connect_timeout", (timeout) => {
-        console.error("Connection timeout:", timeout);
-      });
-      
-      socket.on("error", (error) => {
-        console.error("Socket error:", error);
-      });
+            socket.on("connect_error", (error) => {
+                console.error("Connection error:", error);
+            });
+
+            socket.on("connect_timeout", (timeout) => {
+                console.error("Connection timeout:", timeout);
+            });
+
+            socket.on("error", (error) => {
+                console.error("Socket error:", error);
+            });
             console.log("Sent match request: ", {
                 name: user?.username, // set up with user context later
                 category: formData.category,
@@ -101,7 +100,15 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
                 setShowCancelButton(false);
                 setIsMatchFound(true);
                 console.log(`Listening to room: ${responseData.roomId}`);
-                navigate(`/question/${responseData.questionId}`); // question id for first question. placeholder for now.
+                if (responseData.questionId) {
+                    console.log("Navigating to question page");
+                    navigate(`/question/${responseData.questionId}`);
+                } else {
+                    console.error("No question ID received");
+                    alert(
+                        `No question is found that satisfies the category of ${formData.category} and of difficulty: ${formData.difficulty}`
+                    );
+                }
             });
 
             socket.on("disconnect", () => {
