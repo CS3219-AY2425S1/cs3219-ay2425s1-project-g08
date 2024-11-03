@@ -5,6 +5,7 @@ import { EditQuestionModal } from "../../questions";
 import { useLocation } from "react-router-dom";
 import { Question, emptyQuestion, Category } from "../../questions";
 import DashboardQuestionTable from "./DashboardQuestionTable";
+import { ChatBoxModal } from "../../communication";
 
 // You can replace `any` with the actual type of questionList
 interface DashboardForUsersProps {
@@ -46,6 +47,7 @@ const DashboardForUsers: React.FC<DashboardForUsersProps> = ({
           categories={categories}
         />
       )}
+      <ChatBoxModal />
       {/* Use the extracted QuestionTable component */}
       <DashboardQuestionTable
         questions={questions}

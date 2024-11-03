@@ -4,3 +4,6 @@
 // Export components
 export { default as ChatBoxModal } from "./components/ChatBoxModal";
 export { default as MessageBubble } from "./components/MessageBubble";
+
+// Export hooks
+export { default as useClaudeSonnet } from "./hooks/useClaudeSonnet";
