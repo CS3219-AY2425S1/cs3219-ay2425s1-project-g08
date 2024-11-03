@@ -17,6 +17,9 @@ const apiConfig = {
   historyServiceUrl: import.meta.env.VITE_HISTORY_URL
     ? "/historysvcapi"
     : "http://localhost:9090",
+  collaborationWebSocketUrl: import.meta.env.VITE_COLLABORATION_WEBSOCKET_URL
+    ? "/collaborationsvcapi"
+    : "ws://localhost:1234",
 };
 
 export default apiConfig;

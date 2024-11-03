@@ -18,6 +18,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.20",
+    "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
@@ -49,7 +50,10 @@
     "react-select": "^5.8.1",
     "react-table": "^7.8.0",
     "socket.io-client": "^4.8.0",
+    "ws": "^8.18.0",
     "y-monaco": "^0.1.6",
-    "y-protocols": "^1.0.6"
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.20"
   }
 }

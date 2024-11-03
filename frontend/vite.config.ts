@@ -39,6 +39,11 @@ export default (({ mode }: { mode: string }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/historysvcapi/, '')
         },
+        '/collaborationsvcapi' : {
+          target: process.env.VITE_COLLABORATION_WEBSOCKET_URL,
+          ws: true,
+          rewriteWsOrigin: true,
+        }
       }
     },
     plugins: [react()],

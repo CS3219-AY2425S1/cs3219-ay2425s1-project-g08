@@ -7,57 +7,57 @@ import DashboardQuestionTable from "./DashboardQuestionTable";
 
 // You can replace `any` with the actual type of questionList
 interface DashboardForAdminsProps {
-  questions: Array<Question>;
-  fetchData: () => Promise<void>;
-  categories: Array<Category>;
+    questions: Array<Question>;
+    fetchData: () => Promise<void>;
+    categories: Array<Category>;
 }
 
 const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
-  questions,
-  fetchData,
-  categories,
+    questions,
+    fetchData,
+    categories,
 }) => {
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const closeEditModal = () => setEditModalIsOpen(false);
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    const closeEditModal = () => setEditModalIsOpen(false);
 
-  const [questionClicked, setQuestionClicked] = useState(emptyQuestion);
+    const [questionClicked, setQuestionClicked] = useState(emptyQuestion);
 
   const openEditModal = (questionClicked: Question) => {
     setEditModalIsOpen(true);
     setQuestionClicked(questionClicked);
   };
 
-  const columns: Column<Question>[] = useMemo(() => COLUMNS, []);
+    const columns: Column<Question>[] = useMemo(() => COLUMNS, []);
 
-  const onClick = (row: Row<Question>) => {
-    const questionClicked: Question = {
-      id: row.original.id,
-      title: row.values.title,
-      description: row.values.description,
-      categories: row.values.categories,
-      complexity: row.values.complexity,
+    const onClick = (row: Row<Question>) => {
+        const questionClicked: Question = {
+            id: row.original.id,
+            title: row.values.title,
+            description: row.values.description,
+            categories: row.values.categories,
+            complexity: row.values.complexity,
+        };
+        openEditModal(questionClicked);
     };
-    openEditModal(questionClicked);
-  };
-  return (
-    <div className="overflow-x-auto">
-      {editModalIsOpen && (
-        <EditQuestionModal
-          oldQuestion={questionClicked}
-          onClose={closeEditModal}
-          fetchData={fetchData}
-          categories={categories}
-        />
-      )}
-      {/* Use the extracted QuestionTable component */}
-      <DashboardQuestionTable
-        questions={questions}
-        columns={columns}
-        onClick={onClick}
-        categories={categories}
-      />
-    </div>
-  );
+    return (
+        <div className="overflow-x-auto">
+            {editModalIsOpen && (
+                <EditQuestionModal
+                    oldQuestion={questionClicked}
+                    onClose={closeEditModal}
+                    fetchData={fetchData}
+                    categories={categories}
+                />
+            )}
+            {/* Use the extracted QuestionTable component */}
+            <DashboardQuestionTable
+                questions={questions}
+                columns={columns}
+                onClick={onClick}
+                categories={categories}
+            />
+        </div>
+    );
 };
 
 export default DashboardForAdmins;
