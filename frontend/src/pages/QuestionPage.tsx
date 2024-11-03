@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import UserNavBar from "../components/navbars/UserNavBar";
 import CollabNavBar from "../components/navbars/CollabNavBar";
 import { useParams } from "react-router-dom";
 import { useRetrieveQuestion } from "../features/questions";
@@ -18,7 +17,6 @@ const QuestionPage: React.FC = () => {
 
     return (
         <div className="w-screen h-screen flex flex-col">
-            {/* <UserNavBar categoriesWithQuestions={[]} /> */}
             <CollabNavBar />
             <div className="grid grid-cols-2 gap-1 flex-grow">
                 <div className="flex flex-col flex-grow">

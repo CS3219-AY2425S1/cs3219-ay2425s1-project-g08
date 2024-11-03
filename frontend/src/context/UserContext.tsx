@@ -12,8 +12,8 @@ interface UserContextType {
     user: User | undefined; // Change User | undefined to User | null
     updateUser: (userData: User | undefined) => void; // Function to log in the user
     logoutUser: () => void; // Function to log out the user
-    roomId: string | undefined;
-    setRoomId: (id: string) => void;
+    roomId: string; // Room ID for the user when they are matched with another user
+    setRoomId: React.Dispatch<React.SetStateAction<string>>;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
 }
