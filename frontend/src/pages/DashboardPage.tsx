@@ -42,7 +42,6 @@ const DashboardPage: React.FC = () => {
           <UserNavBar categoriesWithQuestions={categoriesWithQuestions} />
           <DashboardForUsers
             questions={questions}
-            fetchData={fetchData}
             categories={categories}
           />
         </>

@@ -8,7 +8,6 @@ export { default as DeleteQuestionModal } from "./components/DeleteQuestionModal
 export { default as DescriptionInput } from "./components/DescriptionInput";
 export { default as EditConfirmationModal } from "./components/EditConfirmationModal";
 export { default as EditQuestionModal } from "./components/EditQuestionModal";
-export { default as QuestionDisplay } from "./components/QuestionDisplay";
 export { default as CategoryDropDown } from "./components/CategoryDropDown";
 export { default as WarningMessage } from "./components/WarningMessage";
 
