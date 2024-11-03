@@ -43,6 +43,7 @@ export default (({ mode }: { mode: string }) => {
           target: process.env.VITE_COLLABORATION_WEBSOCKET_URL,
           ws: true,
           rewriteWsOrigin: true,
+          rewrite: (path) => path.replace(/^\/collaborationsvcapi/, '')
         }
       }
     },

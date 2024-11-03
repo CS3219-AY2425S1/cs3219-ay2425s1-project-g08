@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: matching
-        image: seanpzk/matching-service:1.0.12
+        image: seanpzk/matching-service:1.0.15
         imagePullPolicy: Always
         ports:
         - containerPort: 3000

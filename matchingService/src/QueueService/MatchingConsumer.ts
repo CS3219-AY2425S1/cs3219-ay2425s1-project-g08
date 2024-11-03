@@ -176,7 +176,7 @@ class MatchingConsumer {
     private async matchAndRespond(req1: MatchRequestDTO, req2: MatchRequestDTO): Promise<void> {
         logger.debug(`Responding to matched requests: ${req1.matchId} and ${req2.matchId}`);
         const roomId: string = uuidv4();
-        const res: Question = await fetchData(`http://questionbank:8080/questions/category-and-complexity/random/${req1.category}/${req1.difficulty}`);
+        const res: Question = await fetchData(`${process.env.QB_URL || "http://questionbank:8080"}/questions/category-and-complexity/random/${req1.category}/${req1.difficulty}`);
         logger.debug(res);
         const res1: MatchSuccessResponse = {
             userId: req1.userId,
