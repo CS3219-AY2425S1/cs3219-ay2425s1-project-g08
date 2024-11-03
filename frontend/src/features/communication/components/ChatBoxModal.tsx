@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
@@ -28,6 +28,7 @@ const ChatBoxModal: React.FC = () => {
   const { user } = useUser();
   const userId = user?.id;
   const roomId = user?.roomId ?? "";
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   /* For chat with partner */
   useEffect(() => {
@@ -93,6 +94,11 @@ const ChatBoxModal: React.FC = () => {
       console.error("Error fetching AI response:", error);
     }
   };
+
+  // Scroll to the bottom whenever messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [partnerMessages, aIMessages, isLoading]);
 
   const users: User[] = [
     { id: 0, name: "Partner" },
@@ -165,14 +171,15 @@ const ChatBoxModal: React.FC = () => {
                     isUser={msg.isUser}
                   />
                 ))}
+            {/* Loading indicator for AI response */}
+            {currUserIndex === 1 && isLoading && (
+              <div className="text-gray-500 text-sm italic mt-2">
+                AI is typing...
+              </div>
+            )}
+            {/* Invisible div to anchor scroll */}
+            <div ref={messagesEndRef} />
           </div>
-
-          {/* Loading indicator for AI response */}
-          {currUserIndex === 1 && isLoading && (
-            <div className="text-gray-500 text-sm italic mt-2">
-              AI is typing...
-            </div>
-          )}
 
           {/* Action buttons */}
           <div className="mt-6">
