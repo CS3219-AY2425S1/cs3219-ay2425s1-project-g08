@@ -10,17 +10,11 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Install TypeScript globally if not already included in your project dependencies
-RUN npm install -g typescript
-
 # Copy the rest of the application code
 COPY . .
 
-# Build the application
-RUN npm run build
-
-# Expose the port the production server will use
+# Expose the port the dev server runs on
 EXPOSE 5173
 
-# Command to run the production server
-CMD ["npm", "run", "preview"]
+# Command to run the development server
+CMD ["npm", "run", "dev"]
