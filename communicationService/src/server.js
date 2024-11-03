@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -15,15 +14,12 @@ const io = socketIo(server, {
 
 app.use(cors());
 
-const users = {} // Keep track of the users and their rooms
-
 io.on('connection', (socket) => {
-  console.log('New client connected');
+  console.log('Client connected');
 
-  /* User joins a room */
+  /* Join a room */
   socket.on('joinRoom', ({ userId, roomId }) => {
-    users[socket.id] = { userId, roomId }; // Save user info
-    socket.join(roomId); // Join the specified room
+    socket.join(roomId);
     console.log(`${userId} joined room ${roomId}`);
   });
 
@@ -34,7 +30,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');
-    delete users[socket.id];
   });
 });
 
