@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useTable, Column, Row } from "react-table"; // Import the 'Column' type
+import { Column, Row } from "react-table"; // Import the 'Column' type
 import { COLUMNS } from "./columns";
 import { Category, EditQuestionModal } from "../../questions";
-import { useLocation } from "react-router-dom";
 import { Question, emptyQuestion } from "../../questions";
 import DashboardQuestionTable from "./DashboardQuestionTable";
 
@@ -29,14 +28,6 @@ const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
   };
 
   const columns: Column<Question>[] = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => questions, [questions]);
-
-  const tableInstance = useTable({
-    columns: columns,
-    data: data,
-  });
-
-  const location = useLocation();
 
   const onClick = (row: Row<Question>) => {
     const questionClicked: Question = {

@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useTable, Column, Row } from "react-table"; // Import the 'Column' type
+import { Column, Row } from "react-table"; // Import the 'Column' type
 import { COLUMNS } from "./columns";
 import { EditQuestionModal } from "../../questions";
-import { useLocation } from "react-router-dom";
 import { Question, emptyQuestion, Category } from "../../questions";
 import DashboardQuestionTable from "./DashboardQuestionTable";
 
@@ -21,17 +20,10 @@ const DashboardForUsers: React.FC<DashboardForUsersProps> = ({
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const closeEditModal = () => setEditModalIsOpen(false);
 
-  const [questionClicked, setQuestionClicked] = useState(emptyQuestion);
-
-  const openEditModal = (questionClicked: Question) => {
-    setEditModalIsOpen(true);
-    setQuestionClicked(questionClicked);
-  };
+  // const [questionClicked, setQuestionClicked] = useState(emptyQuestion);
+  const questionClicked = emptyQuestion;
 
   const columns: Column<Question>[] = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => questions, [questions]);
-
-  const location = useLocation();
 
   const onClick = (row: Row<Question>) => {
     window.location.href = `/question/${row.original.id}`;
