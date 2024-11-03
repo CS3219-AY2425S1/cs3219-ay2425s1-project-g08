@@ -2,7 +2,7 @@ import { useUser } from "../context/UserContext"; // Assuming you have a context
 import HistoryNavBar from "../components/navbars/HistoryNavBar";
 import HistoryAttemptTable from "../features/history/HistoryAttemptTable";
 import { Column } from "react-table";
-import { HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
+import { HistoryAttempt, HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiConfig from "../config/config";
@@ -51,7 +51,7 @@ const HistoryAttemptPage: React.FC = () => {
       }
       res.json()
         .then(data => {
-          const tableDatas: HistoryTableData[] = data.map(attempt => ({
+          const tableDatas: HistoryTableData[] = data.map((attempt: HistoryAttempt) => ({
             attemptId: attempt.id,
             title: attempt.title,
             categories: attempt.categories,
