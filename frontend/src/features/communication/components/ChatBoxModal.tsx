@@ -13,37 +13,43 @@ const socket = io('http://localhost:5000');
 
 const ChatBoxModal: React.FC = () => {
   const [ isOpen, setIsOpen ] = useState(false);
+
   const [ message, setMessage ] = useState(''); // Message input field
-  const [ messages, setMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
   const [ partnerMessages, setPartnerMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
   const [ aIMessages, setAIMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
+
   const [ currUserIndex, setCurrUserIndex ] = useState(0);
 
   const { user } = useUser();
   const userId = user?.id;
-  const roomId = user?.roomId;
+  const roomId = user?.roomId ?? "";
 
   /* For chat with partner */
   useEffect(() => {
     /* Join chat room */
-    console.log("RoomID " + userToString(user));
-    socket.emit('joinRoom', { userId, roomId });
+    if (roomId) {
+      socket.emit('joinRoom', { userId, roomId });
     
-    socket.on('receiveMessage', (message: string) => {
-      setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: false }]);
-    });
+      socket.on('receiveMessage', (message: string) => {
+        setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: false }]);
+      });
 
-    return () => {
-      socket.off('receiveMessage');
-    };
+      return () => {
+        socket.off('receiveMessage');
+      };
+    }
   }, []);
 
   const sendPartnerMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim()) {
-      socket.emit('sendMessage', {roomId, message});
-      setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
-      setMessage(''); // Clear the message input
+    if (roomId) {
+      if (message.trim()) {
+        socket.emit('sendMessage', {roomId, message});
+        setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
+        setMessage(''); // Clear the message input
+      }
+    } else {
+      alert("Invalid chat room, please try again.");
     }
   };
 

@@ -71,3 +71,9 @@ services:
       context: ./history-service
     ports:
       - "9090:9090"
+
+  communicationservice:
+    build:
+      context: ./communicationservice
+    ports:
+      - "5000:5000"
