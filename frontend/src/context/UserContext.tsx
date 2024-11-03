@@ -6,6 +6,7 @@ interface UserContextType {
   user: User | undefined; // Change User | undefined to User | null
   updateUser: (userData: User | undefined) => void; // Function to log in the user
   logoutUser: () => void; // Function to log out the user
+  updateUserRoomId: (newRoomId: string) => void;
 }
 
 // Create user context
@@ -43,8 +44,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('user'); // Remove user from local storage
   };
 
+  /* Function to update roomId */
+  const updateUserRoomId = (newRoomId: string) => {
+    if (user) {
+      setUser({ ...user, roomId: newRoomId });
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, updateUser, logoutUser}}>
+    <UserContext.Provider value={{ user, updateUser, logoutUser, updateUserRoomId}}>
       {children}
     </UserContext.Provider>
   );

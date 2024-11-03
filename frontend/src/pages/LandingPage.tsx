@@ -1,6 +1,7 @@
 import React from "react";
 import LandingNavBar from "../components/navbars/LandingNavBar.tsx";
 import { Link } from "react-router-dom";
+import { ChatBoxModal } from "../features/communication/index.ts";
 
 const LandingPage: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const LandingPage: React.FC = () => {
             Find your match!
           </button>
         </Link>
+        <ChatBoxModal />
       </div>
     </div>
   );

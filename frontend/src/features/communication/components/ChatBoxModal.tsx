@@ -1,46 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MessageBubble from "./MessageBubble";
+import io from 'socket.io-client';
+import { useUser } from "../../../context/UserContext";
+import { userToString } from "../../../types/User";
 
 interface User {
   id: number;
   name: string;
 }
 
+const socket = io('http://localhost:5000');
+
 const ChatBoxModal: React.FC = () => {
   const [ isOpen, setIsOpen ] = useState(false);
-  const [ message, setMessage ] = useState('');
+  const [ message, setMessage ] = useState(''); // Message input field
   const [ messages, setMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
+  const [ partnerMessages, setPartnerMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
+  const [ aIMessages, setAIMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
   const [ currUserIndex, setCurrUserIndex ] = useState(0);
 
+  const { user } = useUser();
+  const userId = user?.id;
+  const roomId = user?.roomId;
+
+  /* For chat with partner */
+  useEffect(() => {
+    /* Join chat room */
+    console.log("RoomID " + userToString(user));
+    socket.emit('joinRoom', { userId, roomId });
+    
+    socket.on('receiveMessage', (message: string) => {
+      setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: false }]);
+    });
+
+    return () => {
+      socket.off('receiveMessage');
+    };
+  }, []);
+
+  const sendPartnerMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      socket.emit('sendMessage', {roomId, message});
+      setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
+      setMessage(''); // Clear the message input
+    }
+  };
+
+  const sendAIMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      setAIMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
+      setMessage(''); // Clear the message input
+    }
+  }
+
   const users: User[] = [
-    { id: 1, name: 'Partner' },
-    { id: 2, name: 'AI' },
+    { id: 0, name: 'Partner' },
+    { id: 1, name: 'AI' },
   ];
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
   }
 
-  /* for testing purposes */
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (message.trim()) {
-      setMessages([...messages, { text: message, isUser: true}]);
-      setMessage('');
-    }
-
-    // Simulate a response from another sender
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: `This is a response from ${users[currUserIndex].name}`, isUser: false },
-      ]);
-    }, 1000);
-  };
-
   const handleTabClick = (index: number) => {
     setCurrUserIndex(index);
-    setMessages([]); // Clear messages when switching users
+    console.log("CURR INDEX " + index);
   };
 
   return (
@@ -84,14 +110,23 @@ const ChatBoxModal: React.FC = () => {
 
           { /* Messages */ }
           <div className="flex flex-col h-64 overflow-y-auto mb-4">
-            {messages.map((msg, index) => (
+            {currUserIndex == 0 ? 
+              (partnerMessages.map((msg, index) => (
               <MessageBubble key={index} message={msg.text} isUser={msg.isUser} />
-            ))}
+              ))) : (
+                aIMessages.map((msg, index) => (
+                  <MessageBubble key={index} message={msg.text} isUser={msg.isUser} />
+              )))
+            }
           </div>
 
           {/* Action buttons */}
           <div className="mt-6">
-            <form onSubmit={handleSendMessage} className="flex">
+            <form 
+              onSubmit={currUserIndex == 0 ? 
+                sendPartnerMessage : sendAIMessage} 
+              className="flex"
+            >
               <input
                 type="text"
                 value={message}

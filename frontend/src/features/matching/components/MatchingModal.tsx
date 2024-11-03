@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import MatchingRequestForm from "./MatchingRequestForm";
 import { MatchingRequestFormState } from "../types/MatchingRequestFormState";
@@ -7,6 +7,7 @@ import { useUser } from "../../../context/UserContext.tsx";
 import Alert from "react-bootstrap/Alert";
 import apiConfig from "../../../config/config.ts";
 import { Category } from "../../questions/index.ts";
+import { ChatBoxModal } from "../../communication/index.ts";
 
 interface MatchingModalProps {
   closeMatchingModal: () => void;
@@ -20,12 +21,15 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
   categoriesWithQuestions,
 }) => {
   const [matchId, setMatchId] = useState("");
+  const [roomId, setRoomId] = useState("");
   const [formData, setFormData] = useState<MatchingRequestFormState>({
     category: "",
     difficulty: "",
   });
 
-  const { user } = useUser();
+  const { user, updateUserRoomId } = useUser();
+
+  const [showChatBoxModal, setShowChatBoxModal] = useState(false);
 
   const [isMatchFound, setIsMatchFound] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
@@ -83,17 +87,24 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
       }
 
       setMatchId(data.matchId);
+      console.log("DATA" + data);
 
       // Execute socket logic after returning the response object
       socket.emit("joinMatchResponseRoom", data.matchId);
 
       socket.on("receiveMatchResponse", (responseData, ack) => {
-        console.log("Received match response:", responseData);
+        console.log("RRRReceived match response:", responseData);
         ack(true);
         socket.emit("broadcast", `hi from ${user?.username}`);
         setShowTimer(false);
         setShowCancelButton(false);
         setIsMatchFound(true);
+        
+        console.log("ROOM ID " + responseData.roomId);
+        setRoomId(responseData.roomId);
+        updateUserRoomId(responseData.roomId);
+        setShowChatBoxModal(true);
+        console.log("RoomId updated " + responseData.roomId);
       });
       console.log(`Listening to room: ${data.matchId}`);
 
@@ -190,6 +201,11 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
               Cancel match request
             </button>
           </div>
+        ) : (
+          <></>
+        )}
+        {showChatBoxModal ? (
+          <ChatBoxModal />
         ) : (
           <></>
         )}
