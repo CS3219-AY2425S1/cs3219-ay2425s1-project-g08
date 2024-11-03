@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import MessageBubble from "./MessageBubble";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
 import { userToString } from "../../../types/User";
+import useClaudeSonnet from "../hooks/useClaudeSonnet";
 
 interface User {
   id: number;
   name: string;
 }
 
-const socket = io('http://localhost:5000');
+const socket = io("http://localhost:5000");
 
 const ChatBoxModal: React.FC = () => {
-  const [ isOpen, setIsOpen ] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const [ message, setMessage ] = useState(''); // Message input field
-  const [ partnerMessages, setPartnerMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
-  const [ aIMessages, setAIMessages ] = useState<{ text: string; isUser: boolean }[]>([]);
+  const [message, setMessage] = useState(""); // Message input field
+  const [partnerMessages, setPartnerMessages] = useState<
+    { text: string; isUser: boolean }[]
+  >([]);
+  const [aIMessages, setAIMessages] = useState<
+    { text: string; isUser: boolean }[]
+  >([]);
 
-  const [ currUserIndex, setCurrUserIndex ] = useState(0);
+  const [currUserIndex, setCurrUserIndex] = useState(0);
 
   const { user } = useUser();
   const userId = user?.id;
@@ -28,14 +33,17 @@ const ChatBoxModal: React.FC = () => {
   useEffect(() => {
     /* Join chat room */
     if (roomId) {
-      socket.emit('joinRoom', { userId, roomId });
-    
-      socket.on('receiveMessage', (message: string) => {
-        setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: false }]);
+      socket.emit("joinRoom", { userId, roomId });
+
+      socket.on("receiveMessage", (message: string) => {
+        setPartnerMessages((prevMessages) => [
+          ...prevMessages,
+          { text: message, isUser: false },
+        ]);
       });
 
       return () => {
-        socket.off('receiveMessage');
+        socket.off("receiveMessage");
       };
     }
   }, []);
@@ -44,31 +52,56 @@ const ChatBoxModal: React.FC = () => {
     e.preventDefault();
     if (roomId) {
       if (message.trim()) {
-        socket.emit('sendMessage', {roomId, message});
-        setPartnerMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
-        setMessage(''); // Clear the message input
+        socket.emit("sendMessage", { roomId, message });
+        setPartnerMessages((prevMessages) => [
+          ...prevMessages,
+          { text: message, isUser: true },
+        ]);
+        setMessage(""); // Clear the message input
       }
     } else {
       alert("Invalid chat room, please try again.");
     }
   };
 
-  const sendAIMessage = (e: React.FormEvent) => {
+  const { sendAIMessage, aiResponse, isLoading, error } = useClaudeSonnet();
+
+  // Watch for changes in aiResponse and add to AI messages
+  useEffect(() => {
+    if (aiResponse) {
+      setAIMessages((prevMessages) => [
+        ...prevMessages,
+        { text: aiResponse, isUser: false },
+      ]);
+    }
+  }, [aiResponse]);
+
+  const handleAIMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      setAIMessages((prevMessages) => [...prevMessages, { text: message, isUser: true }]);
-      setMessage(''); // Clear the message input
+      setAIMessages((prevMessages) => [
+        ...prevMessages,
+        { text: message, isUser: true },
+      ]);
+      setMessage(""); // Clear the message input
     }
-  }
+
+    // Call the sendAIMessage function
+    await sendAIMessage(message);
+
+    if (error) {
+      console.error("Error fetching AI response:", error);
+    }
+  };
 
   const users: User[] = [
-    { id: 0, name: 'Partner' },
-    { id: 1, name: 'AI' },
+    { id: 0, name: "Partner" },
+    { id: 1, name: "AI" },
   ];
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   const handleTabClick = (index: number) => {
     setCurrUserIndex(index);
@@ -78,13 +111,14 @@ const ChatBoxModal: React.FC = () => {
   return (
     <div className="fixed bottom-5 right-8 justify-items-end">
       <button
-        className={`${isOpen ? 'bg-black' : 'bg-yellow'} text-white p-3 rounded-3xl shadow-lg`}
+        className={`${
+          isOpen ? "bg-black" : "bg-yellow"
+        } text-white p-3 rounded-3xl shadow-lg`}
         onClick={toggleChatBox}
       >
         {isOpen ? "Close" : "Chat"}
       </button>
-      
-      
+
       {isOpen && (
         <div
           id="chatBoxModal"
@@ -97,8 +131,8 @@ const ChatBoxModal: React.FC = () => {
                 key={user.id}
                 className={`-mx-4 flex-1 py-2 rounded-t-lg ${
                   currUserIndex === index
-                    ? 'bg-yellow text-white'
-                    : 'bg-gray-300 text-black'
+                    ? "bg-yellow text-white"
+                    : "bg-gray-300 text-black"
                 }`}
                 onClick={() => handleTabClick(index)}
               >
@@ -114,23 +148,38 @@ const ChatBoxModal: React.FC = () => {
             Chat with {users[currUserIndex].name}
           </h2>
 
-          { /* Messages */ }
+          {/* Messages */}
           <div className="flex flex-col h-64 overflow-y-auto mb-4">
-            {currUserIndex == 0 ? 
-              (partnerMessages.map((msg, index) => (
-              <MessageBubble key={index} message={msg.text} isUser={msg.isUser} />
-              ))) : (
-                aIMessages.map((msg, index) => (
-                  <MessageBubble key={index} message={msg.text} isUser={msg.isUser} />
-              )))
-            }
+            {currUserIndex == 0
+              ? partnerMessages.map((msg, index) => (
+                  <MessageBubble
+                    key={index}
+                    message={msg.text}
+                    isUser={msg.isUser}
+                  />
+                ))
+              : aIMessages.map((msg, index) => (
+                  <MessageBubble
+                    key={index}
+                    message={msg.text}
+                    isUser={msg.isUser}
+                  />
+                ))}
           </div>
+
+          {/* Loading indicator for AI response */}
+          {currUserIndex === 1 && isLoading && (
+            <div className="text-gray-500 text-sm italic mt-2">
+              AI is typing...
+            </div>
+          )}
 
           {/* Action buttons */}
           <div className="mt-6">
-            <form 
-              onSubmit={currUserIndex == 0 ? 
-                sendPartnerMessage : sendAIMessage} 
+            <form
+              onSubmit={
+                currUserIndex == 0 ? sendPartnerMessage : handleAIMessage
+              }
               className="flex"
             >
               <input
@@ -148,7 +197,8 @@ const ChatBoxModal: React.FC = () => {
               </button>
             </form>
           </div>
-        </div>)}
+        </div>
+      )}
     </div>
   );
 };
