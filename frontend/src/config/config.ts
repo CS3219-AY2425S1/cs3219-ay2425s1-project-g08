@@ -15,7 +15,7 @@ const apiConfig = {
     ? "/matchexpresssvcapi"
     : "http://localhost:3000",
   historyServiceUrl: import.meta.env.VITE_HISTORY_URL
-    ? "/placeholdernameforhistoryservice"
+    ? "/historysvcapi"
     : "http://localhost:9090",
 };
 

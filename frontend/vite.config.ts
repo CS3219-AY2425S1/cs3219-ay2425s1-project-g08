@@ -33,7 +33,12 @@ export default (({ mode }: { mode: string }) => {
           target: process.env.VITE_MATCH_EXPRESS_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/matchexpresssvcapi/, '')
-        }
+        },
+        '/historysvcapi' : {
+          target: process.env.VITE_HISTORY_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/historysvcapi/, '')
+        },
       }
     },
     plugins: [react()],
