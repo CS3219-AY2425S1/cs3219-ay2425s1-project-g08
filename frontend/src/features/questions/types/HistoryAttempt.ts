@@ -1,11 +1,11 @@
 export type HistoryAttempt = {
-  attemptId: string,
+  id: string,
   title: string,
   description: string,
   categories: string[],
   complexity: string,
-  datetimeAttempted: string, // Change this to specific type format
-  content: string // Change this type depending on how the text editor needs input data
+  attemptDateTime: string,
+  content: string
 }
 
 export type HistoryTableHeaders = {
