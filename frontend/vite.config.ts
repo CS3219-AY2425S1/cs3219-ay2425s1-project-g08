@@ -33,6 +33,11 @@ export default (({ mode }: { mode: string }) => {
           target: process.env.VITE_MATCH_EXPRESS_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/matchexpresssvcapi/, '')
+        },
+        '/collaborationsvcapi' : {
+          target: process.env.VITE_COLLABORATION_WEBSOCKET_URL,
+          ws: true,
+          rewriteWsOrigin: true,
         }
       }
     },
