@@ -37,7 +37,7 @@ const ChatBoxModal: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [unreadPartnerCount, setUnreadPartnerCount] = useState(9);
-  const [unreadAICount, setUnreadAICount] = useState(999999999);
+  const [unreadAICount, setUnreadAICount] = useState(9);
 
   const unreadCountToString = (unreadCount: number) => {
     if (unreadCount < 99) {
@@ -163,14 +163,14 @@ const ChatBoxModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-8 justify-items-end">
+    <div className="fixed bottom-5 right-12 justify-items-end mr-4">
       <div
         className="relative"
       >
         {/* Unread messages count */}
         {((unreadPartnerCount + unreadAICount) > 0 ) ? 
           (<p
-            className="absolute bottom-7 left-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white"
+            className="absolute bottom-7 right-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white"
           >
             {unreadCountToString(unreadPartnerCount + unreadAICount)}
           </p>) : (<></>)

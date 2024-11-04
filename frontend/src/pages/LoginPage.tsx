@@ -83,11 +83,12 @@ const LoginPage: React.FC = () => {
           )}
         </div>
 
-        <Link to="/dashboard">
+        {/*<Link to="/dashboard">
           <button className="mt-2 py-2 text-gray-700 hover:opacity-60">
             Forget Password?
           </button>
         </Link>
+        */}
 
         <button
           className="bg-yellow rounded-[25px] py-1.5 px-10 mt-4 text-off-white hover:opacity-60"
