@@ -20,7 +20,31 @@ wss.on("connection", (ws: WebSocket) => {
     const uniqueId = generateUniqueId();
     const message = JSON.stringify({ type: "USER_ID", uniqueId: uniqueId });
     clients.set(uniqueId, ws);
+    console.log("Client connected with ID:", uniqueId);
     ws.send(message); // generate a unique ID for the client
+
+    ws.on("message", (message: Buffer) => {
+        console.log("Received message from client:", message.toString());
+        // Add any additional logic for when a message is received
+        const messageData = JSON.parse(message.toString());
+        switch (messageData.type) {
+            case "join-room":
+                joinRoom(messageData.roomId, messageData.userId);
+                console.log("User joined room:", messageData.roomId);
+                break;
+            case "create-ydoc":
+                console.log("Creating YDoc...");
+                createYdoc(messageData.roomId);
+                break;
+            case "leave-room":
+                leaveRoom(messageData.roomId, messageData.userId);
+                console.log("User left room:", messageData.roomId);
+                break;
+            default:
+                console.warn("Unknown message type:", messageData.type);
+                break;
+        }
+    });
 });
 
 function readBlobAsText(blob: Blob): any {
@@ -58,7 +82,6 @@ function joinRoom(roomId: string, userId: string) {
         } else {
             console.log("Unknown user ID. Didnt add user to room");
         }
-       
     }
 
     // second user to join will be notified that the room is full
@@ -113,28 +136,5 @@ function createYdoc(roomId: string) {
         }
     }
 }
-
-wss.on("message", (message) => {
-    console.log("Received message from client:", message);
-    // Add any additional logic for when a message is received
-    const messageData = readBlobAsText(message.data);
-    switch (messageData.type) {
-        case "join-room":
-            joinRoom(messageData.roomId, messageData.userId);
-            console.log("User joined room:", messageData.roomId);
-            break;
-        case "create-ydoc":
-            console.log("Creating YDoc...");
-            createYdoc(messageData.roomId);
-            break;
-        case "leave-room":
-            leaveRoom(messageData.roomId, messageData.userId);
-            console.log("User left room:", messageData.roomId);
-            break;
-        default:
-            console.warn("Unknown message type:", messageData.type);
-            break;
-    }
-});
 
 console.log("WebSocket server is running on ws://localhost:1234");

@@ -6,7 +6,7 @@ class ClientWebSocket {
     public otherUserLeft: boolean = false;
 
     constructor() {
-        this.socket = new WebSocket('ws://localhost:1234');
+        this.socket = new WebSocket("ws://localhost:1234");
 
         this.socket.onopen = this.onOpen.bind(this);
         this.socket.onmessage = this.onMessage.bind(this);
@@ -14,36 +14,40 @@ class ClientWebSocket {
     }
 
     private onOpen(event: Event) {
-        console.log('WebSocket connection opened:', event);
+        console.log("WebSocket connection opened:", event);
         // Add any additional logic for when the connection opens
     }
 
     private onMessage(event: MessageEvent) {
-        console.log('WebSocket message received:', event.data);
+        console.log("WebSocket message received:", event.data);
         // Add any additional logic for when a message is received
         // Receive the unique ID from the server
-        const message = this.readBlobAsText(event.data);
+        const message = JSON.parse(event.data);
+
+        console.log("Message type:", message.type);
 
         switch (message.type) {
-            case 'USER_ID':
+            case "USER_ID":
                 this.userId = message.uniqueId;
-                console.log('User ID received:', this.userId);
+                console.log("User ID received:", this.userId);
                 break;
-            case 'room-full':
-                console.log('Both users have joined the room, generating YDoc...');
+            case "room-full":
+                console.log(
+                    "Both users have joined the room, generating YDoc..."
+                );
                 this.createYDocMessage(message.roomId); // Create YDoc for the room, once both users have joined
                 break;
-            case 'generatedYdoc':
-                console.log('YDoc generated:', message.ydoc);
+            case "generatedYdoc":
+                console.log("YDoc generated:", message.ydoc);
                 this.ydoc = message.ydoc;
                 this.ytext = message.ytext;
                 break;
-            case 'other-user-left-room':
+            case "other-user-left-room":
                 this.otherUserLeft = true;
-                console.log('Other user has left the room:', message.userId);
+                console.log("Other user has left the room:", message.userId);
                 break;
             default:
-                console.warn('Unknown message type:', message.type);
+                console.warn("Unknown message type:", message.type);
                 break;
         }
     }
@@ -63,11 +67,11 @@ class ClientWebSocket {
     }
 
     private onClose(event: CloseEvent) {
-        console.log('WebSocket connection closed:', event);
+        console.log("WebSocket connection closed:", event);
         // Add any additional logic for when the connection closes
     }
 
-    private addUserIdToMessage(data:any): string {
+    private addUserIdToMessage(data: any): string {
         const extendedData = { ...data, userId: this.userId }; // add user ID to the data
         return extendedData;
     }
@@ -78,12 +82,17 @@ class ClientWebSocket {
     }
 
     public sendJoinRoomMessage(roomId: string) {
-        const message = this.addUserIdToMessage(this.addTypeToMessage({ roomId: roomId }, "join-room"));
+        console.log(`Sending join room message for room ID: ${roomId}...`);
+        const message = this.addUserIdToMessage(
+            this.addTypeToMessage({ roomId: roomId }, "join-room")
+        );
         this.sendMessage(JSON.stringify(message));
     }
 
-    private createYDocMessage(roomId: string) { 
-        const message = this.addUserIdToMessage(this.addTypeToMessage({ roomId: roomId }, "create-ydoc"));
+    private createYDocMessage(roomId: string) {
+        const message = this.addUserIdToMessage(
+            this.addTypeToMessage({ roomId: roomId }, "create-ydoc")
+        );
         this.sendMessage(JSON.stringify(message));
     }
 
@@ -96,7 +105,9 @@ class ClientWebSocket {
     }
 
     public sendLeaveRoomMessage(roomId: string) {
-        const message = this.addUserIdToMessage(this.addTypeToMessage({ roomId: roomId }, "leave-room"));
+        const message = this.addUserIdToMessage(
+            this.addTypeToMessage({ roomId: roomId }, "leave-room")
+        );
         this.sendMessage(JSON.stringify(message));
     }
 
@@ -104,7 +115,10 @@ class ClientWebSocket {
         if (this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(message);
         } else {
-            console.error('WebSocket is not open. Ready state:', this.socket.readyState);
+            console.error(
+                "WebSocket is not open. Ready state:",
+                this.socket.readyState
+            );
         }
     }
 }

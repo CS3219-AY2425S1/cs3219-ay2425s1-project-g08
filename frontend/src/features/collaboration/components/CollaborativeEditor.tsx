@@ -3,25 +3,15 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
-import ClientWebSocket from "../ClientWebSocket";
 
 const CollaborativeEditor: React.FC = () => {
     const editorRef = useRef<HTMLDivElement | null>(null);
-    const { roomId, setClientWebSocket } = useUser();
-    console.log("roomId", roomId);
-
-    // initialise client websocket
-    const clientWebSocket = new ClientWebSocket();
-
-    // set the client websocket in the user context
-    setClientWebSocket(clientWebSocket);
-
-    clientWebSocket.sendJoinRoomMessage(roomId);
+    const { roomId, clientWebSocket } = useUser();
 
     useEffect(() => {
         // Create a new Yjs document. Requires null check for yDoc and yText. Will happen if other user does not join the room
-        const ydoc = clientWebSocket.getYDoc();
-        const yText = clientWebSocket.getYText();
+        const ydoc = clientWebSocket?.getYDoc();
+        const yText = clientWebSocket?.getYText();
 
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
