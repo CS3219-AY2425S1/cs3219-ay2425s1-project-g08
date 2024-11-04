@@ -3,7 +3,6 @@ import MessageBubble from "./MessageBubble";
 import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
-import { renderIntoDocument } from "react-dom/test-utils";
 import { userToString } from "../../../types/User";
 
 interface User {
@@ -37,10 +36,31 @@ const ChatBoxModal: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [unreadPartnerCount, setUnreadPartnerCount] = useState(9);
+  const [unreadAICount, setUnreadAICount] = useState(999999999);
+
+  const unreadCountToString = (unreadCount: number) => {
+    if (unreadCount < 99) {
+      return unreadCount.toString();
+    } else {
+      return ("99+");
+    }
+  }
+
+  // Reset unread counts when opened
+  useEffect(() => {
+    if (isOpen) {
+      if (currUserIndex == 0) {
+        setUnreadPartnerCount(0);
+      } else {
+        setUnreadAICount(0);
+      }
+    }
+  }, [isOpen, currUserIndex]);
+
   // Get local storage messages on mount
   useEffect(() => {
     const storedPartnerMessages = getPartnerMessages();
-    //console.log("MSGS" + storedPartnerMessages[0].toString());
     if (storedPartnerMessages.length > 0) {
       //console.log("setting MSGS");
       setPartnerMessages(storedPartnerMessages);
@@ -61,6 +81,9 @@ const ChatBoxModal: React.FC = () => {
           ...prevMessages,
           { text: message, isUser: false },
         ]);
+        if (!isOpen || currUserIndex != 0) {
+          setUnreadPartnerCount(unreadPartnerCount + 1);
+        }
       });
 
       updatePartnerMessages(partnerMessages);
@@ -101,6 +124,9 @@ const ChatBoxModal: React.FC = () => {
         ...prevMessages,
         { text: aiResponse, isUser: false },
       ]);
+      if (!isOpen || currUserIndex != 1) {
+        setUnreadAICount(unreadAICount + 1);
+      }
     }
   }, [aiResponse]);
 
@@ -125,7 +151,7 @@ const ChatBoxModal: React.FC = () => {
   // Scroll to the bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [partnerMessages, aIMessages, isLoading]);
+  }, [partnerMessages, aIMessages, isLoading, isOpen, currUserIndex]);
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
@@ -138,18 +164,33 @@ const ChatBoxModal: React.FC = () => {
 
   return (
     <div className="fixed bottom-5 right-8 justify-items-end">
-      <button
-        className={`${
-          isOpen ? "bg-gray-900 hover:bg-gray-500" : "bg-yellow hover:bg-amber-300"
-        } text-white py-3 px-4 rounded-full`}
-        onClick={toggleChatBox}
+      <div
+        className="relative"
       >
-        {isOpen ? "Close" : "Chat"}
-      </button>
+        {/* Unread messages count */}
+        {((unreadPartnerCount + unreadAICount) > 0 ) ? 
+          (<p
+            className="absolute bottom-7 left-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white"
+          >
+            {unreadCountToString(unreadPartnerCount + unreadAICount)}
+          </p>) : (<></>)
+        }
 
+        {/* Open/close chat button*/}
+        <button
+          className={`${
+            isOpen ? "bg-gray-900 hover:bg-gray-500" : "bg-yellow hover:bg-amber-300"
+          } text-white py-3 px-4 rounded-full`}
+          onClick={toggleChatBox}
+        >
+          {isOpen ? "Close" : "Chat"}
+        </button>
+      </div>
+      
+      {/* Actual chat box */}
       {isOpen && (
         <div
-          id="chatBoxModal"
+          id="chatBox"
           className="bg-white px-3 pb-3 shadow-lg rounded-lg mt-2 w-80"
         >
           {/* Tabs for User Switching */}
@@ -164,7 +205,9 @@ const ChatBoxModal: React.FC = () => {
                 }`}
                 onClick={() => handleTabClick(index)}
               >
-                {user.name}
+                {user.name} 
+                {(user.id === 0 && unreadPartnerCount > 0) ? ` (${unreadCountToString(unreadPartnerCount)})` : ''}
+                {(user.id === 1 && unreadAICount > 0) ? ` (${unreadCountToString(unreadAICount)})` : ''}
               </button>
             ))}
           </div>
