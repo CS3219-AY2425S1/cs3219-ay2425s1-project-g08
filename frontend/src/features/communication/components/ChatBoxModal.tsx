@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
-import { userToString } from "../../../types/User";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
 import apiConfig from "../../../config/config";
+import { userToString } from "../../../types/User";
 
 interface User {
   id: number;
@@ -31,6 +31,13 @@ socket.on("error", (error) => {
 const ChatBoxModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  /* For tab switching */
+  const [currUserIndex, setCurrUserIndex] = useState(0);
+  const users: User[] = [
+    { id: 0, name: "Partner" },
+    { id: 1, name: "AI" },
+  ];
+
   const [message, setMessage] = useState(""); // Message input field
   const [partnerMessages, setPartnerMessages] = useState<
     { text: string; isUser: boolean }[]
@@ -39,15 +46,48 @@ const ChatBoxModal: React.FC = () => {
     { text: string; isUser: boolean }[]
   >([]);
 
-  const [currUserIndex, setCurrUserIndex] = useState(0);
-
-  const { user } = useUser();
+  /* For chat with partner */
+  const { user, roomId, updatePartnerMessages, getPartnerMessages } = useUser();
   const userId = user?.id;
-  const roomId = user?.roomId ?? "";
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /* For chat with partner */
+  const [unreadPartnerCount, setUnreadPartnerCount] = useState(0);
+  const [unreadAICount, setUnreadAICount] = useState(0);
+
+  const unreadCountToString = (unreadCount: number) => {
+    if (unreadCount < 99) {
+      return unreadCount.toString();
+    } else {
+      return ("99+");
+    }
+  }
+
+  // Reset unread counts when opened
   useEffect(() => {
+    if (isOpen) {
+      if (currUserIndex == 0) {
+        setUnreadPartnerCount(0);
+      } else {
+        setUnreadAICount(0);
+      }
+    }
+  }, [isOpen, currUserIndex]);
+
+  // Get local storage messages on mount
+  useEffect(() => {
+    const storedPartnerMessages = getPartnerMessages();
+    if (storedPartnerMessages.length > 0) {
+      //console.log("setting MSGS");
+      setPartnerMessages(storedPartnerMessages);
+    }
+  }, []);
+  
+
+  /* Watch for messages from partner */
+  useEffect(() => {
+    console.log("USER " + userToString(user) + roomId);
+    
     /* Join chat room */
     if (roomId) {
       socket.emit("joinRoom", { userId, roomId });
@@ -57,27 +97,37 @@ const ChatBoxModal: React.FC = () => {
           ...prevMessages,
           { text: message, isUser: false },
         ]);
+        if (!isOpen || currUserIndex != 0) {
+          setUnreadPartnerCount(unreadPartnerCount + 1);
+        }
       });
+
+      updatePartnerMessages(partnerMessages);
 
       return () => {
         socket.off("receiveMessage");
       };
     }
-  }, []);
+  }); // Run on every reload
 
+  /* Send messages to partner */
   const sendPartnerMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (roomId) {
-      if (message.trim()) {
-        socket.emit("sendMessage", { roomId, message });
-        setPartnerMessages((prevMessages) => [
-          ...prevMessages,
-          { text: message, isUser: true },
-        ]);
-        setMessage(""); // Clear the message input
-      }
-    } else {
+    if (!roomId) {
+      // Empty roomId
       alert("Invalid chat room, please try again.");
+      return;
+    }
+    if (message.trim()) {
+      socket.emit("sendMessage", { roomId, message });
+      setPartnerMessages((prevMessages) => [
+        ...prevMessages,
+        { text: message, isUser: true },
+      ]);
+      setMessage(""); // Clear the message input
+
+      // For temporary chat storage
+      updatePartnerMessages(partnerMessages);
     }
   };
 
@@ -90,6 +140,9 @@ const ChatBoxModal: React.FC = () => {
         ...prevMessages,
         { text: aiResponse, isUser: false },
       ]);
+      if (!isOpen || currUserIndex != 1) {
+        setUnreadAICount(unreadAICount + 1);
+      }
     }
   }, [aiResponse]);
 
@@ -114,12 +167,7 @@ const ChatBoxModal: React.FC = () => {
   // Scroll to the bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [partnerMessages, aIMessages, isLoading]);
-
-  const users: User[] = [
-    { id: 0, name: "Partner" },
-    { id: 1, name: "AI" },
-  ];
+  }, [partnerMessages, aIMessages, isLoading, isOpen, currUserIndex]);
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
@@ -131,20 +179,35 @@ const ChatBoxModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-8 justify-items-end">
-      <button
-        className={`${
-          isOpen ? "bg-black" : "bg-yellow"
-        } text-white p-3 rounded-3xl shadow-lg`}
-        onClick={toggleChatBox}
+    <div className="fixed bottom-5 right-12 justify-items-end mr-4">
+      <div
+        className="relative"
       >
-        {isOpen ? "Close" : "Chat"}
-      </button>
+        {/* Unread messages count */}
+        {((unreadPartnerCount + unreadAICount) > 0 ) ? 
+          (<p
+            className="absolute bottom-7 right-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white"
+          >
+            {unreadCountToString(unreadPartnerCount + unreadAICount)}
+          </p>) : (<></>)
+        }
 
+        {/* Open/close chat button*/}
+        <button
+          className={`${
+            isOpen ? "bg-gray-900 hover:bg-gray-500" : "bg-yellow hover:bg-amber-300"
+          } text-white py-3 px-4 rounded-full`}
+          onClick={toggleChatBox}
+        >
+          {isOpen ? "Close" : "Chat"}
+        </button>
+      </div>
+      
+      {/* Actual chat box */}
       {isOpen && (
         <div
-          id="chatBoxModal"
-          className="bg-white border border-gray-300 px-3 pb-3 shadow-lg rounded-lg mt-2 w-80"
+          id="chatBox"
+          className="bg-white px-3 pb-3 shadow-lg rounded-lg mt-2 w-80"
         >
           {/* Tabs for User Switching */}
           <div className="flex">
@@ -158,7 +221,9 @@ const ChatBoxModal: React.FC = () => {
                 }`}
                 onClick={() => handleTabClick(index)}
               >
-                {user.name}
+                {user.name} 
+                {(user.id === 0 && unreadPartnerCount > 0) ? ` (${unreadCountToString(unreadPartnerCount)})` : ''}
+                {(user.id === 1 && unreadAICount > 0) ? ` (${unreadCountToString(unreadAICount)})` : ''}
               </button>
             ))}
           </div>
@@ -200,21 +265,21 @@ const ChatBoxModal: React.FC = () => {
           {/* Action buttons */}
           <div className="mt-6">
             <form
+              className="flex"
               onSubmit={
                 currUserIndex == 0 ? sendPartnerMessage : handleAIMessage
               }
-              className="flex"
             >
               <input
                 type="text"
+                className="border rounded-l p-2 flex-grow text-black shadow-md"
+                placeholder="Type your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="border border-gray-700 rounded-l p-2 flex-grow text-black"
-                placeholder="Type your message..."
               />
               <button
                 type="submit"
-                className="bg-blue-500 text-white rounded-r p-2"
+                className="bg-blue-500 hover:bg-blue-300 text-white rounded-r p-2 shadow-md"
               >
                 Send
               </button>

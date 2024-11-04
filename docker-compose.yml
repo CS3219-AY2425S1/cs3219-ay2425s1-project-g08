@@ -72,6 +72,12 @@ services:
     ports:
       - "9090:9090"
 
+  collaborationservice:
+    build:
+      context: ./collaboration-service
+    ports:
+      - "1234:1234"
+
   communicationservice:
     build:
       context: ./communicationservice
