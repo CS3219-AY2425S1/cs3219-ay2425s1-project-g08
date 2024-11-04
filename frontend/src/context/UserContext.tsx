@@ -17,6 +17,8 @@ interface UserContextType {
     updateRoomId: (roomId: string | undefined) => void;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
+    updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
+    getPartnerMessages: () => { text: string, isUser: boolean }[]
 }
 
 // Create user context
@@ -30,7 +32,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     const [roomId, setRoomId] = useState<string>("");
 
     useEffect(() => {
-        // Retrieve user from local storage on mount
+        // Retrieve user from local storage
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             try {
@@ -75,10 +77,37 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         }
     }
 
+    const updatePartnerMessages = (partnerMessages: { text: string; isUser: boolean }[]) => {
+        try {
+            localStorage.setItem("partnerMessages", JSON.stringify(partnerMessages));
+        } catch (error) {
+            console.log("Failed to update partnerMessages", error);
+        }
+    }
+
+    const getPartnerMessages = () => {
+        const partnerMessages = localStorage.getItem("partnerMessages");
+        //console.log("MSGS " + partnerMessages);
+        if (partnerMessages) {
+            try {
+                //console.log("Parsed MSGS " + partnerMessages);
+                const parsedMessages: {text: string, isUser: boolean}[] = JSON.parse(partnerMessages);
+                //console.log("Parsed MSGS " + JSON.stringify(parsedMessages));
+                return parsedMessages;
+            } catch (error) {
+                console.log("Failed to parse partnerMessages", error);
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
     const clearRoomId = () => {
         try {
             setRoomId("");
             localStorage.setItem("roomId", "");
+            localStorage.setItem("partnerMessages", ""); // Clear potential temporary message storage
         } catch (error) {
             console.log("Failed to update roomId", error);
         }
@@ -97,6 +126,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 updateRoomId,
                 clearRoomId,
                 isConnectedToRoom,
+                updatePartnerMessages,
+                getPartnerMessages
             }}
         >
             {children}

@@ -16,6 +16,13 @@ const socket = io("http://localhost:5000");
 const ChatBoxModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  /* For tab switching */
+  const [currUserIndex, setCurrUserIndex] = useState(0);
+  const users: User[] = [
+    { id: 0, name: "Partner" },
+    { id: 1, name: "AI" },
+  ];
+
   const [message, setMessage] = useState(""); // Message input field
   const [partnerMessages, setPartnerMessages] = useState<
     { text: string; isUser: boolean }[]
@@ -24,17 +31,27 @@ const ChatBoxModal: React.FC = () => {
     { text: string; isUser: boolean }[]
   >([]);
 
-  const [currUserIndex, setCurrUserIndex] = useState(0);
-  
-  const { user, roomId } = useUser();
-  //const [currRoomId, setCurrRoomId] = useState(roomId);
-
+  /* For chat with partner */
+  const { user, roomId, updatePartnerMessages, getPartnerMessages } = useUser();
   const userId = user?.id;
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Get local storage messages on mount
+  useEffect(() => {
+    const storedPartnerMessages = getPartnerMessages();
+    //console.log("MSGS" + storedPartnerMessages[0].toString());
+    if (storedPartnerMessages.length > 0) {
+      //console.log("setting MSGS");
+      setPartnerMessages(storedPartnerMessages);
+    }
+  }, []);
+  
 
   /* Watch for messages from partner */
   useEffect(() => {
     console.log("USER " + userToString(user) + roomId);
+    
     /* Join chat room */
     if (roomId) {
       socket.emit("joinRoom", { userId, roomId });
@@ -46,6 +63,8 @@ const ChatBoxModal: React.FC = () => {
         ]);
       });
 
+      updatePartnerMessages(partnerMessages);
+
       return () => {
         socket.off("receiveMessage");
       };
@@ -55,17 +74,21 @@ const ChatBoxModal: React.FC = () => {
   /* Send messages to partner */
   const sendPartnerMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (roomId) {
-      if (message.trim()) {
-        socket.emit("sendMessage", { roomId, message });
-        setPartnerMessages((prevMessages) => [
-          ...prevMessages,
-          { text: message, isUser: true },
-        ]);
-        setMessage(""); // Clear the message input
-      }
-    } else {
+    if (!roomId) {
+      // Empty roomId
       alert("Invalid chat room, please try again.");
+      return;
+    }
+    if (message.trim()) {
+      socket.emit("sendMessage", { roomId, message });
+      setPartnerMessages((prevMessages) => [
+        ...prevMessages,
+        { text: message, isUser: true },
+      ]);
+      setMessage(""); // Clear the message input
+
+      // For temporary chat storage
+      updatePartnerMessages(partnerMessages);
     }
   };
 
@@ -103,11 +126,6 @@ const ChatBoxModal: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [partnerMessages, aIMessages, isLoading]);
-
-  const users: User[] = [
-    { id: 0, name: "Partner" },
-    { id: 1, name: "AI" },
-  ];
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
