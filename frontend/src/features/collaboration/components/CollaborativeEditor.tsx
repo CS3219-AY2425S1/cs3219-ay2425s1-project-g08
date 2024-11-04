@@ -93,7 +93,6 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
         new MonacoBinding(yText, editor.getModel()!, new Set([editor]));
 
         return () => {
-            console.log("TEARING DOWN EDITOR");
             saveEditorHistory();
             editor.dispose(); // Clean up editor on unmount
             provider.destroy(); // Close the WebSocket connection
