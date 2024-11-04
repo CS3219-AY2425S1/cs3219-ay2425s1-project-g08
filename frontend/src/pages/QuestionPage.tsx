@@ -5,26 +5,15 @@ import { useRetrieveQuestion } from "../features/questions";
 import { QuestionDisplay } from "../features/collaboration";
 import { Question } from "../features/questions";
 import { CollaborativeEditor } from "../features/collaboration";
-import { useUser } from "../context/UserContext";
-import ClientWebSocket from "../features/collaboration/ClientWebSocket";
 
 const QuestionPage: React.FC = () => {
     const { title } = useParams<{ title: string }>();
     const [question, setQuestion] = useState<Question>();
     const fetchQuestion = useRetrieveQuestion(title, setQuestion);
-    const { roomId, setClientWebSocket } = useUser();
 
     useEffect(() => {
         fetchQuestion();
     }, []);
-
-    // initialise client websocket
-    const clientWebSocket = new ClientWebSocket();
-
-    // set the client websocket in the user context
-    setClientWebSocket(clientWebSocket);
-
-    clientWebSocket.sendJoinRoomMessage(roomId);
 
     return (
         <div className="w-screen h-screen flex flex-col">
