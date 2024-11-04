@@ -17,6 +17,9 @@ const apiConfig = {
   historyServiceUrl: import.meta.env.VITE_HISTORY_URL
     ? "/placeholdernameforhistoryservice"
     : "http://localhost:9090",
+  commServiceUrl: import.meta.env.VITE_COMM_URL
+    ? "/commsvcapi"
+    : "http://localhost:8083"
 };
 
 export default apiConfig;

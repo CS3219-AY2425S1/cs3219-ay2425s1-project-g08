@@ -33,7 +33,13 @@ export default (({ mode }: { mode: string }) => {
           target: process.env.VITE_MATCH_EXPRESS_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/matchexpresssvcapi/, '')
-        }
+        },
+        'commsvcapi/socket.io' : {
+          target: process.env.VITE_COMM_URL,
+          ws: true,
+          rewriteWsOrigin: true,
+          rewrite: (path) => path.replace(/^\/commsvcapi/, '')
+        },
       }
     },
     plugins: [react()],

@@ -4,13 +4,14 @@ import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
 import { userToString } from "../../../types/User";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
+import apiConfig from "../../../config/config";
 
 interface User {
   id: number;
   name: string;
 }
-
-const socket = io("http://localhost:5000");
+const COMM_WEBSOCKET_URL: string = apiConfig.commServiceUrl;
+const socket = io(COMM_WEBSOCKET_URL);
 
 const ChatBoxModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
