@@ -2,15 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useUser } from "../../../context/UserContext.tsx";
-import io from "socket.io-client";
-import apiConfig from "../../../config/config.ts";
 
 interface LeaveRoomModalProps {
     closeLeaveRoomModal: () => void;
     otherUserLeft: boolean;
 }
-
-const COLLAB_WEBSOCKET_URL: string = apiConfig.collaborationWebSocketUrl;
 
 const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     closeLeaveRoomModal,
@@ -18,22 +14,16 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
 }) => {
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { user, clearRoomId } = useUser();
-
-    console.log("COLLAB_WEBSOCKET_URL: ", COLLAB_WEBSOCKET_URL);
-    const ws = new WebSocket(COLLAB_WEBSOCKET_URL);
-    const leaveRoomData = {
-        type: "leave-room",
-        username: user?.username,
-    };
+    const { roomId, clearRoomId, clientWebSocket } = useUser();
 
     const handleLeaveRoom = async () => {
         try {
             // Add logic to leave the room, e.g., API call to notify server
+            console.log("Leaving room...");
+            clientWebSocket?.sendLeaveRoomMessage(roomId);
             clearRoomId(); // set the room ID to ""
             setShowLeaveAlert(true);
-            console.log("Leaving room...");
-            ws.send(JSON.stringify(leaveRoomData));
+
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate to  dashboard page after leaving the room
             }, 2000);

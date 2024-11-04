@@ -6,6 +6,7 @@ import {
     useEffect,
 } from "react";
 import { User } from "../types/User";
+import ClientWebSocket from "../features/collaboration/ClientWebSocket";
 
 // Define the context value type
 interface UserContextType {
@@ -16,6 +17,8 @@ interface UserContextType {
     setRoomId: React.Dispatch<React.SetStateAction<string>>;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
+    clientWebSocket: ClientWebSocket | null;
+    setClientWebSocket: React.Dispatch<React.SetStateAction<ClientWebSocket | null>>;
 }
 
 // Create user context
@@ -63,6 +66,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     const isConnectedToRoom = roomId !== "" || roomId !== undefined;
 
+    const [clientWebSocket, setClientWebSocket] = useState<ClientWebSocket | null>(null);
+
     return (
         <UserContext.Provider
             value={{
@@ -73,6 +78,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 setRoomId,
                 clearRoomId,
                 isConnectedToRoom,
+                clientWebSocket,
+                setClientWebSocket,
             }}
         >
             {children}
