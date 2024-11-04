@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port the server runs on
-EXPOSE 5000
+EXPOSE 8083
 
 # Command to run the development server
 CMD ["node", "src/server.js"]

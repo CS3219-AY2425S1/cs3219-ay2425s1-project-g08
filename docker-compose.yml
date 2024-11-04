@@ -65,7 +65,7 @@ services:
       - "8081:8081"
     environment:
       - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=classpath:gcp-service-account-key.json
-      
+
   historyservice:
     build:
       context: ./history-service
@@ -76,4 +76,4 @@ services:
     build:
       context: ./communicationservice
     ports:
-      - "5000:5000"
+      - "8083:8083"
