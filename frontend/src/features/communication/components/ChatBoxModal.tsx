@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
 import { renderIntoDocument } from "react-dom/test-utils";
+import { userToString } from "../../../types/User";
 
 interface User {
   id: number;
@@ -24,14 +25,16 @@ const ChatBoxModal: React.FC = () => {
   >([]);
 
   const [currUserIndex, setCurrUserIndex] = useState(0);
-
+  
   const { user, roomId } = useUser();
+  //const [currRoomId, setCurrRoomId] = useState(roomId);
+
   const userId = user?.id;
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   /* Watch for messages from partner */
   useEffect(() => {
-    console.log("ROOM" + roomId);
+    console.log("USER " + userToString(user) + roomId);
     /* Join chat room */
     if (roomId) {
       socket.emit("joinRoom", { userId, roomId });
@@ -47,7 +50,7 @@ const ChatBoxModal: React.FC = () => {
         socket.off("receiveMessage");
       };
     }
-  }, []);
+  }); // Run on every reload
 
   /* Send messages to partner */
   const sendPartnerMessage = (e: React.FormEvent) => {
