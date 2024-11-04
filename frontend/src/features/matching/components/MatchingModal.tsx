@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import io from "socket.io-client";
 import MatchingRequestForm from "./MatchingRequestForm";
 import { MatchingRequestFormState } from "../types/MatchingRequestFormState";
@@ -7,7 +7,6 @@ import { useUser } from "../../../context/UserContext.tsx";
 import Alert from "react-bootstrap/Alert";
 import apiConfig from "../../../config/config.ts";
 import { Category } from "../../questions/index.ts";
-import { ChatBoxModal } from "../../communication/index.ts";
 import { useNavigate } from "react-router-dom";
 
 interface MatchingModalProps {
@@ -29,7 +28,6 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
     
     const navigate = useNavigate();
     const { user, setRoomId } = useUser();
-    const [showChatBoxModal, setShowChatBoxModal] = useState(false);
 
     const [isMatchFound, setIsMatchFound] = useState(false);
     const [showTimer, setShowTimer] = useState(false);

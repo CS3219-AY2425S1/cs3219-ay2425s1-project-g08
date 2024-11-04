@@ -14,7 +14,6 @@ interface UserContextType {
     logoutUser: () => void; // Function to log out the user
     roomId: string; // Room ID for the user when they are matched with another user
     setRoomId: React.Dispatch<React.SetStateAction<string>>;
-    updateUserRoomId: (newRoomId: string) => void;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
 }
@@ -62,13 +61,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         setRoomId("");
     };
 
-    /* Function to update roomId */
-    const updateUserRoomId = (newRoomId: string) => {
-        if (user) {
-        setUser({ ...user, roomId: newRoomId });
-        }
-    };
-
     const isConnectedToRoom = roomId !== "" || roomId !== undefined;
 
     return (
@@ -79,7 +71,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 logoutUser,
                 roomId,
                 setRoomId,
-                updateUserRoomId,
                 clearRoomId,
                 isConnectedToRoom,
             }}

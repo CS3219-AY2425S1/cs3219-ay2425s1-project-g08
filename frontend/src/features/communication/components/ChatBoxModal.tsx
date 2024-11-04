@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 import io from "socket.io-client";
 import { useUser } from "../../../context/UserContext";
-import { userToString } from "../../../types/User";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
+import { renderIntoDocument } from "react-dom/test-utils";
 
 interface User {
   id: number;
@@ -25,13 +25,13 @@ const ChatBoxModal: React.FC = () => {
 
   const [currUserIndex, setCurrUserIndex] = useState(0);
 
-  const { user } = useUser();
+  const { user, roomId } = useUser();
   const userId = user?.id;
-  const roomId = user?.roomId ?? "";
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /* For chat with partner */
+  /* Watch for messages from partner */
   useEffect(() => {
+    console.log("ROOM" + roomId);
     /* Join chat room */
     if (roomId) {
       socket.emit("joinRoom", { userId, roomId });
@@ -49,6 +49,7 @@ const ChatBoxModal: React.FC = () => {
     }
   }, []);
 
+  /* Send messages to partner */
   const sendPartnerMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (roomId) {
@@ -118,8 +119,8 @@ const ChatBoxModal: React.FC = () => {
     <div className="fixed bottom-5 right-8 justify-items-end">
       <button
         className={`${
-          isOpen ? "bg-black" : "bg-yellow"
-        } text-white p-3 rounded-3xl shadow-lg`}
+          isOpen ? "bg-gray-900 hover:bg-gray-500" : "bg-yellow hover:bg-amber-300"
+        } text-white py-3 px-4 rounded-full`}
         onClick={toggleChatBox}
       >
         {isOpen ? "Close" : "Chat"}
@@ -128,7 +129,7 @@ const ChatBoxModal: React.FC = () => {
       {isOpen && (
         <div
           id="chatBoxModal"
-          className="bg-white border border-gray-300 px-3 pb-3 shadow-lg rounded-lg mt-2 w-80"
+          className="bg-white px-3 pb-3 shadow-lg rounded-lg mt-2 w-80"
         >
           {/* Tabs for User Switching */}
           <div className="flex">
@@ -184,21 +185,21 @@ const ChatBoxModal: React.FC = () => {
           {/* Action buttons */}
           <div className="mt-6">
             <form
+              className="flex"
               onSubmit={
                 currUserIndex == 0 ? sendPartnerMessage : handleAIMessage
               }
-              className="flex"
             >
               <input
                 type="text"
+                className="border rounded-l p-2 flex-grow text-black shadow-md"
+                placeholder="Type your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="border border-gray-700 rounded-l p-2 flex-grow text-black"
-                placeholder="Type your message..."
               />
               <button
                 type="submit"
-                className="bg-blue-500 text-white rounded-r p-2"
+                className="bg-blue-500 hover:bg-blue-300 text-white rounded-r p-2 shadow-md"
               >
                 Send
               </button>
