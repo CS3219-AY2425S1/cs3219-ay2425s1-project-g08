@@ -11,9 +11,7 @@
     "dependencies": {
         "express": "^4.21.1",
         "socket.io": "^4.8.1",
-        "uuid": "^11.0.2",
-        "ws": "^8.18.0",
-        "yjs": "^13.6.20"
+        "ws": "^8.18.0"
     },
     "devDependencies": {
         "@types/express": "^5.0.0",

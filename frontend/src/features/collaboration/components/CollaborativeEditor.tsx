@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
@@ -6,17 +7,17 @@ import { useUser } from "../../../context/UserContext";
 
 const CollaborativeEditor: React.FC = () => {
     const editorRef = useRef<HTMLDivElement | null>(null);
-    const { roomId, clientWebSocket } = useUser();
+    const { roomId } = useUser();
 
     useEffect(() => {
-        // Create a new Yjs document. Requires null check for yDoc and yText. Will happen if other user does not join the room
-        const ydoc = clientWebSocket?.getYDoc();
-        const yText = clientWebSocket?.getYText();
+        // Create a new Yjs document
+        const ydoc = new Y.Doc();
+        const yText = ydoc.getText("monaco");
 
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
             "ws://localhost:1234",
-            roomId,
+            roomId, // ensure that only mathced users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
             ydoc
         );
 
