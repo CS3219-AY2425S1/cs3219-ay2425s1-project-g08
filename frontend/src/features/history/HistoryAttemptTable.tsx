@@ -1,5 +1,5 @@
 // QuestionTable.tsx
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useTable, Column } from "react-table";
 import { HistoryTableData, HistoryTableHeaders } from "../questions/types/HistoryAttempt";
 

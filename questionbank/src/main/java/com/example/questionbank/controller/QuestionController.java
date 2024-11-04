@@ -39,7 +39,7 @@ import com.example.questionbank.model.Complexity;
  * and {@link CollectionModel}.
  *
  */
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://frontend-service:5173"})
 @RestController
 @SuppressWarnings({"FinalParameters", "HiddenField"})
 public class QuestionController {

@@ -1,7 +1,13 @@
 package com.example.questionbank.controller;
 
+import com.example.questionbank.dto.CategoryDto;
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.CategoryModelAssembler;
 import com.example.questionbank.service.QuestionService;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -9,15 +15,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import com.example.questionbank.model.Category;
-import com.example.questionbank.dto.CategoryDto;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://frontend-service:5173"})
 @RestController
 public class CategoryController {
 

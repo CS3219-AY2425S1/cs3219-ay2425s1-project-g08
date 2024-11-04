@@ -4,10 +4,13 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
+import apiConfig from "../../../config/config.ts";
 
 const CollaborativeEditor: React.FC = () => {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const { roomId } = useUser();
+
+    const COLLAB_WEBSOCKET_URL: string = apiConfig.collaborationWebSocketUrl;
 
     useEffect(() => {
         // Create a new Yjs document
@@ -16,7 +19,7 @@ const CollaborativeEditor: React.FC = () => {
 
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
-            "ws://localhost:1234",
+            COLLAB_WEBSOCKET_URL,
             roomId, // ensure that only mathced users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
             ydoc
         );

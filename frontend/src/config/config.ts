@@ -15,11 +15,14 @@ const apiConfig = {
     ? "/matchexpresssvcapi"
     : "http://localhost:3000",
   historyServiceUrl: import.meta.env.VITE_HISTORY_URL
-    ? "/placeholdernameforhistoryservice"
+    ? "/historysvcapi"
     : "http://localhost:9090",
   commServiceUrl: import.meta.env.VITE_COMM_URL
     ? "/comm"
-    : "ws://localhost:8083/comm"
+    : "ws://localhost:8083/comm",
+  collaborationWebSocketUrl: import.meta.env.VITE_COLLABORATION_WEBSOCKET_URL
+    ? "/collaborationsvcapi"
+    : "ws://localhost:1234",
 };
 
 export default apiConfig;

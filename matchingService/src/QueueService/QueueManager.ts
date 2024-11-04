@@ -22,8 +22,8 @@ class QueueManager {
     }
 
     public async createExchanges(): Promise<void> {
-        await this.channel.assertExchange(this.categoryExchange, "headers", { durable: true });
-        await this.channel.assertExchange(this.directExchange, "direct", { durable: true });
+        await this.channel.assertExchange(this.categoryExchange, "headers", { durable: false });
+        await this.channel.assertExchange(this.directExchange, "direct", { durable: false });
         logger.info("Successully set up exchanges");
     }
 
@@ -31,7 +31,7 @@ class QueueManager {
         for (const category of this.categories) {
             for (const difficulty of Object.values(Difficulty)) {
                 const queueName = `${category.name}_${difficulty}`;
-                await this.channel.assertQueue(queueName, { durable: true });
+                await this.channel.assertQueue(queueName, { durable: false });
 
                 await this.channel.bindQueue(queueName, this.categoryExchange, '', {
                     "x-match": 'all',
@@ -43,14 +43,14 @@ class QueueManager {
 
         // Create category queues that will be consumed by all consumers of that category
         for (const category of this.categories) {
-            await this.channel.assertQueue(category.name, { durable: true });
+            await this.channel.assertQueue(category.name, { durable: false });
             await this.channel.bindQueue(category.name, this.directExchange, category.name);
         }
         
-        await this.channel.assertQueue(QueueManager.CANCELLATION_QUEUE, { durable: true });
+        await this.channel.assertQueue(QueueManager.CANCELLATION_QUEUE, { durable: false });
         await this.channel.bindQueue(QueueManager.CANCELLATION_QUEUE, this.directExchange, QueueManager.CANCELLATION_QUEUE);
 
-        await this.channel.assertQueue(QueueManager.RESPONSE_QUEUE, { durable: true });
+        await this.channel.assertQueue(QueueManager.RESPONSE_QUEUE, { durable: false });
         await this.channel.bindQueue(QueueManager.RESPONSE_QUEUE, this.directExchange, QueueManager.RESPONSE_QUEUE);
         logger.info("Successully created and binded queues to exchanges");
     }

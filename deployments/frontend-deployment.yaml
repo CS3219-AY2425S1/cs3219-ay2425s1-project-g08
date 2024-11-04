@@ -31,6 +31,10 @@ spec:
           value: "http://matching-service:3000"
         - name: VITE_COMM_URL
           value: "http://comm-service:8083"
+        - name: VITE_HISTORY_URL
+          value: "http://history-service:9090"
+        - name: VITE_COLLABORATION_WEBSOCKET_URL
+          value: "ws://collab-service:1234"
         volumeMounts:
         - name: secret-volume
           mountPath: /app/secrets
