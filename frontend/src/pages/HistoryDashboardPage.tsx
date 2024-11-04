@@ -37,7 +37,7 @@ const HistoryAttemptPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${apiConfig.historyServiceUrl}/user123/attempts`,
+    fetch(`${apiConfig.historyServiceUrl}/${user?.id}/attempts`,
       { 
         mode: "cors",
         method: "GET",

@@ -31,7 +31,7 @@ const IsConnectedButton: React.FC<IsConnectedButtonProps> = () => {
     };
 
     ws.onmessage = (message) => {
-        console.log("Received message from server:", message);
+        // console.log("Received message from server:", message);
         let file = new Blob([message.data], { type: "application/json" });
         file.text()
             .then((value) => {

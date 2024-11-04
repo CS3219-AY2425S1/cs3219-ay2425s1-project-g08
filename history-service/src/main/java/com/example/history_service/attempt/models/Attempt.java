@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Attempt {
     /**
      * Date when the attempt was made.
      */
-    private LocalDateTime attemptDateTime;
+    private Instant attemptDateTime;
 
     /**
      * Content of the attempt.
