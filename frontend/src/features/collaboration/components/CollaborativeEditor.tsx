@@ -14,11 +14,18 @@ const CollaborativeEditor: React.FC = () => {
         const ydoc = new Y.Doc();
         const yText = ydoc.getText("monaco");
 
+        const wsOpts = {
+            // Specify a query-string that will be url-encoded and attached to the `serverUrl`
+            // I.e. params = { auth: "bearer" } will be transformed to "?auth=bearer"
+            params: { roomId: roomId }, // Object<string,string>
+        };
+
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
             "ws://localhost:1234",
-            roomId, // ensure that only mathced users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
-            ydoc
+            roomId, // ensure that only matched users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
+            ydoc,
+            wsOpts
         );
 
         // Initialize the Monaco editor
