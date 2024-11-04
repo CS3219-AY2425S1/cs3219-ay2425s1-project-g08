@@ -1,8 +1,6 @@
 package com.example.history_service.attempt.models;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
