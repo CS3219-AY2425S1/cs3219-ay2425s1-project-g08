@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const { match } = require('assert');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,7 +15,8 @@ const io = socketIo(server, {
 
 app.use(cors());
 
-io.on('connection', (socket) => {
+const matchNamespace = io.of('/comm');
+matchNamespace.on('connection', (socket) => {
   console.log('Client connected');
 
   /* Join a room */

@@ -1,12 +1,29 @@
 // Call API from Claude Sonnet to answer questions
 // when in the AI chat box. This doesn't append prev messages to save cost.
 
-import { useState } from "react";
+// import { useState } from "react";
 import Anthropic from "@anthropic-ai/sdk";
 import { ContentBlock } from "@anthropic-ai/sdk/resources";
+import React, { useEffect, useState } from 'react';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+
+const [apiKey, setApiKey] = useState<string | null>(null);
+
+useEffect(() => {
+  const apiKeyPath = join('/app/secrets', 'API_KEY');
+  try {
+    const apiKeyContent = readFileSync(apiKeyPath, 'utf8').trim();
+    setApiKey(apiKeyContent);
+  } catch (error) {
+    console.error('Error reading API key:', error);
+    setApiKey(null);
+  }
+}, []);
 
 const anthropic = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
+  apiKey: apiKey ? apiKey : import.meta.env.VITE_ANTHROPIC_API_KEY,
   dangerouslyAllowBrowser: true, // Allow using in a browser-like environment
 });
 

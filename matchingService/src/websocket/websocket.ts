@@ -18,6 +18,7 @@ export default function initialiseWebsocket(
       methods: ["GET", "POST"],
     },
   });
+  
   queueService.consumeResponses(io);
 
   const handler: WebSocketEventHandler = new WebSocketEventHandler(io);

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: comm
-        image: seanpzk/comm-service:1.0.0
+        image: seanpzk/comm-service:1.0.3
         imagePullPolicy: Always
         ports:
         - containerPort: 8083
@@ -32,7 +32,7 @@ metadata:
   name: comm-service
   namespace: peerprep
 spec:
-  type: ClusterIP  # To expose externally
+  type: LoadBalancer  # To expose externally
   selector:
     app: comm
   ports:

@@ -35,8 +35,6 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
   const [showTimer, setShowTimer] = useState(false);
   const [showCancelButton, setShowCancelButton] = useState(false);
   const [cancelAlert, setCancelAlert] = useState<boolean>(false);
-
-  console.log("MATCH_WEBSOCKET_URL: ", MATCH_WEBSOCKET_URL);
   const socket = io(MATCH_WEBSOCKET_URL, { autoConnect: false });
 
   async function handleFindMatchRequest(formData: MatchingRequestFormState) {

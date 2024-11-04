@@ -11,7 +11,22 @@ interface User {
   name: string;
 }
 const COMM_WEBSOCKET_URL: string = apiConfig.commServiceUrl;
+console.log(COMM_WEBSOCKET_URL);
 const socket = io(COMM_WEBSOCKET_URL);
+socket.on("connect", () => {
+  console.log("Connected to communication server", socket.id);
+});
+socket.on("connect_error", (error) => {
+  console.error("Connection error:", error);
+});
+
+socket.on("connect_timeout", (timeout) => {
+  console.error("Connection timeout:", timeout);
+});
+
+socket.on("error", (error) => {
+  console.error("Socket error:", error);
+});
 
 const ChatBoxModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
