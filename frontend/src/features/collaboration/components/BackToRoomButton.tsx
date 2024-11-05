@@ -5,9 +5,10 @@ import { useUser } from "../../../context/UserContext";
 
 const BackToRoomButton: React.FC = () => {
     const navigate = useNavigate();
-    const { questionId } = useUser();
+    const { questionId, roomId } = useUser();
 
     const onClick = () => {
+      console.log("BACK QUESTION " + questionId + "RRR" + roomId);
         navigate(`/question/${questionId}`);
     }
 
