@@ -4,11 +4,7 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
-<<<<<<< HEAD
 import apiConfig from "../../../config/config.ts";
-=======
-import apiConfig from "../../../config/config";
->>>>>>> 16f77995cc070d05a7b10073b8749e8a90817efa
 import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
 
