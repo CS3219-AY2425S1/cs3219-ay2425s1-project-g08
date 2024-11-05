@@ -5,6 +5,7 @@ import { useRetrieveQuestion } from "../features/questions";
 import { QuestionDisplay } from "../features/collaboration";
 import { Question } from "../features/questions";
 import { CollaborativeEditor } from "../features/collaboration";
+import { ChatBoxModal } from "../features/communication";
 
 const QuestionPage: React.FC = () => {
     const { title } = useParams<{ title: string }>();
@@ -24,6 +25,9 @@ const QuestionPage: React.FC = () => {
                 </div>
                 <div>
                     <CollaborativeEditor question={question}/>
+                </div>
+                <div>
+                    <ChatBoxModal />
                 </div>
             </div>
         </div>

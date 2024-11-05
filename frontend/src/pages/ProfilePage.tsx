@@ -9,10 +9,12 @@ import { useFetchProfilePicture } from "../features/profile";
 import { EditIcon } from "../components/EditIcon.tsx";
 import { useUser } from "../context/UserContext.tsx";
 import defaultprofilepicture from "../images/defaultprofilepicture.jpg";
+import { userToString } from "../types/User.tsx";
 
 const ProfilePage: React.FC = () => {
   // const [user, setUser] = useState<User | undefined>(undefined);
   const { user, updateUser, logoutUser } = useUser();
+  console.log("USER " + userToString(user));
 
   const [username, setUsername] = useState<string | undefined>(undefined);
 

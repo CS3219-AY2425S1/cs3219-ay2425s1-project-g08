@@ -31,6 +31,7 @@ const useUploadProfilePicture = async (
     }
     useFetchProfilePicture(user, updateUser);
   } catch (error) {
+    setErr("Error uploading profile picture, refer to console for more details");
     console.error("Error fetching image:", error);
   }
 };

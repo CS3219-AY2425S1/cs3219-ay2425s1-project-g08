@@ -2,7 +2,6 @@
 import React, { useMemo } from "react";
 import { useTable, Column, Row } from "react-table"; // Import the 'Column' type
 import { Question, Category } from "../../questions";
-import { useLocation } from "react-router-dom";
 
 // Define the props for the table
 interface DashboardQuestionTableProps {

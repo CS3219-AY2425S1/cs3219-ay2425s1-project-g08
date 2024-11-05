@@ -49,6 +49,21 @@ spec:
       port: 15672
       targetPort: 15672
 ---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: rabbitmq
+  namespace: peerprep
+spec:
+  targetRef:
+    kind: Deployment
+    name: rabbitmq
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies: []
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,7 +81,7 @@ spec:
     spec:
       containers:
       - name: matching
-        image: seanpzk/matching-service:1.0.12
+        image: seanpzk/matching-service:1.0.23
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -92,7 +107,7 @@ metadata:
   name: matching-service
   namespace: peerprep
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: matching
   ports:
@@ -104,3 +119,19 @@ spec:
       protocol: TCP
       port: 8082
       targetPort: 8082
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: matching
+  namespace: peerprep
+spec:
+  targetRef:
+    kind: Deployment
+    name: matching
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies: []
+

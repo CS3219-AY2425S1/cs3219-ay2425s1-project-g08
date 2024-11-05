@@ -47,7 +47,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
   }, [formData, fetchQuestionList]);
 
   const navigate = useNavigate();
-  const { user, setRoomId, setQuestionId } = useUser();
+  const { user, updateRoomId, updateQuestionId } = useUser();
 
   const [isMatchFound, setIsMatchFound] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
@@ -127,7 +127,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
         if (responseData.roomId !== undefined) {
           ack(true);
           console.log("RoomId", responseData.roomId);
-          setRoomId(responseData.roomId);
+          updateRoomId(responseData.roomId);
           setShowTimer(false);
           setShowCancelButton(false);
           setIsMatchFound(true);
@@ -137,7 +137,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
           console.error("RoomId is undefined");
         }
         if (responseData.questionId) {
-          setQuestionId(responseData.questionId); // set questionId in user context
+          updateQuestionId(responseData.questionId); // set questionId in user context
           console.log("Navigating to question page");
           navigate(`/question/${responseData.questionId}`);
         } else {

@@ -9,3 +9,4 @@ profile-picture-service/src/main/resources/gcp-service-account-key.json
 .history/
 .idea/
 rabbitmq_data/
+deployments/secret.yaml

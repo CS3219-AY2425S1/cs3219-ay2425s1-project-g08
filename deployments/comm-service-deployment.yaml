@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comm
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: comm
+  template:
+    metadata:
+      labels:
+        app: comm
+    spec:
+      containers:
+      - name: comm
+        image: seanpzk/comm-service:1.0.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comm-service
+  namespace: peerprep
+spec:
+  type: LoadBalancer  # To expose externally
+  selector:
+    app: comm
+  ports:
+    - protocol: TCP
+      port: 8083  # External port
+      targetPort: 8083  # Pod's container port
+
+  

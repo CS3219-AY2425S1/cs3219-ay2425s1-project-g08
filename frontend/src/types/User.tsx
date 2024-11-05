@@ -1,11 +1,11 @@
 export interface User {
-    accessToken: string;
-    id: string;
-    username: string;
-    email: string;
-    isAdmin: boolean;
-    profilePictureUrl: string;
-  }
+  accessToken: string;
+  id: string;
+  username: string;
+  email: string;
+  isAdmin: boolean;
+  profilePictureUrl: string;
+}
 
 export const userToString = (user: User | undefined): string => {
   if(!user) {
@@ -17,6 +17,6 @@ export const userToString = (user: User | undefined): string => {
    Username: ${user.username},
    Email: ${user.email},
    Is Admin: ${user.isAdmin},
-   Profile Picture Url: ${user?.profilePictureUrl}`;
+   Profile Picture Url: ${user?.profilePictureUrl}`
 };
 
