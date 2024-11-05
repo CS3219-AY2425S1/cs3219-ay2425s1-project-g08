@@ -37,7 +37,7 @@ const HistoryAttemptPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${apiConfig.historyServiceUrl}/user123/attempts`,
+    fetch(`${apiConfig.historyServiceUrl}/${user?.id}/attempts`,
       { 
         mode: "cors",
         method: "GET",
@@ -51,7 +51,7 @@ const HistoryAttemptPage: React.FC = () => {
       }
       res.json()
         .then(data => {
-          const tableDatas: HistoryTableData[] = data.map((attempt : HistoryAttempt) => ({
+          const tableDatas: HistoryTableData[] = data.map((attempt: HistoryAttempt) => ({
             attemptId: attempt.id,
             title: attempt.title,
             categories: attempt.categories,

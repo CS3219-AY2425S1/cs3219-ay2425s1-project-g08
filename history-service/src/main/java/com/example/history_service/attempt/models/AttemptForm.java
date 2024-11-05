@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -25,8 +25,8 @@ import java.util.List;
 public record AttemptForm(
         @Past(message = "Attempt date provided must be in the past!")
         @NotNull(message = "Attempt date must not be null!")
-        @DateTimeFormat(pattern = "YYYY-MM-DD'T'HH:mm:ss")
-        LocalDateTime attemptDateTime,
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        Instant attemptDateTime,
         @NotEmpty(message = "Content must not be empty!")
         String content,
         @NotEmpty(message = "User ID must not be empty!")
