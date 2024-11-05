@@ -20,9 +20,8 @@ const IsConnectedButton: React.FC = () => {
     };
 
     const [otherUserLeft, setOtherUserLeft] = useState<boolean>(false);
-    const ws_url = new URL(COLLAB_WEBSOCKET_URL);
-    ws_url.searchParams.append("roomId", roomId);
-    const ws = new WebSocket(ws_url);
+    const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
+    const ws = new WebSocket(ws_url.toString());
 
     ws.onmessage = (message) => {
         // console.log("Received message from server:", message);
