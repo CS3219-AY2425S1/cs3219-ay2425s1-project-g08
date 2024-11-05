@@ -124,7 +124,8 @@ public class QuestionController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(questions, linkTo(
-                methodOn(QuestionController.class).allByComplexity(complexity)).withSelfRel());
+                methodOn(QuestionController.class)
+                        .allByComplexity(complexity)).withSelfRel());
     }
 
     /**
@@ -150,7 +151,8 @@ public class QuestionController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(questions, linkTo(
-                methodOn(QuestionController.class).allByCategory(category)).withSelfRel());
+                methodOn(QuestionController.class).allByCategory(category))
+                .withSelfRel());
     }
 
     /**
@@ -166,7 +168,8 @@ public class QuestionController {
      * @return a {@link CollectionModel} containing {@link EntityModel}s
      *         of all questions with a certain category and complexity
      */
-    @GetMapping("/questions/category-and-complexity/all/{category}/{complexity}")
+    @GetMapping("/questions/category-and-complexity/all/{category}/" +
+            "{complexity}")
     public CollectionModel<EntityModel<Question>> allByCategoryAndComplexity(
             @PathVariable Category category,
             @PathVariable Complexity complexity) {
@@ -260,7 +263,8 @@ public class QuestionController {
      * @return a {@link CollectionModel} containing {@link EntityModel}s
      *         one of the questions with a certain category and complexity
      */
-    @GetMapping("/questions/category-and-complexity/random/{category}/{complexity}")
+    @GetMapping("/questions/category-and-complexity/random/{category}" +
+            "/{complexity}")
     public EntityModel<Question> randomByCategoryAndComplexity(
             @PathVariable Category category,
             @PathVariable Complexity complexity) {

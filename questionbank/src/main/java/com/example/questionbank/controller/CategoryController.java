@@ -85,7 +85,8 @@ public class CategoryController {
      *         unique categories
      */
     @GetMapping("/categories/with-questions")
-    public CollectionModel<EntityModel<CategoryDto>> getCategoriesWithQuestions() {
+    public CollectionModel<EntityModel<CategoryDto>>
+    getCategoriesWithQuestions() {
         LOGGER.info("Fetching all categories with existing questions");
 
         // Fetch unique categories from the service
