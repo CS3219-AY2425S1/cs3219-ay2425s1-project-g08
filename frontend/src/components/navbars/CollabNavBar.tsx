@@ -4,9 +4,7 @@ import { useUser } from "../../context/UserContext";
 import PeerPrepLogo from "../PeerPrepLogo";
 import { IsConnectedButton } from "../../features/collaboration/index";
 
-interface CollabNavBarProps {}
-
-const CollabNavBar: React.FC<CollabNavBarProps> = () => {
+const CollabNavBar: React.FC = () => {
     const { user } = useUser();
 
     return (

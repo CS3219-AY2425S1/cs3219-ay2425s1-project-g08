@@ -15,10 +15,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         isUser ? 'bg-yellow text-right ml-auto' : 'bg-gray-300 text-left'
       }`}
       style={{
-        maxWidth: '75%', // Limit width of the message bubble
+        maxWidth: '75%',
       }}
     >
-      <span className="whitespace-normal break-words">{message}</span>
+      <span className="break-words">{message}</span>
     </div>
   );
 };

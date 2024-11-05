@@ -63,7 +63,7 @@ const ChatBoxModal: React.FC = () => {
     }
   }
 
-  // Reset unread counts when opened
+  /* Reset unread counts when opened */
   useEffect(() => {
     if (isOpen) {
       if (currUserIndex == 0) {
@@ -74,11 +74,10 @@ const ChatBoxModal: React.FC = () => {
     }
   }, [isOpen, currUserIndex]);
 
-  // Get local storage messages on mount
+  /* Get local storage messages on mount */
   useEffect(() => {
     const storedPartnerMessages = getPartnerMessages();
     if (storedPartnerMessages.length > 0) {
-      //console.log("setting MSGS");
       setPartnerMessages(storedPartnerMessages);
     }
   }, []);

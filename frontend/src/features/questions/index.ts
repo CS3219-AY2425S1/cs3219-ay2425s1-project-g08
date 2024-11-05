@@ -19,6 +19,7 @@ export { default as useRetrieveQuestion } from "./hooks/useRetrieveQuestion";
 export { default as useAddQuestion } from "./hooks/useAddQuestion";
 export { default as useDeleteQuestion } from "./hooks/useDeleteQuestion";
 export { default as useEditQuestion } from "./hooks/useEditQuestion";
+export { default as useQuestionWithCategoryAndComplexityList } from "./hooks/useQuestionWithCategoryAndComplexityList";
 
 // Export types
 export * from "./types/Question";

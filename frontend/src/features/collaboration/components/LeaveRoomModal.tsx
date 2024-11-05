@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useUser } from "../../../context/UserContext.tsx";
-import io from "socket.io-client";
 import apiConfig from "../../../config/config.ts";
 
 interface LeaveRoomModalProps {
@@ -18,13 +17,16 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
 }) => {
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { user, clearRoomId } = useUser();
+    const { user, roomId, clearRoomId } = useUser();
 
     console.log("COLLAB_WEBSOCKET_URL: ", COLLAB_WEBSOCKET_URL);
-    const ws = new WebSocket(COLLAB_WEBSOCKET_URL);
+    const ws_url = new URL(COLLAB_WEBSOCKET_URL);
+    ws_url.searchParams.append("roomId", roomId);
+    const ws = new WebSocket(ws_url);
     const leaveRoomData = {
         type: "leave-room",
         username: user?.username,
+        roomId: roomId
     };
 
     const handleLeaveRoom = async () => {

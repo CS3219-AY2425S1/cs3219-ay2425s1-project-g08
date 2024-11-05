@@ -4,7 +4,11 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
+<<<<<<< HEAD
 import apiConfig from "../../../config/config.ts";
+=======
+import apiConfig from "../../../config/config";
+>>>>>>> 16f77995cc070d05a7b10073b8749e8a90817efa
 import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
 
@@ -69,18 +73,23 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
         }
     }
 
-    const COLLAB_WEBSOCKET_URL: string = apiConfig.collaborationWebSocketUrl;
-
     useEffect(() => {
         // Create a new Yjs document
         const ydoc = new Y.Doc();
         const yText = ydoc.getText("monaco");
 
+        const wsOpts = {
+            // Specify a query-string that will be url-encoded and attached to the `serverUrl`
+            // I.e. params = { auth: "bearer" } will be transformed to "?auth=bearer"
+            params: { roomId: roomId }, // Object<string,string>
+        };
+
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
-            COLLAB_WEBSOCKET_URL,
-            roomId, // ensure that only mathced users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
-            ydoc
+            "ws://localhost:1234",
+            roomId, // ensure that only matched users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
+            ydoc,
+            wsOpts
         );
 
         // Initialize the Monaco editor

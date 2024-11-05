@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-@CrossOrigin(origins = {"http://localhost:5173", "http://frontend-service:5173"})
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "http://frontend-service:5173"
+})
 @RestController
 public class CategoryController {
 
@@ -25,8 +27,7 @@ public class CategoryController {
      * Logger instance for logging important information and events.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(
-            CategoryController.class
-    );
+            CategoryController.class);
 
     /**
      * Service with business logic bridging repository and controller.
@@ -42,12 +43,12 @@ public class CategoryController {
      * Constructs a {@code CategoryController} with the specified service
      * and assembler.
      *
-     * @param service the {@link QuestionService} used to access questions
+     * @param service   the {@link QuestionService} used to access questions
      * @param assembler the {@link CategoryModelAssembler} used to convert
      *                  {@link CategoryDto} entities
      */
     public CategoryController(QuestionService service,
-                              CategoryModelAssembler assembler) {
+            CategoryModelAssembler assembler) {
         this.service = service;
         this.assembler = assembler;
     }
@@ -59,7 +60,7 @@ public class CategoryController {
      * the application.
      *
      * @return a {@link CollectionModel} containing {@link EntityModel}s of
-     * all categories
+     *         all categories
      */
     @GetMapping("/categories")
     public CollectionModel<EntityModel<CategoryDto>> getAllCategories() {
@@ -69,9 +70,9 @@ public class CategoryController {
         List<EntityModel<CategoryDto>> categories = Arrays
                 .stream(Category.values())
                 .map(category -> assembler.toModel(
-                                new CategoryDto(
-                                        category.name(),
-                                        category.getDisplayName())))
+                        new CategoryDto(
+                                category.name(),
+                                category.getDisplayName())))
                 .collect(Collectors.toList());
 
         return CollectionModel.of(categories);
@@ -81,11 +82,11 @@ public class CategoryController {
      * Retrieves all unique categories that have questions in the database.
      *
      * @return a {@link CollectionModel} containing {@link EntityModel}s of
-     * unique categories
+     *         unique categories
      */
     @GetMapping("/categories/with-questions")
     public CollectionModel<EntityModel<CategoryDto>>
-        getCategoriesWithQuestions() {
+    getCategoriesWithQuestions() {
         LOGGER.info("Fetching all categories with existing questions");
 
         // Fetch unique categories from the service
@@ -96,8 +97,7 @@ public class CategoryController {
         List<EntityModel<CategoryDto>> categories = uniqueCategories.stream()
                 .map(category -> assembler.toModel(new CategoryDto(
                         category.name(),
-                        category.getDisplayName()))
-                )
+                        category.getDisplayName())))
                 .collect(Collectors.toList());
 
         return CollectionModel.of(categories);
