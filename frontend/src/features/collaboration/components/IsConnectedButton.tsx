@@ -3,14 +3,11 @@ import { useUser } from "../../../context/UserContext";
 import StandardBigButton from "../../../components/StandardBigButton";
 import LeaveRoomModal from "./LeaveRoomModal";
 import apiConfig from "../../../config/config";
-import io from "socket.io-client";
-
-interface IsConnectedButtonProps {}
 
 const COLLAB_WEBSOCKET_URL = apiConfig.collaborationWebSocketUrl;
 
-const IsConnectedButton: React.FC<IsConnectedButtonProps> = () => {
-    const { isConnectedToRoom } = useUser();
+const IsConnectedButton: React.FC = () => {
+    const { isConnectedToRoom, roomId } = useUser();
     const color = isConnectedToRoom ? "green" : "red";
     const label = isConnectedToRoom ? "Connected" : "Disconnected";
     const [LeaveRoomModalIsOpen, setLeaveRoomModalIsOpen] = useState(false);
@@ -23,16 +20,13 @@ const IsConnectedButton: React.FC<IsConnectedButtonProps> = () => {
     };
 
     const [otherUserLeft, setOtherUserLeft] = useState<boolean>(false);
-
-    const ws = new WebSocket(COLLAB_WEBSOCKET_URL);
-
-    ws.onopen = () => {
-        console.log("Connected to WebSocket server");
-    };
+    const ws_url = new URL(COLLAB_WEBSOCKET_URL);
+    ws_url.searchParams.append("roomId", roomId);
+    const ws = new WebSocket(ws_url);
 
     ws.onmessage = (message) => {
-        console.log("Received message from server:", message);
-        let file = new Blob([message.data], { type: "application/json" });
+        // console.log("Received message from server:", message);
+        const file = new Blob([message.data], { type: "application/json" });
         file.text()
             .then((value) => {
                 const parsedData = JSON.parse(value);

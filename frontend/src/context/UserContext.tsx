@@ -18,7 +18,9 @@ interface UserContextType {
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
     updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
-    getPartnerMessages: () => { text: string, isUser: boolean }[]
+    getPartnerMessages: () => { text: string, isUser: boolean }[];
+    questionId: string;
+    setQuestionId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Create user context
@@ -115,6 +117,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     const isConnectedToRoom = roomId !== "" || roomId !== undefined;
 
+    const [questionId, setQuestionId] = useState<string>("");
+
     return (
         <UserContext.Provider
             value={{
@@ -127,7 +131,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 clearRoomId,
                 isConnectedToRoom,
                 updatePartnerMessages,
-                getPartnerMessages
+                getPartnerMessages,
+                questionId,
+                setQuestionId,
             }}
         >
             {children}

@@ -24,7 +24,7 @@ const QuestionPage: React.FC = () => {
                     <QuestionDisplay question={question} />
                 </div>
                 <div>
-                    <CollaborativeEditor />
+                    <CollaborativeEditor question={question}/>
                 </div>
                 <div>
                     <ChatBoxModal />

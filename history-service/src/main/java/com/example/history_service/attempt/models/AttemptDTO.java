@@ -1,6 +1,6 @@
 package com.example.history_service.attempt.models;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
  * @param categories  Categories associated with the attempt.
  * @param complexity  Complexity level of the attempt.
  */
-public record AttemptDTO(String id, LocalDateTime attemptDateTime,
+public record AttemptDTO(String id, Instant attemptDateTime,
                          String content, String userId, String title,
                          String description, List<String> categories,
                          String complexity) {
