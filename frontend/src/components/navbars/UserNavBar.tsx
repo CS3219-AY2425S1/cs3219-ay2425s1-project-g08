@@ -6,13 +6,14 @@ import { useState } from "react";
 import MatchingModal from "../../features/matching/components/MatchingModal";
 import PeerPrepLogo from "../PeerPrepLogo";
 import { Category } from "../../features/questions";
+import BackToRoomButton from "../../features/collaboration/components/BackToRoomButton";
 
 interface UserNavBarProps {
   categoriesWithQuestions: Array<Category>;
 }
 
 const UserNavBar: React.FC<UserNavBarProps> = ({ categoriesWithQuestions }) => {
-  const { user } = useUser();
+  const { user, isConnectedToRoom } = useUser();
   const [isUserMatchingModalOpen, setIsUserMatchingModalOpen] = useState(false);
 
   const openMatchingModal = () => setIsUserMatchingModalOpen(true);
@@ -27,7 +28,7 @@ const UserNavBar: React.FC<UserNavBarProps> = ({ categoriesWithQuestions }) => {
 
       {/* Match button and profile for authenticated users */}
       <div className="container text-off-white">
-        <MatchButton onClick={() => openMatchingModal()} />
+        {isConnectedToRoom ? (<BackToRoomButton />) : (<MatchButton onClick={() => openMatchingModal()} />)}
       </div>
       {isUserMatchingModalOpen && (
         <MatchingModal
