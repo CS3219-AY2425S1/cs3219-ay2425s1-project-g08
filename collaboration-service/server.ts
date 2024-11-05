@@ -8,6 +8,8 @@ wss.on("connection", (ws, req) => {
     console.log(`Client connected: ${req.url}`);
     ws.on("message", (message) => {
         // Broadcast the message to all other clients
+        const data = JSON.parse(message.toString());
+        console.log(`Received message: ${message}`);
         const roomId = req.url
             ? new URL(req.url, `ws://${req.headers.host}`).searchParams.get(
                   "roomId"
@@ -20,6 +22,7 @@ wss.on("connection", (ws, req) => {
                     `ws://${req.headers.host}`
                 ).searchParams.get("roomId");
                 if (clientRoomId === roomId) {
+                    console.log(`Broadcasting message: ${message}`);
                     client.send(message);
                 }
             }
