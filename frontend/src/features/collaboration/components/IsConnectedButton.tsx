@@ -20,8 +20,7 @@ const IsConnectedButton: React.FC = () => {
     };
 
     const [otherUserLeft, setOtherUserLeft] = useState<boolean>(false);
-    const ws_url = new URL(COLLAB_WEBSOCKET_URL);
-    ws_url.searchParams.append("roomId", roomId);
+    const ws_url = `${COLLAB_WEBSOCKET_URL}?roomId=${roomId}`;
     const ws = new WebSocket(ws_url);
 
     ws.onmessage = (message) => {
