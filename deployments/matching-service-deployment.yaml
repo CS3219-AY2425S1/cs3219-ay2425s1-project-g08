@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: matching
-        image: seanpzk/matching-service:1.0.23
+        image: seanpzk/matching-service:1.1.1
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -107,7 +107,7 @@ metadata:
   name: matching-service
   namespace: peerprep
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: matching
   ports:

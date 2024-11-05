@@ -32,7 +32,7 @@ metadata:
   name: comm-service
   namespace: peerprep
 spec:
-  type: LoadBalancer  # To expose externally
+  type: ClusterIP  # To expose externally
   selector:
     app: comm
   ports:
