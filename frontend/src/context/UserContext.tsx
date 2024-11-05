@@ -115,7 +115,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         }
     };
 
-    const isConnectedToRoom = roomId !== "" || roomId !== undefined;
+    const isConnectedToRoom = roomId !== "" && roomId !== undefined;
 
     const [questionId, setQuestionId] = useState<string>("");
 
