@@ -16,6 +16,8 @@ interface UserContextType {
     setRoomId: React.Dispatch<React.SetStateAction<string>>;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
+    questionId: string;
+    setQuestionId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Create user context
@@ -63,6 +65,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     const isConnectedToRoom = roomId !== "" || roomId !== undefined;
 
+    const [questionId, setQuestionId] = useState<string>("");
+
     return (
         <UserContext.Provider
             value={{
@@ -73,6 +77,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 setRoomId,
                 clearRoomId,
                 isConnectedToRoom,
+                questionId,
+                setQuestionId,
             }}
         >
             {children}
