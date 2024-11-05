@@ -26,6 +26,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const leaveRoomData = {
         type: "leave-room",
         username: user?.username,
+        roomId: roomId
     };
 
     const handleLeaveRoom = async () => {
