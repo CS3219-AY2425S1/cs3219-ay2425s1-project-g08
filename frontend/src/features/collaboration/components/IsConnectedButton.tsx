@@ -25,7 +25,7 @@ const IsConnectedButton: React.FC = () => {
     const ws = new WebSocket(ws_url);
 
     ws.onmessage = (message) => {
-        console.log("Received message from server:", message);
+        // console.log("Received message from server:", message);
         const file = new Blob([message.data], { type: "application/json" });
         file.text()
             .then((value) => {

@@ -2,7 +2,7 @@ import { useUser } from "../context/UserContext"; // Assuming you have a context
 import HistoryNavBar from "../components/navbars/HistoryNavBar";
 import HistoryAttemptTable from "../features/history/HistoryAttemptTable";
 import { Column } from "react-table";
-import { HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
+import { HistoryAttempt, HistoryTableData, HistoryTableHeaders } from "../features/questions/types/HistoryAttempt";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiConfig from "../config/config";
@@ -21,7 +21,7 @@ const columns: Array<Column<HistoryTableHeaders>> = [
     accessor: "complexity",
   },
   {
-    Header: "Date Attempted",
+    Header: "Date, Time Attempted",
     accessor: "datetimeAttempted",
   },
 ];
@@ -30,14 +30,6 @@ const handleRowClick = (attempt: HistoryTableData, navigate: NavigateFunction) =
   navigate(`/historyAttempt/${attempt.attemptId}`);
 };
 
-type Question = {
-  id: string,
-  title: string,
-  description: string,
-  categories: string[],
-  complexity: string
-}
-
 const HistoryAttemptPage: React.FC = () => {
 
   const { user } = useUser();
@@ -45,7 +37,7 @@ const HistoryAttemptPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${apiConfig.historyServiceUrl}/user123/attempts`,
+    fetch(`${apiConfig.historyServiceUrl}/${user?.id}/attempts`,
       { 
         mode: "cors",
         method: "GET",
@@ -59,12 +51,12 @@ const HistoryAttemptPage: React.FC = () => {
       }
       res.json()
         .then(data => {
-          const tableDatas: HistoryTableData[] = data.map(attempt => ({
+          const tableDatas: HistoryTableData[] = data.map((attempt: HistoryAttempt) => ({
             attemptId: attempt.id,
             title: attempt.title,
             categories: attempt.categories,
             complexity: attempt.complexity,
-            datetimeAttempted: attempt.attemptDate
+            datetimeAttempted: new Date(attempt.attemptDateTime).toLocaleString()
           }));
           setAttempts(tableDatas);
         }

@@ -18,10 +18,10 @@ type Question = {
 }
 
 /** 
- * Consumer consumes incoming messages from queues that will contain Matchmaking requests
+ * MatchingConsumer consumes incoming messages from queues that will contain Matchmaking requests
  * MatchMaking requests are partitioned based on (category, difficulty) 
  * */
-class Consumer {
+class MatchingConsumer {
     private channel: Channel;
     private directExchange: string;
     private pendingReq: MatchRequestDTO | null;
@@ -290,4 +290,4 @@ class Consumer {
     
 }
 
-export default Consumer;
+export default MatchingConsumer;
