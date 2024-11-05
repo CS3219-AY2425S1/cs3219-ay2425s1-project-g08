@@ -4,11 +4,9 @@ import StandardBigButton from "../../../components/StandardBigButton";
 import LeaveRoomModal from "./LeaveRoomModal";
 import apiConfig from "../../../config/config";
 
-interface IsConnectedButtonProps {}
-
 const COLLAB_WEBSOCKET_URL = apiConfig.collaborationWebSocketUrl;
 
-const IsConnectedButton: React.FC<IsConnectedButtonProps> = () => {
+const IsConnectedButton: React.FC = () => {
     const { isConnectedToRoom, roomId } = useUser();
     const color = isConnectedToRoom ? "green" : "red";
     const label = isConnectedToRoom ? "Connected" : "Disconnected";
@@ -28,7 +26,7 @@ const IsConnectedButton: React.FC<IsConnectedButtonProps> = () => {
 
     ws.onmessage = (message) => {
         console.log("Received message from server:", message);
-        let file = new Blob([message.data], { type: "application/json" });
+        const file = new Blob([message.data], { type: "application/json" });
         file.text()
             .then((value) => {
                 const parsedData = JSON.parse(value);
