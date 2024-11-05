@@ -64,7 +64,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
         if (!questions || questions.length === 0) {
           console.error("No questions with that difficulty for this category.");
           alert(
-            "No questions with that difficulty for this category. Try a different difficulty."
+            "No questions are found for that difficulty. Try a different difficulty (e.g. Easy, Medium, Hard)."
           );
           return;
         }
