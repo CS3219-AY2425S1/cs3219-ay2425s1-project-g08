@@ -25,6 +25,7 @@ type CollaborativeEditorProps = {
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) => {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const providerRef = useRef<WebsocketProvider | null>(null);
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
@@ -70,43 +71,52 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
     }
 
     useEffect(() => {
-        // Create a new Yjs document
-        const ydoc = new Y.Doc();
-        const yText = ydoc.getText("monaco");
+        if (!editorRef.current) return;
 
-        const wsOpts = {
-            // Specify a query-string that will be url-encoded and attached to the `serverUrl`
-            // I.e. params = { auth: "bearer" } will be transformed to "?auth=bearer"
-            params: { roomId: roomId }, // Object<string,string>
-        };
-
-        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
-        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        // Connect to the WebSocket server
-        const provider = new WebsocketProvider(
-            wsUrl.toString(),
-            roomId, // ensure that only matched users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
-            ydoc,
-            wsOpts
-        );
-
-        // Initialize the Monaco editor
-        const editor = monaco.editor.create(editorRef.current!, {
+        const editor = monaco.editor.create(editorRef.current, {
             language: "javascript",
             automaticLayout: true,
         });
 
         monacoEditorRef.current = editor;
 
-        // Bind the Yjs document to the Monaco editor
-        new MonacoBinding(yText, editor.getModel()!, new Set([editor]));
+        return () => {
+            editor.dispose();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!roomId || !monacoEditorRef.current) {
+            return;
+        }
+
+        const ydoc = new Y.Doc();
+        const yText = ydoc.getText("monaco");
+
+        const wsOpts = {
+            params: { roomId }
+        };
+
+        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
+        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        
+        // Connect to the WebSocket server
+        const provider = new WebsocketProvider(
+            wsUrl.toString(),
+            roomId,
+            ydoc,
+            wsOpts
+        );
+
+        providerRef.current = provider;
+
+        new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
 
         return () => {
             saveEditorHistory();
-            editor.dispose(); // Clean up editor on unmount
-            provider.destroy(); // Close the WebSocket connection
+            provider.destroy();
         };
-    }, []);
+    }, [roomId]); 
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };
