@@ -4,8 +4,6 @@ import StandardBigButton from "../../../components/StandardBigButton";
 import LeaveRoomModal from "./LeaveRoomModal";
 import apiConfig from "../../../config/config";
 
-const COLLAB_WEBSOCKET_URL = apiConfig.collaborationWebSocketUrl;
-
 const IsConnectedButton: React.FC = () => {
     const { user, isConnectedToRoom, roomId } = useUser();
     const color = isConnectedToRoom ? "green" : "red";

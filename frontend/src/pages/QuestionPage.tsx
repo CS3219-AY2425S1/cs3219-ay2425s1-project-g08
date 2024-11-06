@@ -6,11 +6,13 @@ import { QuestionDisplay } from "../features/collaboration";
 import { Question } from "../features/questions";
 import { CollaborativeEditor } from "../features/collaboration";
 import { ChatBoxModal } from "../features/communication";
+import { SaveHistoryContext } from "../context/SaveHistoryContext";
 
 const QuestionPage: React.FC = () => {
     const { title } = useParams<{ title: string }>();
     const [question, setQuestion] = useState<Question>();
     const fetchQuestion = useRetrieveQuestion(title, setQuestion);
+    const [saveHistoryCallback, setSaveHistoryCallback] = useState<() => Promise<void>>(async () => {});
 
     useEffect(() => {
         fetchQuestion();
@@ -18,18 +20,20 @@ const QuestionPage: React.FC = () => {
 
     return (
         <div className="w-screen h-screen flex flex-col">
-            <CollabNavBar />
-            <div className="grid grid-cols-2 gap-1 flex-grow">
-                <div className="flex flex-col flex-grow">
-                    <QuestionDisplay question={question} />
+            <SaveHistoryContext.Provider value={saveHistoryCallback || (async() => {})}>
+                <CollabNavBar />
+                <div className="grid grid-cols-2 gap-1 flex-grow">
+                    <div className="flex flex-col flex-grow">
+                        <QuestionDisplay question={question} />
+                    </div>
+                    <div>
+                        <CollaborativeEditor question={question} setSaveHistoryCallback={setSaveHistoryCallback} />
+                    </div>
+                    <div>
+                        <ChatBoxModal />
+                    </div>
                 </div>
-                <div>
-                    <CollaborativeEditor question={question}/>
-                </div>
-                <div>
-                    <ChatBoxModal />
-                </div>
-            </div>
+            </SaveHistoryContext.Provider>
         </div>
     );
 };
