@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useUser } from "../../../context/UserContext.tsx";
 import apiConfig from "../../../config/config.ts";
+import { useSaveHistory } from "../../../context/saveHistoryContext.tsx";
 
 interface LeaveRoomModalProps {
     closeLeaveRoomModal: () => void;
@@ -13,6 +14,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     closeLeaveRoomModal,
     otherUserLeft,
 }) => {
+    const saveHistoryCallback = useSaveHistory();
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
     const navigate = useNavigate();
     const { user, roomId, clearRoomId } = useUser();
@@ -27,6 +29,9 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
 
     const handleLeaveRoom = async () => {
         try {
+            const saveHistory = await saveHistoryCallback;
+            console.log("Saving History...");
+            saveHistory();
             // Add logic to leave the room, e.g., API call to notify server
             clearRoomId(); // set the room ID to ""
             setShowLeaveAlert(true);

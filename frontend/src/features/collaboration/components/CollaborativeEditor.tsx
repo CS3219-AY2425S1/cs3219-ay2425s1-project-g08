@@ -19,10 +19,11 @@ type AttemptForm = {
 }
 
 type CollaborativeEditorProps = {
-    question: Question | undefined
+    question: Question | undefined,
+    setSaveHistoryCallback: React.Dispatch<React.SetStateAction<() => Promise<void>>>
 }
 
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) => {
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const providerRef = useRef<WebsocketProvider | null>(null);
@@ -49,6 +50,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
             categories: questionItem.categories,
             complexity: questionItem.complexity
         }
+        console.log("Sending save history request to backend");
         try {
             const response = await fetch(
             `${apiConfig.historyServiceUrl}/attempt`,
@@ -69,6 +71,10 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
             console.error("Error fetching questions:", error);
         }
     }
+
+    useEffect(() => {
+        setSaveHistoryCallback(() => saveEditorHistory);
+    }, [setSaveHistoryCallback]);
 
     useEffect(() => {
         if (!editorRef.current) return;
