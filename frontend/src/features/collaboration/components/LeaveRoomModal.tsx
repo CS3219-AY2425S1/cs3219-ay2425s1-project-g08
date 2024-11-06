@@ -30,7 +30,6 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const handleLeaveRoom = async () => {
         try {
             const saveHistory = await saveHistoryCallback;
-            console.log("Saving History...");
             saveHistory();
             // Add logic to leave the room, e.g., API call to notify server
             clearRoomId(); // set the room ID to ""
