@@ -19,10 +19,8 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const navigate = useNavigate();
     const { user, roomId, clearRoomId } = useUser();
 
-    console.log("COLLAB_WEBSOCKET_URL: ", COLLAB_WEBSOCKET_URL);
-    const ws_url = new URL(COLLAB_WEBSOCKET_URL);
-    ws_url.searchParams.append("roomId", roomId);
-    const ws = new WebSocket(ws_url);
+    const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
+    const ws = new WebSocket(ws_url.toString());
     const leaveRoomData = {
         type: "leave-room",
         username: user?.username,

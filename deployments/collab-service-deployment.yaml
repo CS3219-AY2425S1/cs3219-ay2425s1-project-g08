@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: collab
-        image: seanpzk/collab-service:1.0.0
+        image: seanpzk/collab-service:1.0.3
         imagePullPolicy: Always
         ports:
         - containerPort: 1234

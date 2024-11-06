@@ -4,7 +4,7 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
-import apiConfig from "../../../config/config";
+import apiConfig from "../../../config/config.ts";
 import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
 
@@ -80,9 +80,11 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
             params: { roomId: roomId }, // Object<string,string>
         };
 
+        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
+        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
-            "ws://localhost:1234",
+            wsUrl.toString(),
             roomId, // ensure that only matched users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
             ydoc,
             wsOpts

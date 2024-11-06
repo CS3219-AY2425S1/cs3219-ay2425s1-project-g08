@@ -44,7 +44,7 @@ const MatchingModal: React.FC<MatchingModalProps> = ({
     };
 
     fetchQuestions();
-  }, [formData, fetchQuestionList]);
+  }, [formData]);
 
   const navigate = useNavigate();
   const { user, updateRoomId, updateQuestionId } = useUser();
