@@ -74,7 +74,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
                     <div className="flex justify-center mt-4">
                         <button
                             onClick={handleLeaveRoom}
-                            className="px-6 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                            className="px-6 py-2 text-white bg-red rounded"
                         >
                             Leave Room
                         </button>

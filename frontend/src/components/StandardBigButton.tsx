@@ -18,7 +18,7 @@ const StandardBigButton: React.FC<StandardBigButtonProps> = ({
         black: "bg-black text-white hover:bg-gray-700",
         yellow: "bg-yellow text-black hover:bg-yellow-600",
         green: "bg-green text-off-white hover:bg-emerald-700",
-        red: "bg-red text-off-white hover:bg-red-700",
+        red: "bg-red text-off-white hover:bg-rose-500",
     };
 
     return (
