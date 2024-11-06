@@ -119,7 +119,6 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
         new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
 
         return () => {
-            saveEditorHistory();
             provider.destroy();
         };
     }, [roomId]); 
