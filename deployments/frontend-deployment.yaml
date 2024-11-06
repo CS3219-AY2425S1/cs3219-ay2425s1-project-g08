@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: seanpzk/frontend:1.0.108
+        image: seanpzk/frontend:1.0.109
         imagePullPolicy: Always
         ports:
         - containerPort: 5173
