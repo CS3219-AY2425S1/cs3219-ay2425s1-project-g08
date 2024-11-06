@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { useUser } from "../../../context/UserContext.tsx";
 import apiConfig from "../../../config/config.ts";
-import { useSaveHistory } from "../../../context/saveHistoryContext.tsx";
+import { useSaveHistory } from "../../../context/SaveHistoryContext.tsx";
 
 interface LeaveRoomModalProps {
     closeLeaveRoomModal: () => void;

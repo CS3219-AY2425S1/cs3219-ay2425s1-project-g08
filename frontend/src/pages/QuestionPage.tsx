@@ -6,7 +6,7 @@ import { QuestionDisplay } from "../features/collaboration";
 import { Question } from "../features/questions";
 import { CollaborativeEditor } from "../features/collaboration";
 import { ChatBoxModal } from "../features/communication";
-import { SaveHistoryContext } from "../context/saveHistoryContext";
+import { SaveHistoryContext } from "../context/SaveHistoryContext";
 
 const QuestionPage: React.FC = () => {
     const { title } = useParams<{ title: string }>();
