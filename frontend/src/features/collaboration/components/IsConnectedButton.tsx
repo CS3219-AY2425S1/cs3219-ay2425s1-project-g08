@@ -7,10 +7,11 @@ import apiConfig from "../../../config/config";
 const COLLAB_WEBSOCKET_URL = apiConfig.collaborationWebSocketUrl;
 
 const IsConnectedButton: React.FC = () => {
-    const { isConnectedToRoom, roomId } = useUser();
+    const { user, isConnectedToRoom, roomId } = useUser();
     const color = isConnectedToRoom ? "green" : "red";
     const label = isConnectedToRoom ? "Connected" : "Disconnected";
-    const [LeaveRoomModalIsOpen, setLeaveRoomModalIsOpen] = useState(false);
+    const [leaveRoomModalIsOpen, setLeaveRoomModalIsOpen] = useState(false);
+    
     const openLeaveRoomModal = () => setLeaveRoomModalIsOpen(true);
     const closeLeaveRoomModal = () => setLeaveRoomModalIsOpen(false);
     const onClick = () => {
@@ -24,15 +25,20 @@ const IsConnectedButton: React.FC = () => {
     const ws = new WebSocket(ws_url.toString());
 
     ws.onmessage = (message) => {
-        // console.log("Received message from server:", message);
         const file = new Blob([message.data], { type: "application/json" });
         file.text()
             .then((value) => {
                 const parsedData = JSON.parse(value);
                 console.log(parsedData);
+                if (!user) {
+                    return;
+                }
+                
                 if (parsedData.type === "leave-room") {
-                    setOtherUserLeft(true);
                     openLeaveRoomModal();
+                }
+                if (parsedData.username != user.username) {
+                    setOtherUserLeft(true);
                 }
             })
             .catch((error) => {
@@ -42,7 +48,7 @@ const IsConnectedButton: React.FC = () => {
 
     return (
         <div>
-            {LeaveRoomModalIsOpen && (
+            {leaveRoomModalIsOpen && (
                 <LeaveRoomModal
                     closeLeaveRoomModal={closeLeaveRoomModal}
                     otherUserLeft={otherUserLeft}
