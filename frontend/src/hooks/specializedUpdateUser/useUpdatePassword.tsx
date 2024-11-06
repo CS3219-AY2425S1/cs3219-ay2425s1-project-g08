@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { User } from "../../types/User";
+import { useState } from "react";
 import apiConfig from "../../config/config";
 
 const useUpdatePassword = (userId: string) => {
@@ -8,7 +7,6 @@ const useUpdatePassword = (userId: string) => {
 
   const updatePassword = async (
     newPassword: string,
-    setUser: Dispatch<SetStateAction<User | undefined>>
   ) => {
     setLoading(true);
     setError(null); // Reset error before a new request

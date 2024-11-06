@@ -1,6 +1,8 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+// import { logo } from "../assets/logo.svg";
+import peerpreplogo from "../assets/logo.png";
 
 const PeerPrepLogo: React.FC = () => {
   const { user } = useUser();
@@ -20,8 +22,8 @@ const PeerPrepLogo: React.FC = () => {
   return (
     <div className="cursor-pointer" onClick={handleLogoClick}>
       <img
-        src="/src/assets/logo.svg"
-        alt="PeerPrep Logo"
+        src={peerpreplogo}
+        alt="PeerPrep Logooo"
         className="h-16 w-64"
       />
     </div>

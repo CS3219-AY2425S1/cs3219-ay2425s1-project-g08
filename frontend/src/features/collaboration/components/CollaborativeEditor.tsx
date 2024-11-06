@@ -4,7 +4,7 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import * as monaco from "monaco-editor";
 import { useUser } from "../../../context/UserContext";
-import apiConfig from "../../../config/config";
+import apiConfig from "../../../config/config.ts";
 import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
 
@@ -19,12 +19,14 @@ type AttemptForm = {
 }
 
 type CollaborativeEditorProps = {
-    question: Question | undefined
+    question: Question | undefined,
+    setSaveHistoryCallback: React.Dispatch<React.SetStateAction<() => Promise<void>>>
 }
 
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) => {
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const providerRef = useRef<WebsocketProvider | null>(null);
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
@@ -48,6 +50,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
             categories: questionItem.categories,
             complexity: questionItem.complexity
         }
+        console.log("Sending save history request to backend");
         try {
             const response = await fetch(
             `${apiConfig.historyServiceUrl}/attempt`,
@@ -70,26 +73,13 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
     }
 
     useEffect(() => {
-        // Create a new Yjs document
-        const ydoc = new Y.Doc();
-        const yText = ydoc.getText("monaco");
+        setSaveHistoryCallback(() => saveEditorHistory);
+    }, [setSaveHistoryCallback]);
 
-        const wsOpts = {
-            // Specify a query-string that will be url-encoded and attached to the `serverUrl`
-            // I.e. params = { auth: "bearer" } will be transformed to "?auth=bearer"
-            params: { roomId: roomId }, // Object<string,string>
-        };
+    useEffect(() => {
+        if (!editorRef.current) return;
 
-        // Connect to the WebSocket server
-        const provider = new WebsocketProvider(
-            "ws://localhost:1234",
-            roomId, // ensure that only matched users are able to type together (setting roomId to be empty if it is undefined could lead to bugs)
-            ydoc,
-            wsOpts
-        );
-
-        // Initialize the Monaco editor
-        const editor = monaco.editor.create(editorRef.current!, {
+        const editor = monaco.editor.create(editorRef.current, {
             language: "javascript",
             automaticLayout: true,
             minimap: { enabled: false },
@@ -98,15 +88,42 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
 
         monacoEditorRef.current = editor;
 
-        // Bind the Yjs document to the Monaco editor
-        new MonacoBinding(yText, editor.getModel()!, new Set([editor]));
-
         return () => {
-            saveEditorHistory();
-            editor.dispose(); // Clean up editor on unmount
-            provider.destroy(); // Close the WebSocket connection
+            editor.dispose();
         };
     }, []);
+
+    useEffect(() => {
+        if (!roomId || !monacoEditorRef.current) {
+            return;
+        }
+
+        const ydoc = new Y.Doc();
+        const yText = ydoc.getText("monaco");
+
+        const wsOpts = {
+            params: { roomId }
+        };
+
+        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
+        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        
+        // Connect to the WebSocket server
+        const provider = new WebsocketProvider(
+            wsUrl.toString(),
+            roomId,
+            ydoc,
+            wsOpts
+        );
+
+        providerRef.current = provider;
+
+        new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
+
+        return () => {
+            provider.destroy();
+        };
+    }, [roomId]); 
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };

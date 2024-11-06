@@ -24,6 +24,11 @@ export default (({ mode }: { mode: string }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/ppsvcapi/, '')
         },
+        '/comm': {
+          target: process.env.VITE_MATCH_WEBSOCKET_URL,
+          ws: true,
+          rewriteWsOrigin: true,
+        },
         '/socket.io' : {
           target: process.env.VITE_MATCH_WEBSOCKET_URL,
           ws: true,
@@ -34,10 +39,16 @@ export default (({ mode }: { mode: string }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/matchexpresssvcapi/, '')
         },
+        '/historysvcapi' : {
+          target: process.env.VITE_HISTORY_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/historysvcapi/, '')
+        },
         '/collaborationsvcapi' : {
           target: process.env.VITE_COLLABORATION_WEBSOCKET_URL,
           ws: true,
           rewriteWsOrigin: true,
+          rewrite: (path) => path.replace(/^\/collaborationsvcapi/, '')
         }
       }
     },

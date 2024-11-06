@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collab
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: collab
+  template:
+    metadata:
+      labels:
+        app: collab
+    spec:
+      containers:
+      - name: collab
+        image: seanpzk/collab-service:1.0.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1234
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collab-service
+  namespace: peerprep
+spec:
+  type: ClusterIP  # To expose externally
+  selector:
+    app: collab
+  ports:
+    - protocol: TCP
+      port: 1234  # External port
+      targetPort: 1234  # Pod's container port
+
+  

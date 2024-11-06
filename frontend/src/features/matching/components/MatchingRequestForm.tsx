@@ -56,7 +56,7 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
           onChange={(e) =>
             setFormData((prevFormData) => ({
               ...prevFormData, // Spread the previous formData to keep the difficulty
-              category: e.value, // Replace "new topic" with the actual value you want
+              category: e ? e.value : "", // Replace "new topic" with the actual value you want
             }))
           }
           options={categories}
@@ -73,7 +73,7 @@ const MatchingRequestForm: React.FC<MatchingRequestFormProps> = ({
           onChange={(e) =>
             setFormData((prevFormData) => ({
               ...prevFormData, // Spread the previous formData to keep the difficulty
-              difficulty: e.value, // Replace "new topic" with the actual value you want
+              difficulty: e ? e.value : "", // Replace "new topic" with the actual value you want
             }))
           }
           options={difficulty}

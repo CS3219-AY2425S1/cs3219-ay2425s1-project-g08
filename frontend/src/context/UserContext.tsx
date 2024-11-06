@@ -13,11 +13,15 @@ interface UserContextType {
     updateUser: (userData: User | undefined) => void; // Function to log in the user
     logoutUser: () => void; // Function to log out the user
     roomId: string; // Room ID for the user when they are matched with another user
-    setRoomId: React.Dispatch<React.SetStateAction<string>>;
+    //setRoomId: React.Dispatch<React.SetStateAction<string>>;
+    updateRoomId: (roomId: string | undefined) => void;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
+    updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
+    getPartnerMessages: () => { text: string, isUser: boolean }[];
     questionId: string;
-    setQuestionId: React.Dispatch<React.SetStateAction<string>>;
+    //setQuestionId: React.Dispatch<React.SetStateAction<string>>;
+    updateQuestionId: (questionId: string | undefined) => void;
 }
 
 // Create user context
@@ -28,9 +32,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
     const [user, setUser] = useState<User | undefined>(undefined);
+    const [roomId, setRoomId] = useState<string>("");
+    const [questionId, setQuestionId] = useState<string>("");
 
     useEffect(() => {
-        // Retrieve user from local storage on mount
+        // Retrieve user from local storage
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             try {
@@ -39,6 +45,22 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 console.log("Failed to parse user from local storage:", error);
                 setUser(undefined);
             }
+        }
+
+        const storedRoomId = localStorage.getItem("roomId");
+        if (storedRoomId) {
+            setRoomId(storedRoomId);
+            console.log("STORED ROOM ID " + storedRoomId);
+        } else {
+            setRoomId("");
+        }
+
+        const storedQuestionId = localStorage.getItem("questionId");
+        if (storedQuestionId) {
+            setQuestionId(storedQuestionId);
+            console.log("STORED QUESTION ID " + storedQuestionId);
+        } else {
+            setQuestionId("");
         }
     }, []);
 
@@ -54,18 +76,76 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 
     const logoutUser = () => {
         setUser(undefined);
+        setRoomId("");
+        setQuestionId("");
         localStorage.removeItem("user"); // Remove user from local storage
+        localStorage.removeItem("roomId");
+        localStorage.removeItem("partnerMessages");
+        localStorage.removeItem("questionId");
     };
 
-    const [roomId, setRoomId] = useState<string>("");
+    const updateRoomId = (roomId: string | undefined) => {
+        roomId = roomId ?? "";
+        try {
+            setRoomId(roomId);
+        localStorage.setItem("roomId", roomId);
+        } catch (error) {
+            setRoomId("");
+            console.log("Failed to update roomId", error);
+        }
+    }
+
+    const updatePartnerMessages = (partnerMessages: { text: string; isUser: boolean }[]) => {
+        try {
+            localStorage.setItem("partnerMessages", JSON.stringify(partnerMessages));
+        } catch (error) {
+            console.log("Failed to update partnerMessages", error);
+        }
+    }
+
+    const getPartnerMessages = () => {
+        const partnerMessages = localStorage.getItem("partnerMessages");
+        //console.log("MSGS " + partnerMessages);
+        if (partnerMessages) {
+            try {
+                //console.log("Parsed MSGS " + partnerMessages);
+                const parsedMessages: {text: string, isUser: boolean}[] = JSON.parse(partnerMessages);
+                //console.log("Parsed MSGS " + JSON.stringify(parsedMessages));
+                return parsedMessages;
+            } catch (error) {
+                console.log("Failed to parse partnerMessages", error);
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
 
     const clearRoomId = () => {
-        setRoomId("");
+        try {
+            setRoomId("");
+            /* Exiting room, so also clear the questionId and messages */
+            setQuestionId("");
+            localStorage.setItem("roomId", "");
+            localStorage.setItem("partnerMessages", ""); // Clear potential temporary message storage
+            localStorage.setItem("questionId", "");
+        } catch (error) {
+            console.log("Failed to update roomId", error);
+        }
     };
 
     const isConnectedToRoom = roomId !== "" && roomId !== undefined;
 
-    const [questionId, setQuestionId] = useState<string>("");
+    const updateQuestionId = (questionId: string | undefined) => {
+        questionId = questionId ?? "";
+        try {
+            setQuestionId(questionId);
+            localStorage.setItem("questionId", questionId);
+        } catch (error) {
+            setQuestionId("");
+            console.log("Failed to update questionId", error);
+        }
+    }
 
     return (
         <UserContext.Provider
@@ -74,11 +154,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 updateUser,
                 logoutUser,
                 roomId,
-                setRoomId,
+                //setRoomId,
+                updateRoomId,
                 clearRoomId,
                 isConnectedToRoom,
+                updatePartnerMessages,
+                getPartnerMessages,
                 questionId,
-                setQuestionId,
+                //setQuestionId,
+                updateQuestionId,
             }}
         >
             {children}

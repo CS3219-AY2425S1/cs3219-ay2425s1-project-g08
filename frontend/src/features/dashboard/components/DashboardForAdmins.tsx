@@ -22,10 +22,10 @@ const DashboardForAdmins: React.FC<DashboardForAdminsProps> = ({
 
     const [questionClicked, setQuestionClicked] = useState(emptyQuestion);
 
-    const openEditModal = (questionClicked: Question) => {
-        setEditModalIsOpen(true);
-        setQuestionClicked(questionClicked);
-    };
+  const openEditModal = (questionClicked: Question) => {
+    setEditModalIsOpen(true);
+    setQuestionClicked(questionClicked);
+  };
 
     const columns: Column<Question>[] = useMemo(() => COLUMNS, []);
 

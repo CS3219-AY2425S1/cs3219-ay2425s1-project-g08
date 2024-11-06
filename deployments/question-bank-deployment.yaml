@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: questionbank
-          image: seanpzk/questionbank:1.0.2
+          image: seanpzk/questionbank:1.0.3
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
