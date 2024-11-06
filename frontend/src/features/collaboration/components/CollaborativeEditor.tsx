@@ -92,6 +92,8 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question }) =
         const editor = monaco.editor.create(editorRef.current!, {
             language: "javascript",
             automaticLayout: true,
+            minimap: { enabled: false },
+            fontSize: 14,
         });
 
         monacoEditorRef.current = editor;
