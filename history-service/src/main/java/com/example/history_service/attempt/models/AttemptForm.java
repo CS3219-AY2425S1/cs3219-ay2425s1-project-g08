@@ -27,7 +27,7 @@ public record AttemptForm(
         @NotNull(message = "Attempt date must not be null!")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         Instant attemptDateTime,
-        @NotEmpty(message = "Content must not be empty!")
+        @NotNull(message = "Content must not be null!")
         String content,
         @NotEmpty(message = "User ID must not be empty!")
         String userId,

@@ -6,6 +6,7 @@ import com.example.history_service.attempt.models.AttemptDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,6 +68,8 @@ public class AttemptService implements IAttemptService {
                         attempt.getCategories(),
                         attempt.getComplexity()
                 ))
+                .sorted(Comparator.comparing(AttemptDTO::attemptDateTime)
+                        .reversed())
                 .collect(Collectors.toList());
     }
 
