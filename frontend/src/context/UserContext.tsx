@@ -83,6 +83,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         localStorage.removeItem("user"); // Remove user from local storage
         localStorage.removeItem("roomId");
         localStorage.removeItem("partnerMessages");
+        localStorage.removeItem("aIMessages");
         localStorage.removeItem("questionId");
     };
 
@@ -154,6 +155,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
             setQuestionId("");
             localStorage.setItem("roomId", "");
             localStorage.setItem("partnerMessages", ""); // Clear potential temporary message storage
+            localStorage.setItem("aIMessages", "");
             localStorage.setItem("questionId", "");
         } catch (error) {
             console.log("Failed to update roomId", error);
