@@ -5,11 +5,17 @@ import { useUser } from "../../../context/UserContext";
 import useClaudeSonnet from "../hooks/useClaudeSonnet";
 import apiConfig from "../../../config/config";
 import { userToString } from "../../../types/User";
+import { Question } from "../../questions";
 
 interface User {
   id: number;
   name: string;
 }
+
+interface ChatBoxModalProps {
+  question: Question | undefined;
+}
+
 const COMM_WEBSOCKET_URL: string = apiConfig.commServiceUrl;
 console.log(COMM_WEBSOCKET_URL);
 const socket = io(COMM_WEBSOCKET_URL);
@@ -28,7 +34,7 @@ socket.on("error", (error) => {
   console.error("Socket error:", error);
 });
 
-const ChatBoxModal: React.FC = () => {
+const ChatBoxModal: React.FC<ChatBoxModalProps> = ({ question }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   /* For tab switching */
@@ -42,12 +48,12 @@ const ChatBoxModal: React.FC = () => {
   const [partnerMessages, setPartnerMessages] = useState<
     { text: string; isUser: boolean }[]
   >([]);
-  const [aIMessages, setAIMessages] = useState<
+  const [aiMessages, setAIMessages] = useState<
     { text: string; isUser: boolean }[]
   >([]);
 
   /* For chat with partner */
-  const { user, roomId, updatePartnerMessages, getPartnerMessages } = useUser();
+  const { user, roomId, updatePartnerMessages, getPartnerMessages, updateAIMessages, getAIMessages } = useUser();
   const userId = user?.id;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -59,9 +65,9 @@ const ChatBoxModal: React.FC = () => {
     if (unreadCount < 99) {
       return unreadCount.toString();
     } else {
-      return ("99+");
+      return "99+";
     }
-  }
+  };
 
   /* Reset unread counts when opened */
   useEffect(() => {
@@ -80,13 +86,17 @@ const ChatBoxModal: React.FC = () => {
     if (storedPartnerMessages.length > 0) {
       setPartnerMessages(storedPartnerMessages);
     }
+
+    const storedAIMessages = getAIMessages();
+    if (storedAIMessages.length > 0) {
+      setAIMessages(storedAIMessages);
+    }
   }, []);
-  
 
   /* Watch for messages from partner */
   useEffect(() => {
     console.log("USER " + userToString(user) + roomId);
-    
+
     /* Join chat room */
     if (roomId) {
       socket.emit("joinRoom", { userId, roomId });
@@ -145,6 +155,11 @@ const ChatBoxModal: React.FC = () => {
     }
   }, [aiResponse]);
 
+  useEffect(() => {
+    //console.log("updating AI MSGS " + JSON.stringify(aiMessages));
+    updateAIMessages(aiMessages);
+  }, [aiMessages]);
+
   const handleAIMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -166,7 +181,7 @@ const ChatBoxModal: React.FC = () => {
   // Scroll to the bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [partnerMessages, aIMessages, isLoading, isOpen, currUserIndex]);
+  }, [partnerMessages, aiMessages, isLoading, isOpen, currUserIndex]);
 
   const toggleChatBox = () => {
     setIsOpen(!isOpen);
@@ -177,31 +192,71 @@ const ChatBoxModal: React.FC = () => {
     console.log("CURR INDEX " + index);
   };
 
+  const handleExplainQuestionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAIMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        text: "Explain this question to me: " + question?.description,
+        isUser: true,
+      },
+    ]);
+
+    // Call the sendAIMessage function
+    await sendAIMessage(
+      "Explain this question to me: " + question?.description
+    );
+
+    if (error) {
+      console.error("Error fetching AI response:", error);
+    }
+  };
+
+  const handleEdgeCaseSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAIMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        text: "What edge cases can I consider: " + question?.description,
+        isUser: true,
+      },
+    ]);
+
+    // Call the sendAIMessage function
+    await sendAIMessage(
+      "What edge cases can I consider: " + question?.description
+    );
+
+    if (error) {
+      console.error("Error fetching AI response:", error);
+    }
+  };
+
   return (
     <div className="fixed bottom-5 right-12 justify-items-end mr-4">
-      <div
-        className="relative"
-      >
+      <div className="relative">
         {/* Unread messages count */}
-        {((unreadPartnerCount + unreadAICount) > 0 ) ? 
-          (<p
-            className="absolute bottom-7 right-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white"
-          >
+        {unreadPartnerCount + unreadAICount > 0 ? (
+          <p className="absolute bottom-7 right-12 h-8 w-8 max-w-8 max-h-8 bg-green rounded-full m-2 text-center text-white text-sm border-2 border-white">
             {unreadCountToString(unreadPartnerCount + unreadAICount)}
-          </p>) : (<></>)
-        }
+          </p>
+        ) : (
+          <></>
+        )}
 
         {/* Open/close chat button*/}
         <button
           className={`${
-            isOpen ? "bg-gray-900 hover:bg-gray-500" : "bg-yellow hover:bg-amber-300"
+            isOpen
+              ? "bg-gray-900 hover:bg-gray-500"
+              : "bg-yellow hover:bg-amber-300"
           } text-white py-3 px-4 rounded-full`}
           onClick={toggleChatBox}
         >
           {isOpen ? "Close" : "Chat"}
         </button>
       </div>
-      
+
       {/* Actual chat box */}
       {isOpen && (
         <div
@@ -220,9 +275,13 @@ const ChatBoxModal: React.FC = () => {
                 }`}
                 onClick={() => handleTabClick(index)}
               >
-                {user.name} 
-                {(user.id === 0 && unreadPartnerCount > 0) ? ` (${unreadCountToString(unreadPartnerCount)})` : ''}
-                {(user.id === 1 && unreadAICount > 0) ? ` (${unreadCountToString(unreadAICount)})` : ''}
+                {user.name}
+                {user.id === 0 && unreadPartnerCount > 0
+                  ? ` (${unreadCountToString(unreadPartnerCount)})`
+                  : ""}
+                {user.id === 1 && unreadAICount > 0
+                  ? ` (${unreadCountToString(unreadAICount)})`
+                  : ""}
               </button>
             ))}
           </div>
@@ -235,7 +294,11 @@ const ChatBoxModal: React.FC = () => {
           </h2>
 
           {/* Messages */}
-          <div className="flex flex-col h-64 overflow-y-auto mb-4">
+          <div
+            className={`flex flex-col ${
+              currUserIndex === 1 ? "h-48" : "h-64"
+            } overflow-y-auto mb-4`}
+          >
             {currUserIndex == 0
               ? partnerMessages.map((msg, index) => (
                   <MessageBubble
@@ -244,7 +307,7 @@ const ChatBoxModal: React.FC = () => {
                     isUser={msg.isUser}
                   />
                 ))
-              : aIMessages.map((msg, index) => (
+              : aiMessages.map((msg, index) => (
                   <MessageBubble
                     key={index}
                     message={msg.text}
@@ -261,8 +324,32 @@ const ChatBoxModal: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Prompt buttons for user only if on AI side */}
+          {currUserIndex === 1 && (
+            <div className="mt-1">
+              <form onSubmit={handleExplainQuestionSubmit}>
+                <button
+                  type="submit"
+                  className="bg-blue-400 hover:bg-blue-200 text-white rounded-r rounded-l p-0.5 text-sm shadow-md"
+                >
+                  Explain this question to me.
+                </button>
+              </form>
+              <div className="mt-1">
+                <form onSubmit={handleEdgeCaseSubmit}>
+                  <button
+                    type="submit"
+                    className="bg-blue-400 hover:bg-blue-200 text-white rounded-r rounded-l p-0.5 text-sm shadow-md"
+                  >
+                    What edge cases can I consider?
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* Action buttons */}
-          <div className="mt-6">
+          <div className="mt-2 ml-2">
             <form
               className="flex"
               onSubmit={
