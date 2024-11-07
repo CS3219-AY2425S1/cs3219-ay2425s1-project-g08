@@ -27,7 +27,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
     const editorRef = useRef<HTMLDivElement | null>(null);
     const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const providerRef = useRef<WebsocketProvider | null>(null);
-    const { user, roomId } = useUser();
+    const { user, roomId, updateWebSocketProvider, getWebSocketProvider } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
 
@@ -93,6 +93,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
         };
     }, []);
 
+
     useEffect(() => {
         if (!roomId || !monacoEditorRef.current) {
             return;
@@ -118,10 +119,12 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
 
         providerRef.current = provider;
 
+        updateWebSocketProvider(provider);
+
         new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
 
         return () => {
-            provider.destroy();
+            // provider.destroy();
         };
     }, [roomId]); 
 

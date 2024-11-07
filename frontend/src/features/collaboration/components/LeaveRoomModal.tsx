@@ -17,7 +17,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const saveHistoryCallback = useSaveHistory();
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { user, roomId, clearRoomId } = useUser();
+    const { user, roomId, clearRoomId, getWebSocketProvider } = useUser();
 
     const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
     const ws = new WebSocket(ws_url.toString());
@@ -39,6 +39,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate to  dashboard page after leaving the room
             }, 2000);
+            getWebSocketProvider()?.disconnect();
         } catch (error) {
             console.error("Error leaving room:", error);
         }

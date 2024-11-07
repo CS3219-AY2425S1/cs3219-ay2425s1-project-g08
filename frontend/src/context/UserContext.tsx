@@ -6,6 +6,7 @@ import {
     useEffect,
 } from "react";
 import { User } from "../types/User";
+import { WebsocketProvider } from "y-websocket";
 
 // Define the context value type
 interface UserContextType {
@@ -13,15 +14,15 @@ interface UserContextType {
     updateUser: (userData: User | undefined) => void; // Function to log in the user
     logoutUser: () => void; // Function to log out the user
     roomId: string; // Room ID for the user when they are matched with another user
-    //setRoomId: React.Dispatch<React.SetStateAction<string>>;
     updateRoomId: (roomId: string | undefined) => void;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
     updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
     getPartnerMessages: () => { text: string, isUser: boolean }[];
     questionId: string;
-    //setQuestionId: React.Dispatch<React.SetStateAction<string>>;
     updateQuestionId: (questionId: string | undefined) => void;
+    updateWebSocketProvider: (webSocketProvider: WebsocketProvider | undefined) => void;
+    getWebSocketProvider: () => WebsocketProvider | undefined;
 }
 
 // Create user context
@@ -147,6 +148,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         }
     }
 
+    const updateWebSocketProvider = (webSocketProvider: WebsocketProvider | undefined) => {
+        try {
+            localStorage.setItem("webSocketProvider", JSON.stringify(webSocketProvider));
+        } catch (error) {
+            console.log("Failed to update webSocketProvider", error);
+        }
+    };
+
+    const getWebSocketProvider = (): WebsocketProvider | undefined => {
+        const storedProvider = localStorage.getItem("webSocketProvider");
+        if (storedProvider) {
+            try {
+                return JSON.parse(storedProvider);
+            } catch (error) {
+                console.log("Failed to parse webSocketProvider from local storage:", error);
+                return undefined;
+            }
+        }
+        return undefined;
+    };
+
     return (
         <UserContext.Provider
             value={{
@@ -154,15 +176,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 updateUser,
                 logoutUser,
                 roomId,
-                //setRoomId,
                 updateRoomId,
                 clearRoomId,
                 isConnectedToRoom,
                 updatePartnerMessages,
                 getPartnerMessages,
                 questionId,
-                //setQuestionId,
                 updateQuestionId,
+                updateWebSocketProvider,
+                getWebSocketProvider,
             }}
         >
             {children}
