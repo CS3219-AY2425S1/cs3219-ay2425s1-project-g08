@@ -1,20 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { GrPowerCycle } from "react-icons/gr";
 import { HiOutlineLightBulb } from "react-icons/hi";
+import { SiTicktick } from "react-icons/si";
 import { Question } from "../../questions/types/Question";
 import { useClaudeSonnet } from "../../communication";
+import useClaudeSonnetFetchSolution from "../hooks/useClaudeSonnetFetchSolution";
 
 interface QuestionDisplayProps {
   question: Question | undefined;
 }
 
 const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question }) => {
+  const [solutionText, setSolutionText] = useState("Loading solution...");
+  const [solutionIsFetched, setSolutionIsFetched] = useState(false);
   const [hintIsOpen, setHintIsOpen] = useState(false); // Hint toggle for dropdown
   const [hintText, setHintText] = useState(
     "Click the button on the right to generate a hint!"
   ); // Text for the dropdown
+  const [solutionIsOpen, setSolutionIsOpen] = useState(false); // Solution toggle for dropdown
 
   const { sendAIMessage, aiResponse, isLoading, error } = useClaudeSonnet();
+
+  const {
+    sendAIMessageSolution,
+    aiResponseSolution,
+    isLoadingSolution,
+    errorSolution,
+  } = useClaudeSonnetFetchSolution();
+
+  // Fetch solution immediately on component mount
+  useEffect(() => {
+    if (question && question.description && !solutionIsFetched) {
+      sendAIMessageSolution(question.description);
+    }
+  }, [question]); //Re fetch when question changes
 
   const toggleHintText = () => {
     if (question && question.description) {
@@ -23,12 +42,18 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question }) => {
     }
   };
 
-  // Update hint text when aiResponse changes
+  // Update hint text when aiResponse changes, only if solution fetched already
   useEffect(() => {
-    if (aiResponse) {
+    // For initial response saved to solution
+    if (aiResponseSolution && !solutionIsFetched) {
+      setSolutionText(aiResponseSolution);
+      setSolutionIsFetched(true);
+    }
+
+    if (aiResponse && solutionIsFetched) {
       setHintText(aiResponse);
     }
-  }, [aiResponse]);
+  }, [aiResponse, aiResponseSolution]);
 
   return (
     <div className="w-full h-full mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -45,7 +70,7 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question }) => {
               </span>
 
               <div className="mt-4">
-                {/* Hint and Solution Buttons */}
+                {/* Hint Dropdown */}
                 <button
                   className="flex items-center bg-slate-400 text-white text-base rounded-l rounded-r font-semibold p-1"
                   onClick={() => setHintIsOpen(!hintIsOpen)}
@@ -75,6 +100,24 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question }) => {
                         <span>Generate Hint</span>
                       </button>
                     </div>
+                  </div>
+                )}
+
+                {/* Solution Dropdown */}
+                <button
+                  className="flex items-center bg-slate-400 text-white text-base rounded-l rounded-r font-semibold p-1 mt-4"
+                  onClick={() => setSolutionIsOpen(!solutionIsOpen)}
+                >
+                  <div className="mr-1">
+                    <SiTicktick />
+                  </div>
+                  Solution
+                </button>
+                {solutionIsOpen && (
+                  <div className="mt-2 bg-gray-100 p-2 rounded-md shadow-md">
+                    <pre className="whitespace-pre-wrap bg-black text-white p-4 rounded-md">
+                      <code>{solutionText}</code>
+                    </pre>
                   </div>
                 )}
               </div>
