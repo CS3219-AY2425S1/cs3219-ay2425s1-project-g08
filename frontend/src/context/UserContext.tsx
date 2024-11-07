@@ -19,6 +19,8 @@ interface UserContextType {
     isConnectedToRoom: boolean;
     updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
     getPartnerMessages: () => { text: string, isUser: boolean }[];
+    updateAIMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
+    getAIMessages: () => { text: string, isUser: boolean }[];
     questionId: string;
     //setQuestionId: React.Dispatch<React.SetStateAction<string>>;
     updateQuestionId: (questionId: string | undefined) => void;
@@ -121,6 +123,30 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         }
     }
 
+    const updateAIMessages = (aIMessages: { text: string; isUser: boolean }[]) => {
+        try {
+            localStorage.setItem("aIMessages", JSON.stringify(aIMessages));
+        } catch (error) {
+            console.log("Failed to update aIMessages", error);
+        }
+    }
+
+    const getAIMessages = () => {
+        const aIMessages = localStorage.getItem("aIMessages");
+        if (aIMessages) {
+            try {
+                const parsedMessages: {text: string, isUser: boolean}[] = JSON.parse(aIMessages);
+                console.log("Parsed AI MSGS " + JSON.stringify(parsedMessages));
+                return parsedMessages;
+            } catch (error) {
+                console.log("Failed to parse aIMessages", error);
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
     const clearRoomId = () => {
         try {
             setRoomId("");
@@ -133,6 +159,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
             console.log("Failed to update roomId", error);
         }
     };
+
 
     const isConnectedToRoom = roomId !== "" && roomId !== undefined;
 
@@ -160,6 +187,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 isConnectedToRoom,
                 updatePartnerMessages,
                 getPartnerMessages,
+                updateAIMessages,
+                getAIMessages,
                 questionId,
                 //setQuestionId,
                 updateQuestionId,

@@ -53,7 +53,7 @@ const ChatBoxModal: React.FC<ChatBoxModalProps> = ({ question }) => {
   >([]);
 
   /* For chat with partner */
-  const { user, roomId, updatePartnerMessages, getPartnerMessages } = useUser();
+  const { user, roomId, updatePartnerMessages, getPartnerMessages, updateAIMessages, getAIMessages } = useUser();
   const userId = user?.id;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -85,6 +85,11 @@ const ChatBoxModal: React.FC<ChatBoxModalProps> = ({ question }) => {
     const storedPartnerMessages = getPartnerMessages();
     if (storedPartnerMessages.length > 0) {
       setPartnerMessages(storedPartnerMessages);
+    }
+
+    const storedAIMessages = getAIMessages();
+    if (storedAIMessages.length > 0) {
+      setAIMessages(storedAIMessages);
     }
   }, []);
 
@@ -149,6 +154,11 @@ const ChatBoxModal: React.FC<ChatBoxModalProps> = ({ question }) => {
       }
     }
   }, [aiResponse]);
+
+  useEffect(() => {
+    //console.log("updating AI MSGS " + JSON.stringify(aiMessages));
+    updateAIMessages(aiMessages);
+  }, [aiMessages]);
 
   const handleAIMessage = async (e: React.FormEvent) => {
     e.preventDefault();
