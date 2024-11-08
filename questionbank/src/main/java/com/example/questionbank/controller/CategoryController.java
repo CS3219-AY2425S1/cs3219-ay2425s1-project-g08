@@ -74,8 +74,6 @@ public class CategoryController {
                         new CategoryDto(
                                 category.name(),
                                 category.getDisplayName())))
-//                .sorted(Comparator.comparing(categoryDto -> categoryDto.
-//                        getContent().getDisplayName()))
                 .collect(Collectors.toList());
 
         return CollectionModel.of(categories);
