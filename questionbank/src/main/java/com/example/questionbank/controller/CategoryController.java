@@ -5,6 +5,7 @@ import com.example.questionbank.model.Category;
 import com.example.questionbank.model.CategoryModelAssembler;
 import com.example.questionbank.service.QuestionService;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,6 +99,8 @@ public class CategoryController {
                 .map(category -> assembler.toModel(new CategoryDto(
                         category.name(),
                         category.getDisplayName())))
+                .sorted(Comparator.comparing(category -> category.getContent()
+                        .getDisplayName()))
                 .collect(Collectors.toList());
 
         return CollectionModel.of(categories);
