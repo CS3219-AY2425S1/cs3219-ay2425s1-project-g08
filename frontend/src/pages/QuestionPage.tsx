@@ -6,7 +6,8 @@ import { QuestionDisplay } from "../features/collaboration";
 import { Question } from "../features/questions";
 import { CollaborativeEditor } from "../features/collaboration";
 import { ChatBoxModal } from "../features/communication";
-import { SaveHistoryContext } from "../context/SaveHistoryContext";
+import { SaveHistoryContext } from "../context/SaveHistoryContext"
+import { CollabEditorContextProvider } from "../context/CollabEditorContext";
 
 const QuestionPage: React.FC = () => {
     const { title } = useParams<{ title: string }>();
@@ -14,12 +15,15 @@ const QuestionPage: React.FC = () => {
     const fetchQuestion = useRetrieveQuestion(title, setQuestion);
     const [saveHistoryCallback, setSaveHistoryCallback] = useState<() => Promise<void>>(async () => {});
 
+
+
     useEffect(() => {
         fetchQuestion();
     }, []);
 
     return (
         <div className="w-screen h-screen flex flex-col">
+            <CollabEditorContextProvider>
             <SaveHistoryContext.Provider value={saveHistoryCallback || (async() => {})}>
                 <CollabNavBar />
                 <div className="grid grid-cols-2 gap-1 flex-grow">
@@ -34,6 +38,7 @@ const QuestionPage: React.FC = () => {
                     </div>
                 </div>
             </SaveHistoryContext.Provider>
+            </CollabEditorContextProvider>
         </div>
     );
 };

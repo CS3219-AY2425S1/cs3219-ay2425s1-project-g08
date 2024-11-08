@@ -24,9 +24,9 @@ type CollaborativeEditorProps = {
 }
 
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
-    const editorRef = useRef<HTMLDivElement | null>(null);
-    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const providerRef = useRef<WebsocketProvider | null>(null);
+    const editorRef = useRef<HTMLDivElement | null>(null);  // raw HTML Element
+    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Monaco editor instance
+    const providerRef = useRef<WebsocketProvider | null>(null); // Websocket provider instance
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
@@ -89,7 +89,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
         monacoEditorRef.current = editor;
 
         return () => {
-            editor.dispose();
+            // editor.dispose();
         };
     }, []);
 
@@ -121,7 +121,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
         new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
 
         return () => {
-            provider.destroy();
+            // provider.destroy();
         };
     }, [roomId]); 
 

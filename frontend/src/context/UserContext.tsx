@@ -13,15 +13,14 @@ interface UserContextType {
     updateUser: (userData: User | undefined) => void; // Function to log in the user
     logoutUser: () => void; // Function to log out the user
     roomId: string; // Room ID for the user when they are matched with another user
-    //setRoomId: React.Dispatch<React.SetStateAction<string>>;
     updateRoomId: (roomId: string | undefined) => void;
     clearRoomId: () => void;
     isConnectedToRoom: boolean;
     updatePartnerMessages: (partnerMessages: { text: string; isUser: boolean }[]) => void;
     getPartnerMessages: () => { text: string, isUser: boolean }[];
     questionId: string;
-    //setQuestionId: React.Dispatch<React.SetStateAction<string>>;
     updateQuestionId: (questionId: string | undefined) => void;
+
 }
 
 // Create user context
@@ -154,14 +153,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
                 updateUser,
                 logoutUser,
                 roomId,
-                //setRoomId,
                 updateRoomId,
                 clearRoomId,
                 isConnectedToRoom,
                 updatePartnerMessages,
                 getPartnerMessages,
                 questionId,
-                //setQuestionId,
                 updateQuestionId,
             }}
         >

@@ -27,6 +27,8 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
         roomId: roomId
     };
 
+    
+
     const handleLeaveRoom = async () => {
         try {
             const saveHistory = await saveHistoryCallback;
