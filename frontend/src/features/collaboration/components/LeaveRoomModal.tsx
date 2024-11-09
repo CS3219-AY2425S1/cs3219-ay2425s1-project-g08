@@ -4,6 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import { useUser } from "../../../context/UserContext.tsx";
 import apiConfig from "../../../config/config.ts";
 import { useSaveHistory } from "../../../context/SaveHistoryContext.tsx";
+import { useCollabEditorContext } from "../../../context/CollabEditorContext.tsx";
 
 interface LeaveRoomModalProps {
     closeLeaveRoomModal: () => void;
@@ -27,17 +28,18 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
         roomId: roomId
     };
 
-    
+    const { getClientWebSocket, getClientEditor } = useCollabEditorContext();
 
     const handleLeaveRoom = async () => {
         try {
             const saveHistory = await saveHistoryCallback;
             saveHistory();
-            // Add logic to leave the room, e.g., API call to notify server
             clearRoomId(); // set the room ID to ""
             setShowLeaveAlert(true);
             console.log("Leaving room...");
             ws.send(JSON.stringify(leaveRoomData));
+            getClientWebSocket().destroy();
+            getClientEditor().dispose();
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate to  dashboard page after leaving the room
             }, 2000);
@@ -74,7 +76,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
                         <div className="flex justify-center mt-4">
                             <button
                                 onClick={handleLeaveRoom}
-                                className="px-6 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                                className="px-6 py-2 text-white bg-red-600 rounded bg-rose-700"
                             >
                                 Leave Room
                             </button>

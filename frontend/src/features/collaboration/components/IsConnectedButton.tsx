@@ -23,25 +23,17 @@ const IsConnectedButton: React.FC = () => {
     const ws = new WebSocket(ws_url.toString());
 
     ws.onmessage = (message) => {
-        const file = new Blob([message.data], { type: "application/json" });
-        file.text()
-            .then((value) => {
-                const parsedData = JSON.parse(value);
-                console.log(parsedData);
-                if (!user) {
-                    return;
-                }
-                
-                if (parsedData.type === "leave-room") {
-                    openLeaveRoomModal();
-                }
-                if (parsedData.username != user.username) {
-                    setOtherUserLeft(true);
-                }
-            })
-            .catch((error) => {
-                console.log("Something went wrong" + error);
-            });
+        const parsedData = JSON.parse(message.data);
+        console.log("Received message:", parsedData);
+        if (!user) {
+            return;
+        }
+        if (parsedData.type === "leave-room") {
+            openLeaveRoomModal();
+            if (parsedData.username != user.username) {
+                setOtherUserLeft(true);
+            }
+        }
     };
 
     return (

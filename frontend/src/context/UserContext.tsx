@@ -87,7 +87,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         roomId = roomId ?? "";
         try {
             setRoomId(roomId);
-        localStorage.setItem("roomId", roomId);
+            sessionStorage.setItem("roomId", roomId);
         } catch (error) {
             setRoomId("");
             console.log("Failed to update roomId", error);
@@ -125,7 +125,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
             setRoomId("");
             /* Exiting room, so also clear the questionId and messages */
             setQuestionId("");
-            localStorage.setItem("roomId", "");
+            sessionStorage.setItem("roomId", "");
             localStorage.setItem("partnerMessages", ""); // Clear potential temporary message storage
             localStorage.setItem("questionId", "");
         } catch (error) {
@@ -139,7 +139,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         questionId = questionId ?? "";
         try {
             setQuestionId(questionId);
-            localStorage.setItem("questionId", questionId);
+            sessionStorage.setItem("questionId", questionId);
         } catch (error) {
             setQuestionId("");
             console.log("Failed to update questionId", error);

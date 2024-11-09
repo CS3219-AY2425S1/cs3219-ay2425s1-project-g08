@@ -7,6 +7,7 @@ import { useUser } from "../../../context/UserContext";
 import apiConfig from "../../../config/config.ts";
 import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
+import { useCollabEditorContext } from "../../../context/CollabEditorContext.tsx";
 
 type AttemptForm = {
     attemptDateTime: string,
@@ -24,12 +25,13 @@ type CollaborativeEditorProps = {
 }
 
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
-    const editorRef = useRef<HTMLDivElement | null>(null);  // raw HTML Element
+    const editorRef = useRef<HTMLDivElement>(null);  // raw HTML Element
     const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Monaco editor instance
     const providerRef = useRef<WebsocketProvider | null>(null); // Websocket provider instance
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
+    const { updateClientWebSocket, updateClientEditor } = useCollabEditorContext();
 
     useEffect(() => {
         questionRef.current = question;
@@ -77,27 +79,11 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
     }, [setSaveHistoryCallback]);
 
     useEffect(() => {
-        if (!editorRef.current) return;
-
-        const editor = monaco.editor.create(editorRef.current, {
-            language: "javascript",
-            automaticLayout: true,
-            minimap: { enabled: false },
-            fontSize: 14,
-        });
-
-        monacoEditorRef.current = editor;
-
-        return () => {
-            // editor.dispose();
-        };
-    }, []);
+        
+        
+    }, [updateClientEditor]);
 
     useEffect(() => {
-        if (!roomId || !monacoEditorRef.current) {
-            return;
-        }
-
         const ydoc = new Y.Doc();
         const yText = ydoc.getText("monaco");
 
@@ -118,12 +104,24 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
 
         providerRef.current = provider;
 
-        new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
+        updateClientWebSocket(provider);  
 
-        return () => {
-            // provider.destroy();
-        };
-    }, [roomId]); 
+        if (editorRef.current) {
+            const editor = monaco.editor.create(editorRef.current, {
+                language: "javascript",
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+            });
+    
+            monacoEditorRef.current = editor;
+    
+            updateClientEditor(editor);
+
+            new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));  
+        }    
+
+    }, [roomId, updateClientWebSocket, updateClientEditor]); 
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };

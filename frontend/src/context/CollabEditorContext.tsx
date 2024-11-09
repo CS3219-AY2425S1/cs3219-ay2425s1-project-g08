@@ -14,14 +14,15 @@ const CollabEditorContext = createContext<CollabEditorContextProps | undefined>(
 export const CollabEditorContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const updateClientWebSocket = (clientWebSocket: WebsocketProvider) => {
         try {
-            localStorage.setItem("clientWebSocket", JSON.stringify(clientWebSocket));
+            console.log("Updating client websocket");
+            sessionStorage.setItem("clientWebSocket", JSON.stringify(clientWebSocket));
         } catch (error) {
             console.log("Failed to update clientWebSocket", error);
         }  
     }
 
     const getClientWebSocket = () => {
-        const clientWebSocketString = localStorage.getItem("clientWebSocket");
+        const clientWebSocketString = sessionStorage.getItem("clientWebSocket");
         const clientWebSocket = clientWebSocketString ? JSON.parse(clientWebSocketString) : null;
         if (clientWebSocket) {
             try {
@@ -37,14 +38,15 @@ export const CollabEditorContextProvider: React.FC<{ children: ReactNode }> = ({
 
     const updateClientEditor = (clientEditor: monaco.editor.IStandaloneCodeEditor) => {
         try {
-            localStorage.setItem("clientEditor", JSON.stringify(clientEditor));
+            console.log("Updating client editor");
+            sessionStorage.setItem("clientEditor", JSON.stringify(clientEditor));
         } catch (error) {
             console.log("Failed to update clientEditor", error);
         }  
     }
 
     const getClientEditor = () => {
-        const clientEditorString = localStorage.getItem("clientEditor");
+        const clientEditorString = sessionStorage.getItem("clientEditor");
         const clientEditor = clientEditorString ? JSON.parse(clientEditorString) : null;
         if (clientEditor) {
             try {
