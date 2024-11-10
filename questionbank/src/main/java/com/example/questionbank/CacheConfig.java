@@ -34,10 +34,10 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory
                                                  redisConnectionFactory) {
-        final int TIME_TO_LIVE = 60;
+        final int timeToLive = 60;
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration
                 .defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(TIME_TO_LIVE))
+                .entryTtl(Duration.ofSeconds(timeToLive))
                 .disableCachingNullValues();
 
         return RedisCacheManager.builder(redisConnectionFactory)
