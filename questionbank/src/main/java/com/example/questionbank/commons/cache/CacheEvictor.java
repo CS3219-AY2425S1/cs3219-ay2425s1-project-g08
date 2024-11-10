@@ -29,8 +29,8 @@ public class CacheEvictor {
                     @CacheEvict(value = "questionsByComplexityCache",
                             key = "#question.complexity"),
                     @CacheEvict(value = "questionsByCategoryAndComplexityCache",
-                            key = "#question.categories + '_' +" +
-                                    " #question.complexity")
+                            key = "#question.categories + '_' +"
+                                    + " #question.complexity")
             }
     )
     public void evictQuestionCache(Question question) {

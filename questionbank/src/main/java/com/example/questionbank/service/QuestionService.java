@@ -33,12 +33,16 @@ public class QuestionService implements QuestionServiceInterface {
      * Repository to retrieve data from.
      */
     private QuestionRepository repository;
+    /**
+     * Cache evictor to evict stale cache.
+     */
     private CacheEvictor cacheEvictor;
 
     /**
      * Constructs a {@link QuestionService} with the specified repository.
      *
      * @param questionRepository the repository to interact with
+     * @param cacheEvictor the evictor used to evict stale cache
      */
     public QuestionService(QuestionRepository questionRepository,
                            CacheEvictor cacheEvictor) {
