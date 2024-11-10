@@ -3,6 +3,7 @@ package com.example.questionbank.service;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.commons.RandomQuestionNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
+import com.example.questionbank.commons.cache.CacheEvictor;
 import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
@@ -10,7 +11,6 @@ import com.example.questionbank.repository.QuestionRepository;
 import com.example.questionbank.commons.QuestionNotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,14 +33,17 @@ public class QuestionService implements QuestionServiceInterface {
      * Repository to retrieve data from.
      */
     private QuestionRepository repository;
+    private CacheEvictor cacheEvictor;
 
     /**
      * Constructs a {@link QuestionService} with the specified repository.
      *
      * @param questionRepository the repository to interact with
      */
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository,
+                           CacheEvictor cacheEvictor) {
         this.repository = questionRepository;
+        this.cacheEvictor = cacheEvictor;
     }
 
     /**
@@ -84,7 +87,8 @@ public class QuestionService implements QuestionServiceInterface {
      * and complexity.
      */
     @Override
-    @Cacheable(value = "questionsByCategoryAndComplexityCache", key = "#category + '_' + #complexity")
+    @Cacheable(value = "questionsByCategoryAndComplexityCache",
+            key = "#category + '_' + #complexity")
     public List<Question> getAllQuestionsByCategoryAndComplexity(
             Category category, Complexity complexity) {
         return repository.findQuestionsByCategoriesIsContainingAndComplexity(
@@ -135,7 +139,9 @@ public class QuestionService implements QuestionServiceInterface {
         if (repository.findQuestionByTitle(question.getTitle()).isPresent()) {
             throw new TitleAlreadyExistsException(question.getTitle());
         }
-        return repository.save(question);
+        Question savedQuestion = repository.save(question);
+        this.cacheEvictor.evictQuestionCache(question);
+        return savedQuestion;
     }
 
     /**
@@ -146,14 +152,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @return the updated {@link Question}
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "questionByIdCache", key = "#id"),
-                    @CacheEvict(value = "questionsByCategoryCache", key = "#updatedQuestion.categories"),
-                    @CacheEvict(value = "questionsByComplexityCache", key = "#updatedQuestion.complexity"),
-                    @CacheEvict(value = "questionsByCategoryAndComplexityCache", key = "#updatedQuestion.categories + '_' + #updatedQuestion.complexity")
-            }
-    )
+    @CacheEvict(value = "allQuestionCache", allEntries = true)
     public Question updateQuestion(String id,
             Question updatedQuestion) {
         System.out.println(updatedQuestion.toString());
@@ -170,7 +169,7 @@ public class QuestionService implements QuestionServiceInterface {
                 .isPresent()) {
             throw new TitleAlreadyExistsException(updatedQuestion.getTitle());
         }
-
+        this.cacheEvictor.evictQuestionCache(oldQuestion);
         return repository.findById(id)
                 .map(existingQuestion -> {
                     existingQuestion
@@ -196,18 +195,10 @@ public class QuestionService implements QuestionServiceInterface {
      * @throws QuestionNotFoundException if the question is not found
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "questionByIdCache", key = "#id"),
-                    @CacheEvict(value = "questionsByCategoryCache", key = "#updatedQuestion.categories"),
-                    @CacheEvict(value = "questionsByComplexityCache", key = "#updatedQuestion.complexity"),
-                    @CacheEvict(value = "questionsByCategoryAndComplexityCache", key = "#updatedQuestion.categories + '_' + #updatedQuestion.complexity")
-            }
-    )
     public void deleteQuestion(String id) {
-        if (!repository.existsById(id)) {
-            throw new QuestionNotFoundException(id);
-        }
+        Question question = repository.findById(id) // Used for cache eviction
+                .orElseThrow(() -> new QuestionNotFoundException(id));
+        this.cacheEvictor.evictQuestionCache(question);
         repository.deleteById(id);
     }
 
