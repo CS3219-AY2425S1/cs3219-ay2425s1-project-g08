@@ -10,28 +10,36 @@ import { formatISOstringFormat } from "../../../util/dateTime";
 import { useCollabEditorContext } from "../../../context/CollabEditorContext.tsx";
 
 type AttemptForm = {
-    attemptDateTime: string,
-    content: string,
-    userId: string,
-    title: string,
-    description: string,
-    categories: string[],
-    complexity: string
-}
+    attemptDateTime: string;
+    content: string;
+    userId: string;
+    title: string;
+    description: string;
+    categories: string[];
+    complexity: string;
+};
 
 type CollaborativeEditorProps = {
-    question: Question | undefined,
-    setSaveHistoryCallback: React.Dispatch<React.SetStateAction<() => Promise<void>>>
-}
+    question: Question | undefined;
+    setSaveHistoryCallback: React.Dispatch<
+        React.SetStateAction<() => Promise<void>>
+    >;
+};
 
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
-    const editorRef = useRef<HTMLDivElement>(null);  // raw HTML Element
-    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Monaco editor instance
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
+    question,
+    setSaveHistoryCallback,
+}) => {
+    const editorRef = useRef<HTMLDivElement>(null); // raw HTML Element
+    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
+        null
+    ); // Monaco editor instance
     const providerRef = useRef<WebsocketProvider | null>(null); // Websocket provider instance
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
     const now = new Date();
-    const { updateClientWebSocket, updateClientEditor } = useCollabEditorContext();
+    const { updateClientWebSocket, updateClientEditor } =
+        useCollabEditorContext();
 
     useEffect(() => {
         questionRef.current = question;
@@ -50,61 +58,70 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
             title: questionItem.title,
             description: questionItem.description,
             categories: questionItem.categories,
-            complexity: questionItem.complexity
-        }
+            complexity: questionItem.complexity,
+        };
         console.log("Sending save history request to backend");
         try {
             const response = await fetch(
-            `${apiConfig.historyServiceUrl}/attempt`,
-            {
-                method: 'POST',
-                mode: "cors",
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
-                },
-                body: JSON.stringify(body)
-            }
+                `${apiConfig.historyServiceUrl}/attempt`,
+                {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
+                    },
+                    body: JSON.stringify(body),
+                }
             );
             const data = await response.json();
             console.log(`Response received from history service: ${data}`);
         } catch (error) {
             console.error("Error fetching questions:", error);
         }
-    }
+    };
 
     useEffect(() => {
         setSaveHistoryCallback(() => saveEditorHistory);
     }, [setSaveHistoryCallback]);
 
     useEffect(() => {
-        
-        
-    }, [updateClientEditor]);
+        const joinRoom = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:1234/join-room",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "localhost:1234",
+                        },
+                        body: JSON.stringify({ roomId, userId: user?.id }),
+                    }
+                );
+                const data = await response.json();
+                console.log("Joined room:", data);
+            } catch (error) {
+                console.error("Error joining room:", error);
+            }
+        };
 
-    useEffect(() => {
+        joinRoom();
+
         const ydoc = new Y.Doc();
         const yText = ydoc.getText("monaco");
 
-        const wsOpts = {
-            params: { roomId }
-        };
-
-        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
-        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
-            wsUrl.toString(),
+            `ws://localhost:1234/${roomId}`,
             roomId,
-            ydoc,
-            wsOpts
+            ydoc
         );
 
         providerRef.current = provider;
 
-        updateClientWebSocket(provider);  
+        updateClientWebSocket(provider);
 
         if (editorRef.current) {
             const editor = monaco.editor.create(editorRef.current, {
@@ -113,15 +130,18 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
                 minimap: { enabled: false },
                 fontSize: 14,
             });
-    
+
             monacoEditorRef.current = editor;
-    
+
             updateClientEditor(editor);
 
-            new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));  
-        }    
-
-    }, [roomId, updateClientWebSocket, updateClientEditor]); 
+            new MonacoBinding(
+                yText,
+                monacoEditorRef.current.getModel()!,
+                new Set([monacoEditorRef.current])
+            );
+        }
+    }, [roomId, updateClientWebSocket, updateClientEditor]);
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };

@@ -19,22 +19,7 @@ const IsConnectedButton: React.FC = () => {
     };
 
     const [otherUserLeft, setOtherUserLeft] = useState<boolean>(false);
-    const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
-    const ws = new WebSocket(ws_url.toString());
-
-    ws.onmessage = (message) => {
-        const parsedData = JSON.parse(message.data);
-        console.log("Received message:", parsedData);
-        if (!user) {
-            return;
-        }
-        if (parsedData.type === "leave-room") {
-            openLeaveRoomModal();
-            if (parsedData.username != user.username) {
-                setOtherUserLeft(true);
-            }
-        }
-    };
+    
 
     return (
         <div>

@@ -20,14 +20,6 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const navigate = useNavigate();
     const { user, roomId, clearRoomId } = useUser();
 
-    const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
-    const ws = new WebSocket(ws_url.toString());
-    const leaveRoomData = {
-        type: "leave-room",
-        username: user?.username,
-        roomId: roomId
-    };
-
     const { getClientWebSocket, getClientEditor } = useCollabEditorContext();
 
     const handleLeaveRoom = async () => {
@@ -37,7 +29,14 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
             clearRoomId(); // set the room ID to ""
             setShowLeaveAlert(true);
             console.log("Leaving room...");
-            ws.send(JSON.stringify(leaveRoomData));
+            await fetch(`http://localhost:1234/delete-room?roomId=${roomId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "localhost:1234",
+                },
+                body: JSON.stringify({ roomId, userId: user?.id }),
+            });
             getClientWebSocket().destroy();
             getClientEditor().dispose();
             setTimeout(() => {
@@ -69,8 +68,8 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
                             </p>
                         ) : (
                             <p className="text-black">
-                                The other user has left the room. You may leave the
-                                room as well.
+                                The other user has left the room. You may leave
+                                the room as well.
                             </p>
                         )}
                         <div className="flex justify-center mt-4">
