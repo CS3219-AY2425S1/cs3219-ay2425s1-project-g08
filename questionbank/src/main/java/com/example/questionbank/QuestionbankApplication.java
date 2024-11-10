@@ -2,6 +2,7 @@ package com.example.questionbank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * The main entry point for the Question Bank Spring Boot application.
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
+@EnableCaching
 @SuppressWarnings("HideUtilityClassConstructor")
 public class QuestionbankApplication {
 
