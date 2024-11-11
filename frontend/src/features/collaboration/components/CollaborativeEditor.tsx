@@ -9,23 +9,30 @@ import { Question } from "../../questions";
 import { formatISOstringFormat } from "../../../util/dateTime";
 
 type AttemptForm = {
-    attemptDateTime: string,
-    content: string,
-    userId: string,
-    title: string,
-    description: string,
-    categories: string[],
-    complexity: string
-}
+    attemptDateTime: string;
+    content: string;
+    userId: string;
+    title: string;
+    description: string;
+    categories: string[];
+    complexity: string;
+};
 
 type CollaborativeEditorProps = {
-    question: Question | undefined,
-    setSaveHistoryCallback: React.Dispatch<React.SetStateAction<() => Promise<void>>>
-}
+    question: Question | undefined;
+    setSaveHistoryCallback: React.Dispatch<
+        React.SetStateAction<() => Promise<void>>
+    >;
+};
 
-const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, setSaveHistoryCallback }) => {
+const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
+    question,
+    setSaveHistoryCallback,
+}) => {
     const editorRef = useRef<HTMLDivElement | null>(null);
-    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
+        null
+    );
     const providerRef = useRef<WebsocketProvider | null>(null);
     const { user, roomId } = useUser();
     const questionRef = useRef(question);
@@ -48,29 +55,29 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
             title: questionItem.title,
             description: questionItem.description,
             categories: questionItem.categories,
-            complexity: questionItem.complexity
-        }
+            complexity: questionItem.complexity,
+        };
         console.log("Sending save history request to backend");
         try {
             const response = await fetch(
-            `${apiConfig.historyServiceUrl}/attempt`,
-            {
-                method: 'POST',
-                mode: "cors",
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
-                },
-                body: JSON.stringify(body)
-            }
+                `${apiConfig.historyServiceUrl}/attempt`,
+                {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": `${apiConfig.historyServiceUrl}`,
+                    },
+                    body: JSON.stringify(body),
+                }
             );
             const data = await response.json();
             console.log(`Response received from history service: ${data}`);
         } catch (error) {
             console.error("Error fetching questions:", error);
         }
-    }
+    };
 
     useEffect(() => {
         setSaveHistoryCallback(() => saveEditorHistory);
@@ -102,12 +109,15 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
         const yText = ydoc.getText("monaco");
 
         const wsOpts = {
-            params: { roomId }
+            params: { roomId },
         };
 
-        const wsUrl = new URL(`${apiConfig.collaborationWebSocketUrl}`, window.location.origin);
-        wsUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        
+        const wsUrl = new URL(
+            `${apiConfig.collaborationWebSocketUrl}`,
+            window.location.origin
+        );
+        wsUrl.protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+
         // Connect to the WebSocket server
         const provider = new WebsocketProvider(
             wsUrl.toString(),
@@ -118,12 +128,16 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({ question, set
 
         providerRef.current = provider;
 
-        new MonacoBinding(yText, monacoEditorRef.current.getModel()!, new Set([monacoEditorRef.current]));
+        new MonacoBinding(
+            yText,
+            monacoEditorRef.current.getModel()!,
+            new Set([monacoEditorRef.current])
+        );
 
         return () => {
-            provider.destroy();
+            // provider.destroy();
         };
-    }, [roomId]); 
+    }, [roomId]);
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;
 };
