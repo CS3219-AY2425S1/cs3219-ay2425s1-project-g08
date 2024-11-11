@@ -3,11 +3,14 @@ package com.example.questionbank.service;
 import com.example.questionbank.commons.QuestionWithTitleNotFoundException;
 import com.example.questionbank.commons.RandomQuestionNotFoundException;
 import com.example.questionbank.commons.TitleAlreadyExistsException;
+import com.example.questionbank.commons.cache.CacheEvictor;
 import com.example.questionbank.model.Category;
 import com.example.questionbank.model.Question;
 import com.example.questionbank.model.Complexity;
 import com.example.questionbank.repository.QuestionRepository;
 import com.example.questionbank.commons.QuestionNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,14 +33,21 @@ public class QuestionService implements QuestionServiceInterface {
      * Repository to retrieve data from.
      */
     private QuestionRepository repository;
+    /**
+     * Cache evictor to evict stale cache.
+     */
+    private CacheEvictor cacheEvictor;
 
     /**
      * Constructs a {@link QuestionService} with the specified repository.
      *
      * @param questionRepository the repository to interact with
+     * @param cacheEvictor the evictor used to evict stale cache
      */
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository,
+                           CacheEvictor cacheEvictor) {
         this.repository = questionRepository;
+        this.cacheEvictor = cacheEvictor;
     }
 
     /**
@@ -46,6 +56,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @return a list of all {@link Question} entities
      */
     @Override
+    @Cacheable(value = "allQuestionCache")
     public List<Question> getAllQuestions() {
         return repository.findAll();
     }
@@ -56,6 +67,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @return a list of all {@link Question} entities with a given complexity
      */
     @Override
+    @Cacheable(value = "questionsByComplexityCache", key = "#complexity")
     public List<Question> getAllQuestionsByComplexity(Complexity complexity) {
         return repository.findQuestionsByComplexity(complexity);
     }
@@ -66,6 +78,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @return a list of all {@link Question} entities with a given category
      */
     @Override
+    @Cacheable(value = "questionsByCategoryCache", key = "#category.name()")
     public List<Question> getAllQuestionsByCategory(Category category) {
         return repository.findQuestionsByCategoriesIsContaining(category);
     }
@@ -78,6 +91,8 @@ public class QuestionService implements QuestionServiceInterface {
      * and complexity.
      */
     @Override
+    @Cacheable(value = "questionsByCategoryAndComplexityCache",
+            key = "#category + '_' + #complexity")
     public List<Question> getAllQuestionsByCategoryAndComplexity(
             Category category, Complexity complexity) {
         return repository.findQuestionsByCategoriesIsContainingAndComplexity(
@@ -93,6 +108,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @throws QuestionNotFoundException if the question is not found
      */
     @Override
+    @Cacheable(value = "questionByIdCache", key = "#id")
     public Question getQuestionById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
@@ -106,6 +122,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @throws QuestionWithTitleNotFoundException if the question is not found
      */
     @Override
+    @Cacheable(value = "questionByTitleCache", key = "#title")
     public Question getQuestionByTitle(String title) {
         return repository.findQuestionByTitle(title)
             .orElseThrow(() ->
@@ -126,7 +143,9 @@ public class QuestionService implements QuestionServiceInterface {
         if (repository.findQuestionByTitle(question.getTitle()).isPresent()) {
             throw new TitleAlreadyExistsException(question.getTitle());
         }
-        return repository.save(question);
+        Question savedQuestion = repository.save(question);
+        this.cacheEvictor.evictQuestionCache(question);
+        return savedQuestion;
     }
 
     /**
@@ -137,6 +156,7 @@ public class QuestionService implements QuestionServiceInterface {
      * @return the updated {@link Question}
      */
     @Override
+    @CacheEvict(value = "allQuestionCache", allEntries = true)
     public Question updateQuestion(String id,
             Question updatedQuestion) {
         System.out.println(updatedQuestion.toString());
@@ -153,7 +173,7 @@ public class QuestionService implements QuestionServiceInterface {
                 .isPresent()) {
             throw new TitleAlreadyExistsException(updatedQuestion.getTitle());
         }
-
+        this.cacheEvictor.evictQuestionCache(oldQuestion);
         return repository.findById(id)
                 .map(existingQuestion -> {
                     existingQuestion
@@ -180,9 +200,9 @@ public class QuestionService implements QuestionServiceInterface {
      */
     @Override
     public void deleteQuestion(String id) {
-        if (!repository.existsById(id)) {
-            throw new QuestionNotFoundException(id);
-        }
+        Question question = repository.findById(id) // Used for cache eviction
+                .orElseThrow(() -> new QuestionNotFoundException(id));
+        this.cacheEvictor.evictQuestionCache(question);
         repository.deleteById(id);
     }
 

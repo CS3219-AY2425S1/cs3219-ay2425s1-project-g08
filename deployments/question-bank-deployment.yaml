@@ -13,18 +13,23 @@ spec:
         app: questionbank
     spec:
       containers:
-        - name: questionbank
-          image: seanpzk/questionbank:1.0.3
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-          resources:
-            requests:
-              cpu: "500m"
-              memory: "512Mi"
-            limits:
-              cpu: "1"
-              memory: "1Gi"
+      - name: questionbank
+        image: seanpzk/questionbank:1.0.8
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: spring.redis.host
+          value: redis-service
+        - name: spring.redis.port
+          value: "6379"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -32,11 +37,72 @@ metadata:
   name: questionbank-service
   namespace: peerprep
 spec:
-  type: ClusterIP # To expose externally
+  type: ClusterIP
   selector:
     app: questionbank
   ports:
-    - protocol: TCP
-      port: 8080 # External port
-      targetPort: 8080 # Pod's container port
-
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.4
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - name: redis-config
+          mountPath: /usr/local/etc/redis/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: redis-config
+        configMap:
+          name: redis-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: peerprep
+spec:
+  type: LoadBalancer
+  selector:
+    app: redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: peerprep
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    protected-mode no
+    port 6379
+    maxmemory 512mb
+    maxmemory-policy allkeys-lru
