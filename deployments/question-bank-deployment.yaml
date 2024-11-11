@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: questionbank
-        image: seanpzk/questionbank:1.0.5
+        image: seanpzk/questionbank:1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -86,7 +86,7 @@ metadata:
   name: redis-service
   namespace: peerprep
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: redis
   ports:
