@@ -36,10 +36,10 @@ const IsConnectedButton: React.FC = () => {
                 }
 
                 if (parsedData.type === "leave-room") {
-                    openLeaveRoomModal();
                     if (parsedData.username != user.username) {
                         setOtherUserLeft(true);
                     }
+                    openLeaveRoomModal();
                 }
             })
             .catch((error) => {
