@@ -19,12 +19,15 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     const navigate = useNavigate();
     const { user, roomId, clearRoomId } = useUser();
 
-    const ws_url = new URL(`${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`, window.location.origin);
+    const ws_url = new URL(
+        `${apiConfig.collaborationWebSocketUrl}?roomId=${roomId}`,
+        window.location.origin
+    );
     const ws = new WebSocket(ws_url.toString());
     const leaveRoomData = {
         type: "leave-room",
         username: user?.username,
-        roomId: roomId
+        roomId: roomId,
     };
 
     const handleLeaveRoom = async () => {
@@ -65,14 +68,14 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
                             </p>
                         ) : (
                             <p className="text-black">
-                                The other user has left the room. You may leave the
-                                room as well.
+                                The other user has left the room. You may leave
+                                the room as well.
                             </p>
                         )}
                         <div className="flex justify-center mt-4">
                             <button
                                 onClick={handleLeaveRoom}
-                                className="px-6 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                                className="px-6 py-2 text-white bg-rose-600 rounded hover:bg-red-700"
                             >
                                 Leave Room
                             </button>
