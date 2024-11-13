@@ -20,7 +20,7 @@ public class RedisConfig {
      */
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        final String hostname = "redis-service";
+        final String hostname = "redis";
         final int port = 6379;
         return new LettuceConnectionFactory(hostname, port);
     }
