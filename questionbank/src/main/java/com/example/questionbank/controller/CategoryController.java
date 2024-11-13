@@ -71,6 +71,8 @@ public class CategoryController {
                         new CategoryDto(
                                 category.name(),
                                 category.getDisplayName())))
+                .sorted(Comparator.comparing(category -> category.getContent()
+                        .getDisplayName()))
                 .collect(Collectors.toList());
 
         return CollectionModel.of(categories);
@@ -99,7 +101,6 @@ public class CategoryController {
                 .sorted(Comparator.comparing(category -> category.getContent()
                         .getDisplayName()))
                 .collect(Collectors.toList());
-
         return CollectionModel.of(categories);
     }
 }
