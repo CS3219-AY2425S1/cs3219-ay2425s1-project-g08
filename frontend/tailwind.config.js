@@ -10,7 +10,6 @@ export default {
         green: '#23af4b',
         yellow: '#f3aa27',
         brown: '#825f2f',
-        red: '#e74c3c',
         'light-grey': '#c0c1c2',
         beige: '#f5d29f',
         'rose-brown': '#cfa088',
