@@ -1,5 +1,6 @@
 package com.example.questionbank.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor // Lombok generates a constructor with all fields
 @Document(collection = "questionbank")
 @SuppressWarnings({"FinalParameters", "HiddenField"})
-public class Question {
+public class Question implements Serializable {
 
     /**
      * The unique identifier for the question in MongoDB.
@@ -57,10 +58,11 @@ public class Question {
      * The list of categories associated with the question.
      * <p>
      * This field helps in categorizing the question into different
-     * topics or areas.
+     * topics or areas. The types of categories are fixed to ensure
+     * consistency.
      * </p>
      */
-    private List<String> categories;
+    private List<Category> categories;
 
     /**
      * The complexity level of the question.
@@ -96,7 +98,7 @@ public class Question {
      * @param complexity  the complexity level of the question
      */
     public Question(String title, String description,
-                    List<String> categories, Complexity complexity) {
+                    List<Category> categories, Complexity complexity) {
         this.title = title;
         this.description = description;
         this.categories = categories;

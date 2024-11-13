@@ -3,6 +3,7 @@ package com.example.questionbank.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.questionbank.model.Category;
 import com.example.questionbank.model.QuestionModelAssembler;
 
 import com.example.questionbank.service.QuestionService;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.questionbank.model.Question;
-
+import com.example.questionbank.model.Complexity;
 
 /**
  * Controller for managing {@link Question} resources.
@@ -37,17 +38,16 @@ import com.example.questionbank.model.Question;
  * and {@link CollectionModel}.
  *
  */
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 @RestController
-@SuppressWarnings({"FinalParameters", "HiddenField"})
+@SuppressWarnings({ "FinalParameters", "HiddenField" })
 public class QuestionController {
 
     /**
      * Logger instance for logging important information and events.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(
-            QuestionController.class
-    );
+            QuestionController.class);
 
     /**
      * Service with business logic bridging repository and controller.
@@ -64,18 +64,17 @@ public class QuestionController {
      * Constructs a {@code QuestionController} with the specified
      * service and assembler.
      *
-     * @param service the {@link QuestionService}
-     *                           used to access questions
-     * @param assembler  the {@link QuestionModelAssembler}
-     *                           used to convert
-     * {@link Question} entities
+     * @param service   the {@link QuestionService}
+     *                  used to access questions
+     * @param assembler the {@link QuestionModelAssembler}
+     *                  used to convert
+     *                  {@link Question} entities
      */
     QuestionController(QuestionService service,
-                       QuestionModelAssembler assembler) {
+            QuestionModelAssembler assembler) {
         this.service = service;
         this.assembler = assembler;
     }
-
 
     /**
      * Retrieves all questions.
@@ -84,7 +83,7 @@ public class QuestionController {
      * each wrapped in an {@link EntityModel}.
      *
      * @return a {@link CollectionModel} containing {@link EntityModel}s of
-     * all questions
+     *         all questions
      */
     @GetMapping("/questions")
     public CollectionModel<EntityModel<Question>> all() {
@@ -96,10 +95,96 @@ public class QuestionController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(questions, linkTo(
-                methodOn(QuestionController.class).all()
-        ).withSelfRel());
+                methodOn(QuestionController.class).all()).withSelfRel());
     }
 
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the
+     * repository that have a certain complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @param complexity is the specific complexity of all questions retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     *         of all questions with a certain complexity
+     */
+    @GetMapping("/questions/complexity/all/{complexity}")
+    public CollectionModel<EntityModel<Question>> allByComplexity(
+            @PathVariable Complexity complexity) {
+        LOGGER.info("Fetching all questions with complexity: {}", complexity);
+
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByComplexity(complexity)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class)
+                        .allByComplexity(complexity)).withSelfRel());
+    }
+
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the repository
+     * that have a certain category,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @param category is the specific categories for all questions retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s of
+     *         all questions with a certain category
+     */
+    @GetMapping("/questions/category/all/{category}")
+    public CollectionModel<EntityModel<Question>> allByCategory(
+            @PathVariable Category category) {
+        LOGGER.info("Fetching all questions with category: {}", category);
+
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByCategory(category)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class).allByCategory(category))
+                .withSelfRel());
+    }
+
+    /**
+     * Retrieves all questions.
+     * <p>
+     * This endpoint returns a collection of all questions in the repository
+     * that have a certain category and complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @param category   the specific category of the questions retrieved
+     * @param complexity the specific complexity of the questions
+     *                   retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     *         of all questions with a certain category and complexity
+     */
+    @GetMapping("/questions/category-and-complexity/all/{category}/"
+            + "{complexity}")
+    public CollectionModel<EntityModel<Question>> allByCategoryAndComplexity(
+            @PathVariable Category category,
+            @PathVariable Complexity complexity) {
+        LOGGER.info(
+                "Fetching all questions with category: {} and complexity: {}",
+                category, complexity);
+
+        List<EntityModel<Question>> questions = service
+                .getAllQuestionsByCategoryAndComplexity(category, complexity)
+                .stream() //
+                .map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(questions, linkTo(
+                methodOn(QuestionController.class).allByCategoryAndComplexity(
+                        category, complexity))
+                .withSelfRel());
+    }
 
     /**
      * Creates a new question.
@@ -109,22 +194,19 @@ public class QuestionController {
      *
      * @param newQuestion the {@link Question} to be created
      * @return a {@link ResponseEntity} containing the created
-     * {@link EntityModel} of the question
+     *         {@link EntityModel} of the question
      */
     @PostMapping("/questions")
     ResponseEntity<?> newQuestion(@RequestBody Question newQuestion) {
         LOGGER.info("Creating a new question with title: {}",
-                newQuestion.getTitle()
-        );
+                newQuestion.getTitle());
 
         EntityModel<Question> entityModel = assembler.toModel(
-                service.createQuestion(newQuestion)
-        );
+                service.createQuestion(newQuestion));
 
         return ResponseEntity
                 .created(entityModel.getRequiredLink(
-                        IanaLinkRelations.SELF).toUri()
-                )
+                        IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
 
@@ -164,6 +246,35 @@ public class QuestionController {
         return assembler.toModel(question);
     }
 
+    /**
+     * Retrieves one question.
+     * <p>
+     * This endpoint returns one of a collection of all questions
+     * in the repository
+     * that have a certain category and complexity,
+     * each wrapped in an {@link EntityModel}.
+     *
+     * @param category   the specific category of the question retrieved
+     * @param complexity the specific complexity of the question
+     *                   retrieved
+     * @return a {@link CollectionModel} containing {@link EntityModel}s
+     *         one of the questions with a certain category and complexity
+     */
+    @GetMapping("/questions/category-and-complexity/random/{category}"
+            + "/{complexity}")
+    public EntityModel<Question> randomByCategoryAndComplexity(
+            @PathVariable Category category,
+            @PathVariable Complexity complexity) {
+        LOGGER.info(
+                "Fetching a random question with category: "
+                        + "{} and complexity: {}",
+                category, complexity);
+
+        Question question = service.getRandomQuestionByCategoryAndComplexity(
+                category, complexity);
+
+        return assembler.toModel(question);
+    }
 
     /**
      * Replaces an existing question with a new question.
@@ -173,24 +284,22 @@ public class QuestionController {
      * the new question is created.
      *
      * @param newQuestion the {@link Question} data to replace the existing
-     *        question
-     * @param id the ID of the question to be replaced
+     *                    question
+     * @param id          the ID of the question to be replaced
      * @return a {@link ResponseEntity} containing the updated
-     * {@link EntityModel} of the question
+     *         {@link EntityModel} of the question
      */
     @PutMapping("/questions/{id}")
     ResponseEntity<?> replaceQuestion(@RequestBody Question newQuestion,
-                                      @PathVariable String id) {
+            @PathVariable String id) {
         LOGGER.info("Replacing question with ID: {}", id);
 
         EntityModel<Question> entityModel = assembler.toModel(
-                service.updateQuestion(id, newQuestion)
-        );
+                service.updateQuestion(id, newQuestion));
 
         return ResponseEntity
                 .created(entityModel.getRequiredLink(
-                        IanaLinkRelations.SELF).toUri()
-                )
+                        IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
 

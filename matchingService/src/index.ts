@@ -9,14 +9,15 @@ import {
 import logger from "./utils/logger";
 import errorHandler from "./middlewares/errorHandler";
 import cors from "cors";
+import apiConfig from "./config/config";
 
 async function main() {
     const app: Application = express();
     const matchController: MatchController = await initialiseServices(app);
-
+    console.log("Expressjs from matching service: set origin to : ", apiConfig.frontendURL);
     app.use(
         cors({
-            origin: "http://localhost:5173",
+            origin:`${apiConfig.frontendURL}`,
             methods: ["POST", "DELETE"],
         })
     );

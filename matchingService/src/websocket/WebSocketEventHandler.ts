@@ -14,6 +14,25 @@ export class WebSocketEventHandler {
             socket.on("matchRequestResponse", (matchId, data) => this.handleMatchRequestResponse(socket, matchId, data));
             socket.on("disconnect", () => this.handleDisconnect(socket));
         })
+        
+        this.io.of("/comm").on('connection', (socket) => {
+            console.log('Client connected');
+          
+            /* Join a room */
+            socket.on('joinRoom', ({ userId, roomId }) => {
+              socket.join(roomId);
+              console.log(`${userId} joined room ${roomId}`);
+            });
+          
+            /* Send message to specific room */
+            socket.on('sendMessage', ({roomId, message}) => {
+              socket.to(roomId).emit('receiveMessage', message);
+            });
+          
+            socket.on('disconnect', () => {
+              console.log('Client disconnected');
+            });
+          })
     }
 
     private handleJoinMatchResponseRoom(socket: Socket, matchId: string) {

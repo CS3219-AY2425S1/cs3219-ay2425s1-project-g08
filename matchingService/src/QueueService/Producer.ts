@@ -10,7 +10,7 @@ import { MatchRequestDTO } from "../models/MatchRequestDTO";
  */
 class Producer {
     public async sendRequest(msg: MatchRequestDTO, channel: Channel, exchange: string, responseExchange: string): Promise<boolean> {
-        logger.info(`Sending match request for topic: ${msg.topic}, difficulty: ${msg.difficulty}`);
+        logger.info(`Sending match request for category: ${msg.category}, difficulty: ${msg.difficulty}`);
         
         const replyQueue = await channel.assertQueue("", { exclusive: true });
         const replyQueueName = replyQueue?.queue;
@@ -20,13 +20,14 @@ class Producer {
         }
 
         const messageHeaders: MessageHeader = {
-            topic: msg.topic,
+            category: msg.category,
             difficulty: msg.difficulty
         };
 
         channel.publish(exchange, "", Buffer.from(JSON.stringify(msg)), {
             headers: messageHeaders,
-            replyTo: replyQueueName
+            replyTo: replyQueueName,
+            persistent: true
         });
 
         logger.info(`Match request sent!`);
@@ -48,7 +49,8 @@ class Producer {
         };
         
         channel.publish(directExchange, "cancellation", Buffer.from(JSON.stringify(msg)), {
-            headers: messageHeaders
+            headers: messageHeaders,
+            persistent: true
         });
 
         logger.info(`Cancellation request sent`);

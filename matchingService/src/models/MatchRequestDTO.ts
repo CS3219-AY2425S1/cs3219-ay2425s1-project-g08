@@ -1,9 +1,9 @@
-import { Difficulty, Topic } from "../QueueService/matchingEnums";
+import { Difficulty } from "../QueueService/matchingEnums";
 
 export type MatchRequestDTO = {
     readonly userId: string;
     readonly matchId: string;
-    topic: Topic;
+    category: string;
     difficulty: Difficulty;
     readonly timestamp: Date;
     retries: number;

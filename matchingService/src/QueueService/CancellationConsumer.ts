@@ -3,7 +3,7 @@ import logger from "../utils/logger";
 import { CancelRequest } from "../models/CancelRequest";
 import CancelRequestWithQueueInfo from "../models/CancelRequestWithQueueInfo";
 import QueueMessage from "../models/QueueMessage";
-import Consumer from "./Consumer";
+import MatchingConsumer from "./MatchingConsumer";
 import QueueManager from "./QueueManager";
 
 /**
@@ -12,7 +12,7 @@ import QueueManager from "./QueueManager";
 export default class CancellationConsumer {
     private channel: Channel;
     private directExchange: string;
-    private consumerMap: Map<string, Consumer> = new Map();
+    private consumerMap: Map<string, MatchingConsumer> = new Map();
 
     constructor(channel: Channel, directExchange: string) {
         this.channel = channel;
@@ -38,7 +38,7 @@ export default class CancellationConsumer {
             var req: CancelRequest = this.parseCancelRequest(msg);
             const reqWithInfo: CancelRequestWithQueueInfo = CancelRequestWithQueueInfo.createFromCancelRequest(req);
 
-            const consumer: Consumer | undefined = this.consumerMap.get(`${reqWithInfo.getTopic()}_${reqWithInfo.getDifficulty()}`);
+            const consumer: MatchingConsumer | undefined = this.consumerMap.get(`${reqWithInfo.getCategory()}_${reqWithInfo.getDifficulty()}`);
             if (!consumer) {
                 logger.debug("No consumer found for incoming request");
                 return;
@@ -67,12 +67,12 @@ export default class CancellationConsumer {
         const req: CancelRequest = {
             matchId: jsonObject.matchId,
             difficulty: jsonObject.difficulty,
-            topic: jsonObject.topic
+            category: jsonObject.category
         }
         return req;
     }
 
-    public registerConsumer(key: string, consumer: Consumer) {
+    public registerConsumer(key: string, consumer: MatchingConsumer) {
         this.consumerMap.set(key, consumer);
     }
 }

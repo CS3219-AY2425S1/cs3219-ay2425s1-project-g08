@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthNavBar from "../components/AuthNavBar.tsx";
-import WelcomeMessage from "../components/UserAuth/WelcomeMessage.tsx";
-import InputBoxLabel from "../components/UserAuth/InputBoxLabel.tsx";
+import AuthNavBar from "../components/navbars/AuthNavBar.tsx";
+import { WelcomeMessage } from "../features/authentication";
+import { InputBoxLabel } from "../features/authentication";
 import InputTextBox from "../components/InputTextBox.tsx";
-import PasswordInputTextBox from "../components/UserAuth/PasswordInputTextBox.tsx";
+import { PasswordInputTextBox } from "../features/authentication";
 import useLoginUser from "../hooks/useLoginUser.tsx";
 import { useUser } from "../context/UserContext.tsx";
-import useAuthenticateUser from "../hooks/useAuthenticateUser.tsx";
+import { useAuthenticateUser } from "../features/authentication";
 
 const LoginPage: React.FC = () => {
   const [emailValue, setEmailValue] = useState("");
@@ -36,30 +36,23 @@ const LoginPage: React.FC = () => {
       setShowErrorMessage
     ); // Call the custom hook function
     console.log(newUser);
-    
   };
 
   useEffect(() => {
     if (user) {
       authenticateUser(setSuccess);
     }
-  }, [user])
+  }, [user]);
 
   const navigate = useNavigate();
   useEffect(() => {
     if (success) {
-      // if (loggedInUser?.isAdmin) {
-      if (user?.isAdmin) {
-        navigate('/dashboard', { replace: true}); // Replace: true to clear back history
-      } else {
-        navigate("/dashboardForUsers", { replace: true }); // Replace: true to clear back history
-      }
+      navigate("/dashboard", { replace: true }); // Replace: true to remove login page from history stack
     }
   }, [success]);
 
-
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen flex flex-col overflow-y-auto">
       <AuthNavBar />
       <div className="flex flex-col items-center justify-start flex-grow">
         <WelcomeMessage />
@@ -90,11 +83,12 @@ const LoginPage: React.FC = () => {
           )}
         </div>
 
-        <Link to="/dashboardForUsers">
+        {/*<Link to="/dashboard">
           <button className="mt-2 py-2 text-gray-700 hover:opacity-60">
             Forget Password?
           </button>
         </Link>
+        */}
 
         <button
           className="bg-yellow rounded-[25px] py-1.5 px-10 mt-4 text-off-white hover:opacity-60"

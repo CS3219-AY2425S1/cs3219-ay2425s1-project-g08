@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import QueueService from "../QueueService/QueueService";
 import { WebSocketEventHandler } from "./WebSocketEventHandler";
 import logger from "../utils/logger";
+import apiConfig from "../config/config";
 
 export default function initialiseWebsocket(
   app: Application,
@@ -13,14 +14,16 @@ export default function initialiseWebsocket(
   const server = createServer(app);
   const io: Server = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: `${apiConfig.frontendURL}`,
       methods: ["GET", "POST"],
     },
   });
+  
   queueService.consumeResponses(io);
 
   const handler: WebSocketEventHandler = new WebSocketEventHandler(io);
   handler.setUpListeners();
-  server.listen(WEBSOCKET_PORT);
-  logger.info(`Websocket listening on port ${WEBSOCKET_PORT}`);
+  server.listen(WEBSOCKET_PORT, () => {
+    logger.info(`WebSocket server listening on port ${WEBSOCKET_PORT}`);
+  });
 }

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: peerprep
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: seanpzk/frontend:1.0.116
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5173
+        env:
+        - name: VITE_USER_SERVICE_URL
+          value: "http://user-service:3001"
+        - name: VITE_QB_SERVICE_URL
+          value: "http://questionbank-service:8080"
+        - name: VITE_PP_SERVICE_URL
+          value: "http://profilepicture-service:8081"
+        - name: VITE_MATCH_WEBSOCKET_URL
+          value: "http://matching-service:8082"
+        - name: VITE_MATCH_EXPRESS_URL
+          value: "http://matching-service:3000"
+        - name: VITE_COMM_URL
+          value: "http://comm-service:8083"
+        - name: VITE_HISTORY_URL
+          value: "http://history-service:9090"
+        - name: VITE_COLLABORATION_WEBSOCKET_URL
+          value: "ws://collab-service:1234"
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /app/secrets
+          readOnly: true
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "800Mi"
+          limits:
+            cpu: "1"
+            memory: "1.5Gi"
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: my-api-key-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: peerprep
+spec:
+  type: LoadBalancer  # To expose externally
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 5173  # External port
+      targetPort: 5173  # Pod's container port
+
+
+  
