@@ -45,7 +45,6 @@ kind: VerticalPodAutoscaler
 metadata:
   name: collab
   namespace: peerprep
-  clusterName: peerprep
 spec:
   targetRef:
     kind: Deployment
