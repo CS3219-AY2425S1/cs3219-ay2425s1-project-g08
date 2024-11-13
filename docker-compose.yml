@@ -66,8 +66,10 @@ services:
       context: ./PeerPrep-UserService/profile-picture-service
     ports:
       - "8081:8081"
+    volumes:
+      - ./src/main/resources/gcp-account-key.json:/app/config/gcp-service-account-key.json # Map the file
     environment:
-      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=classpath:gcp-service-account-key.json
+      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=file:/app/config/gcp-service-account-key.json # Set the path for GCP credentials
 
   historyservice:
     build:

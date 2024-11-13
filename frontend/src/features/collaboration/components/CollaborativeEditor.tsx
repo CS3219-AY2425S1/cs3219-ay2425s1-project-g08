@@ -94,6 +94,9 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
         });
 
         monacoEditorRef.current = editor;
+        return () => {
+            editor.dispose();
+        };
     }, []);
 
     useEffect(() => {
@@ -129,6 +132,9 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
             monacoEditorRef.current.getModel()!,
             new Set([monacoEditorRef.current])
         );
+        return () => {
+            // provider.destroy();
+        };
     }, [roomId]);
 
     return <div ref={editorRef} style={{ height: "100vh", width: "100%" }} />;

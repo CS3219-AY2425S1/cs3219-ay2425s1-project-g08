@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: history
-        image: seanpzk/history-service:1.0.3
+        image: seanpzk/history-service:1.0.4
         imagePullPolicy: Always
         ports:
         - containerPort: 9090

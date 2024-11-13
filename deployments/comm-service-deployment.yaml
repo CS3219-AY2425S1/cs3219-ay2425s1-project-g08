@@ -39,5 +39,21 @@ spec:
     - protocol: TCP
       port: 8083  # External port
       targetPort: 8083  # Pod's container port
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: comm
+  namespace: peerprep
+  clusterName: peerprep
+spec:
+  targetRef:
+    kind: Deployment
+    name: comm
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies: []
 
   

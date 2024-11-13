@@ -100,7 +100,7 @@ const EditUsernameModal: React.FC<EditUsernameModalProps> = ({
             <button
               onClick={onClose}
               id="submit"
-              className="rounded-lg px-4 py-1.5 bg-red-500  text-white text-lg hover:bg-red-400"
+              className="rounded-lg px-4 py-1.5 bg-red-500 text-white text-lg hover:bg-red-400"
             >
               Cancel
             </button>
