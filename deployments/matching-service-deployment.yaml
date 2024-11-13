@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: peerprep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:4.0.0-rc.1-management-alpine  
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: RABBITMQ_NODE_PORT
+          value: "5672"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: peerprep
+spec:
+  type: ClusterIP  # Internal service
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: management 
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: rabbitmq
+  namespace: peerprep
+spec:
+  targetRef:
+    kind: Deployment
+    name: rabbitmq
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matching
+  namespace: peerprep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matching
+  template:
+    metadata:
+      labels:
+        app: matching
+    spec:
+      containers:
+      - name: matching
+        image: seanpzk/matching-service:1.1.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        - containerPort: 8082
+        env:
+        - name: FRONTEND_URL
+          value: http://frontend-service:5173
+        - name: RABBITMQ_URL
+          value: amqp://rabbitmq-service:5672  # Use the RabbitMQ service name
+        - name: QB_URL
+          value: http://questionbank-service:8080
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matching-service
+  namespace: peerprep
+spec:
+  type: ClusterIP
+  selector:
+    app: matching
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3000  # External port
+      targetPort: 3000  # Pod's container port
+    - name: websocket
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: matching
+  namespace: peerprep
+spec:
+  targetRef:
+    kind: Deployment
+    name: matching
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies: []
+

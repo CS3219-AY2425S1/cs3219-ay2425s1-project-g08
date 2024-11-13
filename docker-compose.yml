@@ -1,0 +1,109 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+
+  questionbank:
+    build:
+      context: ./questionbank
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.redis.host=questionserviceredis
+      - spring.redis.port=6379
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  user-service:
+    build:
+      context: ./PeerPrep-UserService/user-service
+    ports:
+      - "3001:3001"
+
+  rabbitmq:
+    hostname: rabbitmq_0 # Must include so that it knows which specific data in volume to use
+    image: rabbitmq:4.0.0-rc.1-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Dashboard port -dev purpose
+    environment:
+      RABBITMQ_NODE_PORT: 5672
+      RABBITMQ_MNESIA_DIR: /var/lib/rabbitmq/mnesia/
+    volumes:
+      - "./rabbitmq_data:/var/lib/rabbitmq/mnesia/"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  matchingservice:
+    build:
+      context: ./matchingService
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "8082:8082"
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    container_name: matchingservice
+    command: ["node", "dist/index.js"]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      questionbank:
+        condition: service_healthy
+
+  profilepicture-service:
+    build:
+      context: ./PeerPrep-UserService/profile-picture-service
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./src/main/resources/gcp-account-key.json:/app/config/gcp-service-account-key.json # Map the file
+    environment:
+      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=file:/app/config/gcp-service-account-key.json # Set the path for GCP credentials
+
+  historyservice:
+    build:
+      context: ./history-service
+    ports:
+      - "9090:9090"
+
+  collaborationservice:
+    build:
+      context: ./collaboration-service
+    ports:
+      - "1234:1234"
+
+  communicationservice:
+    build:
+      context: ./communicationservice
+    ports:
+      - "8083:8083"
+
+  redis:
+    hostname: redis
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+  
+  questionserviceredisinsight: # For development purposes
+    hostname: questionserviceredisinsight
+    image: redis/redisinsight:2.60
+    ports:
+      - "5540:5540"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
