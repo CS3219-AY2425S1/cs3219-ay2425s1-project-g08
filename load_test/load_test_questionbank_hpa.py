@@ -1,9 +1,9 @@
 import requests
 import threading
-
-HOSTNAME = "http://34.124.255.237:8080"
+# To change hostname before testing
+HOSTNAME = "http://34.126.140.248:8080" 
 URL_TO_TEST = f"{HOSTNAME}/questions"
-THREADS_TO_SPAWN = 20
+THREADS_TO_SPAWN = 45
 WORK_PER_THREAD = 100
 
 def sendRequest():
