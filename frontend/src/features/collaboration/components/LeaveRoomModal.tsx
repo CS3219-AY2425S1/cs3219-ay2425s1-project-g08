@@ -16,6 +16,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
 }) => {
     const saveHistoryCallback = useSaveHistory();
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
+    const [ showLeaveRoomResponse, setShowLeaveRoomResponse ] = useState<boolean>(false);
     const navigate = useNavigate();
     const { user, roomId, clearRoomId } = useUser();
 
@@ -38,6 +39,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
             clearRoomId(); // set the room ID to ""
             setShowLeaveAlert(true);
             console.log("Leaving room...");
+            setShowLeaveRoomResponse(true);
             ws.send(JSON.stringify(leaveRoomData));
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate to  dashboard page after leaving the room
@@ -50,26 +52,32 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900 bg-opacity-60">
             <div className="relative p-6 bg-white rounded-lg shadow-lg space-y-6">
-                <button
-                    onClick={closeLeaveRoomModal}
-                    className="absolute top-2 right-2 px-3 py-1 text-gray-600 hover:bg-gray-200 rounded-full"
-                >
-                    X
-                </button>
+                {
+                    showLeaveRoomResponse 
+                    ? <></>
+                    : (
+                        <button
+                        onClick={closeLeaveRoomModal}
+                        className="absolute top-2 right-2 px-3 py-1 text-gray-600 hover:bg-gray-200 rounded-full"
+                        >
+                            X
+                        </button>
+                    )
+                }
                 {showLeaveAlert ? (
                     <Alert key="success" variant="success">
-                        You have left the room successfully!
+                        You have ended the session!
                     </Alert>
                 ) : (
                     <div className="flex flex-col space-y-4">
                         {!otherUserLeft ? (
                             <p className="text-black">
-                                Are you sure you want to leave the room?
+                                Are you sure you want to end the session?
                             </p>
                         ) : (
                             <p className="text-black">
-                                The other user has left the room. You may leave
-                                the room as well.
+                                The other user has left the session. Would you like to leave
+                                the session as well?
                             </p>
                         )}
                         <div className="flex justify-center mt-4">
@@ -77,7 +85,7 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
                                 onClick={handleLeaveRoom}
                                 className="px-6 py-2 text-white bg-rose-600 rounded hover:bg-red-700"
                             >
-                                Leave Room
+                                End Session
                             </button>
                         </div>
                     </div>
