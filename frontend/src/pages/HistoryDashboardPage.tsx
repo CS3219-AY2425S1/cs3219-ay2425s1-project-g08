@@ -37,6 +37,9 @@ const HistoryAttemptPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     fetch(`${apiConfig.historyServiceUrl}/${user?.id}/attempts`,
       { 
         mode: "cors",
@@ -62,7 +65,7 @@ const HistoryAttemptPage: React.FC = () => {
         }
       );
     })
-  }, []);
+  }, [user]);
 
   if (!user) {
     return <p>Loading...</p>;

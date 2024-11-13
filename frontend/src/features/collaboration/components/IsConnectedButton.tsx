@@ -6,8 +6,8 @@ import apiConfig from "../../../config/config";
 
 const IsConnectedButton: React.FC = () => {
     const { user, isConnectedToRoom, roomId } = useUser();
-    const color = isConnectedToRoom ? "green" : "red";
-    const label = isConnectedToRoom ? "Connected" : "Disconnected";
+    const color = isConnectedToRoom ? "red" : "red";
+    const label = isConnectedToRoom ? "End Session" : "Disconnected";
     const [leaveRoomModalIsOpen, setLeaveRoomModalIsOpen] = useState(false);
 
     const openLeaveRoomModal = () => setLeaveRoomModalIsOpen(true);
