@@ -1,5 +1,6 @@
 package com.example.questionbank.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor // Lombok generates a constructor with all fields
 @Document(collection = "questionbank")
 @SuppressWarnings({"FinalParameters", "HiddenField"})
-public class Question {
+public class Question implements Serializable {
 
     /**
      * The unique identifier for the question in MongoDB.

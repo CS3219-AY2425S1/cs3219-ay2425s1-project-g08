@@ -10,6 +10,9 @@ services:
       context: ./questionbank
     ports:
       - "8080:8080"
+    environment:
+      - spring.redis.host=questionserviceredis
+      - spring.redis.port=6379
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 10s
@@ -85,3 +88,22 @@ services:
       context: ./communicationservice
     ports:
       - "8083:8083"
+
+  redis:
+    hostname: redis
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+  
+  questionserviceredisinsight: # For development purposes
+    hostname: questionserviceredisinsight
+    image: redis/redisinsight:2.60
+    ports:
+      - "5540:5540"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
