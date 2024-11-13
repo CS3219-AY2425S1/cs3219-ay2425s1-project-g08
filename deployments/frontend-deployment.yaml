@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: seanpzk/frontend:1.0.113
+        image: seanpzk/frontend:1.0.116
         imagePullPolicy: Always
         ports:
         - containerPort: 5173
@@ -42,10 +42,10 @@ spec:
         resources:
           requests:
             cpu: "500m"
-            memory: "512Mi"
+            memory: "800Mi"
           limits:
             cpu: "1"
-            memory: "1Gi"
+            memory: "1.5Gi"
       volumes:
       - name: secret-volume
         secret:

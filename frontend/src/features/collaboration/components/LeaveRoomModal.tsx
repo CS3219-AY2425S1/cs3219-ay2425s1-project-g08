@@ -41,6 +41,12 @@ const LeaveRoomModal: React.FC<LeaveRoomModalProps> = ({
             console.log("Leaving room...");
             setShowLeaveRoomResponse(true);
             ws.send(JSON.stringify(leaveRoomData));
+            // Ensure WebSocket is open before sending message
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(leaveRoomData));
+            } else {
+                console.warn("WebSocket is not open. Message not sent.");
+            }
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate to  dashboard page after leaving the room
             }, 2000);
